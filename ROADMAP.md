@@ -10,6 +10,14 @@
 - Day 6：选 2~3 个已完成任务做 retrospective，只写 pending proposals。
 - Day 7：第一次 audit，合并重复项，调整 skill description 和 router。
 
+## 当前已完成的 MVP 基线
+
+- 独立仓库已推送到个人 GitHub。
+- Codex active skills 已通过 junction 暴露。
+- Obsidian dashboard、QuickAdd、Templater、Dataview、Git 已配置。
+- MCP adapter 已接入全局 Codex config。
+- 验证脚本已通过。
+
 ## 30 天
 
 - 纳入 testing 域和 Playwright / Vitest stack 页面。

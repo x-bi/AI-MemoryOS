@@ -11,6 +11,7 @@
 - MCP adapter：已新增受限 MCP server，并已写入全局 Codex config；默认只允许读库和写 `proposals/pending/`。
 - Obsidian 自动化：QuickAdd、Templater、Dataview、Advanced URI、Obsidian Git 已配置并可验证。
 - Git：仓库 local 身份已设置为 `x-bi <924992512@qq.com>`，origin 指向个人 GitHub。
+- Remote：`main` 已跟踪 `origin/main`，远程为 `https://github.com/x-bi/AI-MemoryOS.git`。
 
 ## 剩余工作
 
@@ -20,7 +21,8 @@
 - 为 Claude / Cursor / generic adapter 补更完整接入说明。
 - 做第一次 Git initial commit。
 - 新开 Codex 会话后验证 `ai_memoryos` MCP tools 是否出现在工具列表。
-- 首次手动 push 到 `https://github.com/x-bi/AI-MemoryOS.git`。
+- 新开 Codex 会话后验证 `ai_memoryos` MCP tools 是否出现在工具列表。
+- 用真实任务生成第一批 pending proposals。
 
 ## 当前策略
 
