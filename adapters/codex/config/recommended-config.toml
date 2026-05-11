@@ -1,0 +1,8 @@
+# Recommended Codex config snippets for AI Memory OS.
+# Do not paste blindly. Merge with existing ~/.codex/config.toml.
+
+[features]
+memories = true
+
+[projects.'c:\users\btf\ai-memoryos']
+trust_level = "trusted"

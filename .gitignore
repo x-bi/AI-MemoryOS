@@ -1,0 +1,11 @@
+﻿# OS junk
+.DS_Store
+Thumbs.db
+
+# temp
+*.tmp
+*.bak
+
+# local editor state
+.obsidian/workspace*.json
+.obsidian/cache/

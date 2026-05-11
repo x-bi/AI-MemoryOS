@@ -1,0 +1,24 @@
+# AI Memory OS Status
+
+## 已完成
+
+- 独立仓库：`C:\Users\btf\AI-MemoryOS`。
+- Codex skill 暴露：`C:\Users\btf\.agents\skills` 使用 junction 指向 `adapters/codex/skills`。
+- 全局 Codex 接入：`C:\Users\btf\.codex\AGENTS.md` 已追加低消耗读取规则。
+- 全局 Codex config：已把 `c:\users\btf\ai-memoryos` 标记为 trusted。
+- MVP skills：`memory-curator`、`routing-auditor`、`bugfix-with-regression-test`、`frontend-component-review`。
+- 核心骨架：core / router / workflows / domains / stacks / prompts / anti-patterns / templates / evals / logs。
+- MCP adapter：已新增受限 MCP server，并已写入全局 Codex config；默认只允许读库和写 `proposals/pending/`。
+
+## 剩余工作
+
+- 扩展 skills：feature-planning、refactor-with-safety、pr-review、test-strategy-review、prompt-improver、memory-auditor、skill-updater、backend-api-review、script-automation、playwright-e2e-review、ci-pipeline-review。
+- 补 router/evals 的真实样例，避免靠想象扩写。
+- 建立 proposal 晋升流程和 accepted/rejected 记录规范。
+- 为 Claude / Cursor / generic adapter 补更完整接入说明。
+- 做第一次 Git initial commit。
+- 新开 Codex 会话后验证 `ai_memoryos` MCP tools 是否出现在工具列表。
+
+## 当前策略
+
+先稳定 MVP，再分批扩展。普通任务默认不读本仓库；只有复杂工程任务、记忆复盘和维护模式才读取。

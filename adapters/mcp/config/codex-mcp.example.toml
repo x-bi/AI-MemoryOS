@@ -1,0 +1,11 @@
+# Example Codex MCP config snippet.
+# Merge manually into C:\Users\btf\.codex\config.toml after validating locally.
+
+[mcp_servers.ai_memoryos]
+command = "C:\\Users\\btf\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe"
+args = [
+  "C:\\Users\\btf\\AI-MemoryOS\\adapters\\mcp\\server\\obsidian-memory-os-mcp.mjs"
+]
+enabled = true
+startup_timeout_sec = 10
+tool_timeout_sec = 60

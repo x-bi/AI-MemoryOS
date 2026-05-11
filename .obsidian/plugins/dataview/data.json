@@ -1,0 +1,16 @@
+{
+  "enableDataviewJs": false,
+  "enableInlineDataviewJs": false,
+  "prettyRenderInlineFields": true,
+  "prettyRenderInlineFieldsInLivePreview": true,
+  "prettyRenderInlineFieldsInReadingView": true,
+  "prettyRenderInlineFieldsInSourceView": false,
+  "inlineQueryPrefix": "=",
+  "inlineJsQueryPrefix": "$=",
+  "dataviewJsKeyword": "dataviewjs",
+  "refreshEnabled": true,
+  "refreshInterval": 2500,
+  "warnOnEmptyResult": true,
+  "showResultCount": true,
+  "allowHtml": false
+}
