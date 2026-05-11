@@ -56,3 +56,33 @@ Dashboard 入口：
 - [[dashboard/skills]]
 - [[dashboard/router-evals]]
 - [[dashboard/weekly-audit]]
+
+## 验证命令
+
+在 PowerShell 中运行：
+
+```powershell
+& C:\Users\btf\AI-MemoryOS\tools\validate-obsidian.ps1
+```
+
+通过后会输出：
+
+```text
+Obsidian validation passed.
+```
+
+## GitHub 远程
+
+当前仓库 remote 已设置为个人 GitHub：
+
+```text
+https://github.com/x-bi/AI-MemoryOS.git
+```
+
+本仓库 local Git 身份：
+
+```text
+x-bi <924992512@qq.com>
+```
+
+Obsidian Git 当前禁用了 push。确认 GitHub 仓库可用并完成首次手动 push 后，再决定是否开启自动 push。
