@@ -7,5 +7,7 @@
 | 帮我审一下这个前端组件 | frontend-component-review | yes | 明确前端组件 review |
 | 这个 bug 修完加个回归测试 | bugfix-with-regression-test | yes | bugfix + regression |
 | 刚才你的路由判断错了 | routing-auditor | yes | 明确纠正路由误判 |
+| 检查当前 Vue 改动有没有回归风险 | vue-change-self-check | yes | Vue diff self-check |
+| 处理 #2 | vue-change-self-check | yes | 延续上一轮编号风险处理 |
 | 帮我规划功能实现 | none | no | feature-planning 仍是候选，未自动暴露 |
 | 检查 CI 流水线 | none | no | ci-pipeline-review 仍是候选，未自动暴露 |

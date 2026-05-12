@@ -1,5 +1,12 @@
 # Skill Changelog 技能变更日志
 
+## 2026-05-12
+
+- 新增 active Codex skill：`vue-change-self-check`。
+- 该 skill 用于 Vue / uni-app / frontend 提交前 diff 风险扫描，输出稳定编号风险清单。
+- 将项目私有路径和本地专项规则放入 `private/vue-change-self-check.local.md`，并通过 `.gitignore` 排除，不进入远程仓库。
+- 继续要求 active `SKILL.md` 使用 UTF-8 no BOM，确保 Codex 能识别 frontmatter。
+
 ## 2026-05-11
 
 - 新增 active Codex skills：

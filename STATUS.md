@@ -8,7 +8,7 @@
 - 已验证：在 `SKILL.md` 为 UTF-8 no BOM 时，junction skill 可以被 Codex Desktop 正常呼出。
 - 全局 Codex 接入：`C:\Users\btf\.codex\AGENTS.md` 已追加低消耗读取规则。
 - 全局 Codex config：已把 `c:\users\btf\ai-memoryos` 标记为 trusted。
-- MVP skills：`memory-curator`、`routing-auditor`、`bugfix-with-regression-test`、`frontend-component-review`。
+- MVP skills：`memory-curator`、`routing-auditor`、`bugfix-with-regression-test`、`frontend-component-review`、`vue-change-self-check`。
 - 核心骨架：core / router / workflows / domains / stacks / prompts / anti-patterns / templates / evals / logs。
 - MCP adapter：已新增受限 MCP server，并已写入全局 Codex config；默认只允许读库和写 `proposals/pending/`。
 - Obsidian 自动化：QuickAdd、Templater、Dataview、Advanced URI、Obsidian Git 已配置并可验证。
@@ -22,7 +22,7 @@
 - 补 router/evals 的真实样例，避免靠想象扩写。
 - 建立 proposal 晋升流程和 accepted/rejected 记录规范。
 - 为 Claude / Cursor / generic adapter 补更完整接入说明。
-- 新开 Codex 会话后验证 4 个 active skills 是否出现在技能列表。
+- 新开 Codex 会话后验证 5 个 active skills 是否出现在技能列表。
 - 用真实任务生成第一批 pending proposals。
 
 ## 当前策略

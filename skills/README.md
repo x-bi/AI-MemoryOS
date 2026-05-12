@@ -10,11 +10,12 @@ MemoryOS 源目录是：
 
 - `C:\Users\btf\AI-MemoryOS\adapters\codex\skills`
 
-当前只映射 4 个 MVP skills：
+当前只映射 active skills：
 
 - memory-curator
 - routing-auditor
 - bugfix-with-regression-test
 - frontend-component-review
+- vue-change-self-check
 
 其他 skill 先作为候选规格保留，等真实任务验证后再通过 junction 映射到 Codex Desktop。

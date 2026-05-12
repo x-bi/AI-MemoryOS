@@ -9,3 +9,6 @@ Thumbs.db
 # local editor state
 .obsidian/workspace*.json
 .obsidian/cache/
+
+# local private overlays, never commit
+private/

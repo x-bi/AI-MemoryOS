@@ -8,6 +8,7 @@
 | routing-auditor | active | 路由误判修正和 eval 增长入口 |
 | bugfix-with-regression-test | active | 高频工程任务，能减少重复 bug |
 | frontend-component-review | active | 前端 MVP 领域的核心 review 能力 |
+| vue-change-self-check | active | Vue / uni-app 提交前 diff 风险扫描，已在本地真实任务中验证 |
 
 ## Candidate Skills
 

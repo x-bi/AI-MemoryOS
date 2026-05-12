@@ -50,7 +50,7 @@ C:\Users\btf\AI-MemoryOS\adapters\codex\skills
 C:\Users\btf\.codex\skills
 ```
 
-只映射 4 个 active skills，不映射候选 skills，避免误触发和上下文膨胀。
+只映射 active skills，不映射候选 skills，避免误触发和上下文膨胀。
 
 ## Optional MCP 可选 MCP
 

@@ -2,7 +2,7 @@
 
 ## 2026-05-11 初始审计
 
-- Active Codex skills 控制在 4 个。
+- Active Codex skills 控制在少量、高频、低误触发集合内。
 - Candidate skills 保留在 `skills/`，不进入 Codex 自动发现目录。
 - 初始化 pending / accepted / rejected proposal 目录。
 - Obsidian dashboard、QuickAdd、Templater、Dataview、Obsidian Git 已配置。

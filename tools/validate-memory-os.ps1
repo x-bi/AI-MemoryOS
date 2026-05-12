@@ -11,6 +11,8 @@ $required = @(
   "adapters\codex\skills\routing-auditor\SKILL.md",
   "adapters\codex\skills\bugfix-with-regression-test\SKILL.md",
   "adapters\codex\skills\frontend-component-review\SKILL.md",
+  "adapters\codex\skills\vue-change-self-check\SKILL.md",
+  "skills\vue-change-self-check\SKILL_SPEC.md",
   "router\intent-map.md",
   "router\domain-map.md",
   "router\skill-map.md",
@@ -33,7 +35,8 @@ foreach ($item in $required) {
 
 $bomFiles = @()
 $skillFilesToCheck = @()
-foreach ($skill in @("memory-curator", "routing-auditor", "bugfix-with-regression-test", "frontend-component-review")) {
+$activeSkills = @("memory-curator", "routing-auditor", "bugfix-with-regression-test", "frontend-component-review", "vue-change-self-check")
+foreach ($skill in $activeSkills) {
   $skillFilesToCheck += (Join-Path $Root "adapters\codex\skills\$skill\SKILL.md")
   $skillFilesToCheck += (Join-Path $env:USERPROFILE ".codex\skills\$skill\SKILL.md")
 }
@@ -46,7 +49,6 @@ foreach ($path in $skillFilesToCheck) {
 }
 
 $codexSkillRoot = Join-Path $env:USERPROFILE ".codex\skills"
-$activeSkills = @("memory-curator", "routing-auditor", "bugfix-with-regression-test", "frontend-component-review")
 $missingCodexSkills = @()
 $nonJunctionCodexSkills = @()
 $wrongTargetCodexSkills = @()

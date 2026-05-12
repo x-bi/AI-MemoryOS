@@ -102,6 +102,7 @@ _index.md + 最多 3 个直接相关页面
 | routing-auditor | 你指出路由判断错了，或要求审计路由 |
 | bugfix-with-regression-test | 修 bug 且需要防回归、补测试 |
 | frontend-component-review | 审查前端组件、交互、表单、页面行为 |
+| vue-change-self-check | Vue / uni-app / frontend 改动提交前自检、diff 风险扫描、编号风险清单 |
 
 注意：普通对话不会强制触发 skill。触发依赖任务意图和描述。
 
@@ -117,7 +118,7 @@ MemoryOS 的 skill 源目录是：
 C:\Users\btf\AI-MemoryOS\adapters\codex\skills
 ```
 
-映射方式：4 个 active skills 通过 junction 出现在 `.codex\skills`。已验证在 `SKILL.md` 为 UTF-8 no BOM 时，junction 可以被 Codex Desktop 正常识别。
+映射方式：active skills 通过 junction 出现在 `.codex\skills`。已验证在 `SKILL.md` 为 UTF-8 no BOM 时，junction 可以被 Codex Desktop 正常识别。
 
 ## 7. 记忆沉淀怎么做
 
