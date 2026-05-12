@@ -1,4 +1,4 @@
-﻿# Frontend Anti-Patterns
+# Frontend Anti-Patterns
 
 - 只修 happy path。
 - 用前端条件渲染替代服务端权限。
