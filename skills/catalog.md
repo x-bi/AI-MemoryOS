@@ -28,4 +28,4 @@
 
 ## Promotion Rule
 
-候选 skill 不自动暴露给 Codex。只有当真实任务证明其高频、边界清晰、低误触发时，才移动到 `adapters/codex/skills/`，再由 `ai_memoryos` MCP 启动同步到 `.codex\skills`。
+候选 skill 不自动暴露给 Codex。只有当真实任务证明其高频、边界清晰、低误触发时，才移动到 `adapters/codex/skills/`，再通过 junction 映射到 `.codex\skills`。

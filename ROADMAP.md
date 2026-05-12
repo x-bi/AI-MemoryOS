@@ -2,7 +2,7 @@
 
 ## 7 天 MVP
 
-- Day 1：建立独立仓库、全局 AGENTS 接入、Codex skills 自动同步。
+- Day 1：建立独立仓库、全局 AGENTS 接入、Codex skills junction 映射。
 - Day 2：补齐 core / router / workflows / frontend / proposals / evals。
 - Day 3：完善前端 rules、review checklist、common failures、testing、performance。
 - Day 4：扩充 router-test-cases 和 skill-trigger-test-cases。
@@ -13,7 +13,7 @@
 ## 当前已完成的 MVP 基线
 
 - 独立仓库已推送到个人 GitHub。
-- Codex active skills 已通过自动同步复制到 `.codex\skills`。
+- Codex active skills 已通过 junction 映射到 `.codex\skills`。
 - Obsidian dashboard、QuickAdd、Templater、Dataview、Git 已配置。
 - MCP adapter 已接入全局 Codex config。
 - 验证脚本已通过。

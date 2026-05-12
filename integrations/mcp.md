@@ -26,15 +26,6 @@ adapters/mcp/server/obsidian-memory-os-mcp.mjs
 
 它不依赖 Obsidian 插件，直接读写 Memory OS 文件，因此即使 Obsidian 没打开也可用。
 
-同时，Codex 启动该 MCP server 时会同步 active Codex skills：
-
-```text
-C:\Users\btf\AI-MemoryOS\adapters\codex\skills
-→ C:\Users\btf\.codex\skills
-```
-
-目标目录使用真实副本，不使用 junction；这样更符合 Codex Desktop 的 skill discovery 行为。
-
 ## 权限边界
 
 - 读：Memory OS 文本文件。

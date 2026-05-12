@@ -115,9 +115,7 @@ MemoryOS 的 skill 源目录是：
 C:\Users\btf\AI-MemoryOS\adapters\codex\skills
 ```
 
-同步方式：Codex 启动 `ai_memoryos` MCP server 时，会把 4 个 active skills 复制为真实目录副本；不依赖 Windows 计划任务，也不依赖 junction。
-
-Obsidian 现有 5 个插件不作为 skill 自动同步触发点：要在 vault 打开时执行 PowerShell，通常需要启用 Templater system commands 或安装 Shell Commands 类插件，安全面更大。当前方案把自动触发放在 Codex/MCP 侧。
+映射方式：4 个 active skills 通过 junction 出现在 `.codex\skills`。已验证在 `SKILL.md` 为 UTF-8 no BOM 时，junction 可以被 Codex Desktop 正常识别。
 
 ## 7. 记忆沉淀怎么做
 

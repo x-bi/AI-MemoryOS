@@ -7,8 +7,8 @@
 - `C:\Users\btf\.codex\AGENTS.md` 已追加 AI Memory OS 接入规则。
 - `C:\Users\btf\.codex\config.toml` 已信任 `c:\users\btf\ai-memoryos`。
 - `C:\Users\btf\AI-MemoryOS\adapters\codex\skills` 是 MemoryOS active skills 的源目录。
-- `C:\Users\btf\.codex\skills` 是 Codex Desktop 实际发现目录，使用真实目录副本。
-- `ai_memoryos` MCP 启动时会自动同步 active skills。
+- `C:\Users\btf\.codex\skills` 是 Codex Desktop 实际发现目录，4 个 active skills 通过 junction 映射到这里。
+- `SKILL.md` 必须是 UTF-8 no BOM；BOM 会导致 Codex 无法识别 frontmatter。
 
 新开 Codex 会话后，已同步的 skills 会进入自动发现范围。
 
@@ -34,9 +34,9 @@
 
 ## 重要边界
 
-`--add-dir` 只授予访问权限，不会自动加载外置仓库里的 AGENTS 或 skills。Codex skills 必须出现在 Codex 可发现路径中；当前由 `ai_memoryos` MCP 启动时把 MemoryOS active skills 复制到 `.codex\skills`。
+`--add-dir` 只授予访问权限，不会自动加载外置仓库里的 AGENTS 或 skills。Codex skills 必须出现在 Codex 可发现路径中；当前使用 junction 把 MemoryOS active skills 映射到 `.codex\skills`。
 
-## Codex Skills 自动同步
+## Codex Skills 映射
 
 源目录：
 
@@ -50,15 +50,7 @@ C:\Users\btf\AI-MemoryOS\adapters\codex\skills
 C:\Users\btf\.codex\skills
 ```
 
-触发点：
-
-```text
-Codex Desktop 启动 ai_memoryos MCP server 时
-```
-
-自动同步只处理 4 个 active skills，不同步候选 skills，避免误触发和上下文膨胀。
-
-Obsidian 当前不负责触发 skill 同步。用现有 5 个插件实现 vault 打开即执行脚本，需要放开 Templater system commands 或增加 Shell Commands 类插件，安全面更大；因此同步触发点放在 Codex/MCP。
+只映射 4 个 active skills，不映射候选 skills，避免误触发和上下文膨胀。
 
 ## Optional MCP 可选 MCP
 

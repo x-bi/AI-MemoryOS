@@ -7,14 +7,6 @@ import readline from "node:readline";
 const ROOT = process.env.AI_MEMORYOS_ROOT || "C:\\Users\\btf\\AI-MemoryOS";
 const MAX_READ_BYTES = Number(process.env.AI_MEMORYOS_MAX_READ_BYTES || 60000);
 const PENDING_DIR = path.join(ROOT, "proposals", "pending");
-const CODEX_SKILL_ROOT = process.env.CODEX_SKILL_ROOT || path.join(process.env.USERPROFILE || "", ".codex", "skills");
-const LEGACY_AGENT_SKILL_ROOT = process.env.LEGACY_AGENT_SKILL_ROOT || path.join(process.env.USERPROFILE || "", ".agents", "skills");
-const ACTIVE_CODEX_SKILLS = [
-  "memory-curator",
-  "routing-auditor",
-  "bugfix-with-regression-test",
-  "frontend-component-review",
-];
 
 function send(message) {
   process.stdout.write(`${JSON.stringify(message)}\n`);
@@ -64,73 +56,6 @@ async function fileExists(file) {
     return true;
   } catch {
     return false;
-  }
-}
-
-async function removeIfManagedSkill(dest, skillName) {
-  if (!(await fileExists(dest))) return;
-
-  const stat = await fs.lstat(dest);
-  if (stat.isSymbolicLink()) {
-    await fs.rm(dest, { recursive: true, force: true });
-    return;
-  }
-
-  const marker = path.join(dest, ".memoryos-synced");
-  const skillFile = path.join(dest, "SKILL.md");
-  if (await fileExists(marker)) {
-    await fs.rm(dest, { recursive: true, force: true });
-    return;
-  }
-
-  if (await fileExists(skillFile)) {
-    const head = await fs.readFile(skillFile, "utf8");
-    if (head.slice(0, 300).includes(`name: ${skillName}`)) {
-      await fs.rm(dest, { recursive: true, force: true });
-      return;
-    }
-  }
-
-  throw new Error(`refuse to overwrite unmanaged Codex skill directory: ${dest}`);
-}
-
-async function removeLegacyAgentMapping(skillName) {
-  if (!LEGACY_AGENT_SKILL_ROOT) return;
-  const legacy = path.join(LEGACY_AGENT_SKILL_ROOT, skillName);
-  if (!(await fileExists(legacy))) return;
-
-  const stat = await fs.lstat(legacy);
-  if (stat.isSymbolicLink()) {
-    await fs.rm(legacy, { recursive: true, force: true });
-  }
-}
-
-async function syncCodexSkills() {
-  if (!CODEX_SKILL_ROOT) return;
-
-  const sourceRoot = path.join(ROOT, "adapters", "codex", "skills");
-  await fs.mkdir(CODEX_SKILL_ROOT, { recursive: true });
-
-  for (const skillName of ACTIVE_CODEX_SKILLS) {
-    const source = path.join(sourceRoot, skillName);
-    const sourceSkillFile = path.join(source, "SKILL.md");
-    if (!(await fileExists(sourceSkillFile))) {
-      throw new Error(`missing source Codex skill: ${sourceSkillFile}`);
-    }
-
-    const dest = path.join(CODEX_SKILL_ROOT, skillName);
-    await removeIfManagedSkill(dest, skillName);
-    await fs.cp(source, dest, { recursive: true, force: true });
-    await fs.writeFile(
-      path.join(dest, ".memoryos-synced"),
-      [
-        `source=${source}`,
-        `synced_at=${new Date().toISOString()}`,
-        "说明=此目录由 AI Memory OS MCP 启动时自动同步生成，请修改 MemoryOS 源目录。",
-      ].join("\n"),
-      "utf8",
-    );
-    await removeLegacyAgentMapping(skillName);
   }
 }
 
@@ -317,7 +242,6 @@ async function handle(message) {
   const { id, method, params } = message;
   try {
     if (method === "initialize") {
-      await syncCodexSkills();
       return result(id, {
         protocolVersion: "2024-11-05",
         capabilities: { tools: {} },

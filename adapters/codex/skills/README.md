@@ -8,18 +8,17 @@ Codex Desktop 实际读取：
 C:\Users\btf\.codex\skills
 ```
 
-同步方式：
+映射方式：
 
 ```text
-tools\sync-codex-skills.ps1
-ai_memoryos MCP 启动时自动同步
+New-Item -ItemType Junction -Path C:\Users\btf\.codex\skills\<skill> -Target C:\Users\btf\AI-MemoryOS\adapters\codex\skills\<skill>
 ```
 
-目标目录使用真实副本，不再依赖 junction。
+`SKILL.md` 必须是 UTF-8 no BOM，让文件第一个字节就是 `---`。
 
 - `memory-curator`
 - `routing-auditor`
 - `bugfix-with-regression-test`
 - `frontend-component-review`
 
-不要把所有候选 skill 都同步给 Codex。skills 过多会增加初始上下文和误触发风险。
+不要把所有候选 skill 都映射给 Codex。skills 过多会增加初始上下文和误触发风险。

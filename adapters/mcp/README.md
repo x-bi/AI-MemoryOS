@@ -17,7 +17,6 @@ MCP 只做安全自动化入口：
 - 搜：允许搜索 Memory OS 文本内容。
 - 列：允许列出 `proposals/pending/`。
 - 写：只允许创建或追加更新 `proposals/pending/`。
-- 同步：MCP 初始化时会把 MemoryOS active Codex skills 复制到 `C:\Users\btf\.codex\skills`，用于 Codex Desktop 下次发现。
 
 MCP 默认不允许：
 
@@ -25,6 +24,5 @@ MCP 默认不允许：
 - 批量重写。
 - 直接修改 `rules/`、`router/`、`skills/`、`evals/`。
 - 直接把 pending 晋升为 accepted。
-- 创建 Windows 计划任务或常驻后台进程。
 
 这样既能让支持 MCP 的模型自动化操作 Memory OS，又不会绕过 proposal 审核和 Git diff。

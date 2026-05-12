@@ -20,7 +20,6 @@ $required = @(
   "templates\proposal.md",
   "templates\router-correction-proposal.md",
   "templates\weekly-audit.md",
-  "tools\sync-codex-skills.ps1",
   "adapters\mcp\README.md",
   "adapters\mcp\tool-policy.md",
   "adapters\mcp\server\obsidian-memory-os-mcp.mjs"
@@ -49,7 +48,8 @@ foreach ($path in $skillFilesToCheck) {
 $codexSkillRoot = Join-Path $env:USERPROFILE ".codex\skills"
 $activeSkills = @("memory-curator", "routing-auditor", "bugfix-with-regression-test", "frontend-component-review")
 $missingCodexSkills = @()
-$junctionCodexSkills = @()
+$nonJunctionCodexSkills = @()
+$wrongTargetCodexSkills = @()
 foreach ($skill in $activeSkills) {
   $codexPath = Join-Path $codexSkillRoot $skill
   $codexSkillFile = Join-Path $codexPath "SKILL.md"
@@ -59,8 +59,15 @@ foreach ($skill in $activeSkills) {
   }
 
   $codexItem = Get-Item -LiteralPath $codexPath -Force
-  if ($codexItem.LinkType -in @("Junction", "SymbolicLink")) {
-    $junctionCodexSkills += $skill
+  if ($codexItem.LinkType -notin @("Junction", "SymbolicLink")) {
+    $nonJunctionCodexSkills += $skill
+    continue
+  }
+
+  $expectedTarget = Join-Path $Root "adapters\codex\skills\$skill"
+  $actualTarget = @($codexItem.Target)[0]
+  if ([string]::IsNullOrWhiteSpace($actualTarget) -or ((Resolve-Path -LiteralPath $actualTarget).Path -ne (Resolve-Path -LiteralPath $expectedTarget).Path)) {
+    $wrongTargetCodexSkills += $skill
   }
 }
 
@@ -76,11 +83,12 @@ foreach ($item in $templateChecks) {
   if (-not $text.StartsWith("---")) { $badTemplates += $item }
 }
 
-if ($missing.Count -gt 0 -or $missingCodexSkills.Count -gt 0 -or $junctionCodexSkills.Count -gt 0 -or $badTemplates.Count -gt 0 -or $bomFiles.Count -gt 0) {
+if ($missing.Count -gt 0 -or $missingCodexSkills.Count -gt 0 -or $nonJunctionCodexSkills.Count -gt 0 -or $wrongTargetCodexSkills.Count -gt 0 -or $badTemplates.Count -gt 0 -or $bomFiles.Count -gt 0) {
   Write-Host "Memory OS validation failed."
   if ($missing.Count -gt 0) { Write-Host "Missing files:"; $missing | ForEach-Object { Write-Host "- $_" } }
-  if ($missingCodexSkills.Count -gt 0) { Write-Host "Missing .codex synced skills:"; $missingCodexSkills | ForEach-Object { Write-Host "- $_" } }
-  if ($junctionCodexSkills.Count -gt 0) { Write-Host ".codex skills should be real copied directories, not junctions:"; $junctionCodexSkills | ForEach-Object { Write-Host "- $_" } }
+  if ($missingCodexSkills.Count -gt 0) { Write-Host "Missing .codex skill junctions:"; $missingCodexSkills | ForEach-Object { Write-Host "- $_" } }
+  if ($nonJunctionCodexSkills.Count -gt 0) { Write-Host ".codex skills should be junctions to MemoryOS source:"; $nonJunctionCodexSkills | ForEach-Object { Write-Host "- $_" } }
+  if ($wrongTargetCodexSkills.Count -gt 0) { Write-Host ".codex skill junctions point to wrong targets:"; $wrongTargetCodexSkills | ForEach-Object { Write-Host "- $_" } }
   if ($badTemplates.Count -gt 0) { Write-Host "Templates missing frontmatter:"; $badTemplates | ForEach-Object { Write-Host "- $_" } }
   if ($bomFiles.Count -gt 0) { Write-Host "SKILL.md files must be UTF-8 without BOM:"; $bomFiles | ForEach-Object { Write-Host "- $_" } }
   exit 1
