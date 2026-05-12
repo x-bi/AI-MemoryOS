@@ -16,10 +16,10 @@ This skill is for self-check and triage. If the user only asks for a scan, do no
 If this file exists, read it before scanning project-specific repositories:
 
 ```text
-C:\Users\btf\AI-MemoryOS\private\vue-change-self-check.local.md
+C:\Users\btf\AI-MemoryOS\private\skills\vue-change-self-check.local.md
 ```
 
-Use it only as local project guidance. Do not quote private overlay content into public MemoryOS files, proposals, logs, or commits.
+Use it only as local project guidance. Do not read `private/accounts/` or `private/secrets/` for this skill. Do not quote private overlay content into public MemoryOS files, proposals, logs, or commits.
 
 ## Workflow
 

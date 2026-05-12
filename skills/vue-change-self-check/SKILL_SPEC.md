@@ -14,7 +14,7 @@
 
 - 当前 Git diff。
 - 必要时读取变更文件、页面配置、路由配置、API 文件、共享组件使用边界。
-- 如果存在本机 private overlay，可读取本地项目规则，但不要把 private 内容写入公共 MemoryOS 文件。
+- 如果存在 `private/skills/vue-change-self-check.local.md`，可读取本地项目规则，但不要读取 `private/accounts/` 或 `private/secrets/`，也不要把 private 内容写入公共 MemoryOS 文件。
 
 ## Output
 

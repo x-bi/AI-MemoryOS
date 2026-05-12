@@ -120,6 +120,8 @@ C:\Users\btf\AI-MemoryOS\adapters\codex\skills
 
 映射方式：active skills 通过 junction 出现在 `.codex\skills`。已验证在 `SKILL.md` 为 UTF-8 no BOM 时，junction 可以被 Codex Desktop 正常识别。
 
+本机私有规则放在 `private/`，该目录不进入 Git。可被 skill 读取的本地规则应放在 `private/skills/`；账号说明、secrets、临时草稿要分开放置，普通 skill 不读取 `private/accounts/` 或 `private/secrets/`。
+
 ## 7. 记忆沉淀怎么做
 
 当你觉得一次任务有长期价值，使用：
