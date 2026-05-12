@@ -2,6 +2,7 @@
 
 Obsidian dashboard 入口：
 
+- [[dashboard/home]]
 - [[dashboard/pending-proposals]]
 - [[dashboard/accepted-proposals]]
 - [[dashboard/rejected-proposals]]

@@ -31,15 +31,15 @@ Commit message: memory: auto backup {{date}}
 
 当前本机 Git 用户信息已存在，可以 commit。
 
-## 可选清理
+## 已清理
 
-你仍然启用了：
+以下插件已不在当前 vault 启用列表中：
 
 ```text
 GitHobs / plugin id: githobs
 ```
 
-它是 GitHub issue editor，不是 vault 自动备份插件。如果你不用它，建议在 Community Plugins 中禁用，减少无关 GitHub token 配置面。
+它是 GitHub issue editor，不是 vault 自动备份插件。当前只保留 `obsidian-git` 作为 Git 自动备份插件。
 
 ## 使用方式
 
@@ -50,6 +50,7 @@ GitHobs / plugin id: githobs
 
 Dashboard 入口：
 
+- [[dashboard/home]]
 - [[dashboard/pending-proposals]]
 - [[dashboard/accepted-proposals]]
 - [[dashboard/rejected-proposals]]

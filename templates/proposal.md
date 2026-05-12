@@ -1,8 +1,20 @@
-﻿# Proposal: <title>
+---
+title: "<title>"
+type: proposal
+status: pending
+source: quickadd
+created_at: "{{DATE:YYYY-MM-DD}}"
+scope: ""
+destination: ""
+tags:
+  - memory/pending
+---
+
+# Proposal: <title>
 
 ## Source
 
-- Date:
+- Date: {{DATE:YYYY-MM-DD}}
 - Trigger:
 - Related task:
 
@@ -39,3 +51,4 @@
 ## Draft
 
 待晋升内容草稿。
+

@@ -21,6 +21,7 @@
 - `ROADMAP.md`：7 / 30 / 90 天推进路线。
 - `GOVERNANCE.md`：proposal 晋升、拒绝和审计规则。
 - `INSTALL.md`：Codex 接入和日常使用方式。
+- `dashboard/home.md`：Obsidian 首页入口。
 - `core/codex-operating-rules.md`：Codex 使用边界。
 - `core/memory-rules.md`：记忆写入边界。
 - `core/safety-rules.md`：敏感信息和安全规则。

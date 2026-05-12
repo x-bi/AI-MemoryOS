@@ -1,4 +1,17 @@
-﻿# Router Correction Proposal
+---
+title: "Router correction"
+type: router-correction
+status: pending
+source: quickadd
+created_at: "{{DATE:YYYY-MM-DD}}"
+scope: router
+destination: router/evals
+tags:
+  - memory/pending
+  - router/correction
+---
+
+# Router Correction Proposal
 
 ## Original User Expression
 
@@ -18,3 +31,4 @@
 
 - router:
 - evals:
+
