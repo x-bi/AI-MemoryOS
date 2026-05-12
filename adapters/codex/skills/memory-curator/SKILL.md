@@ -1,6 +1,6 @@
-﻿---
+---
 name: memory-curator
-description: Use when the user explicitly asks to沉淀经验, update Memory OS, create memory proposal, or do memory retrospective. Do not use for ordinary coding tasks.
+description: Use when the user explicitly asks to capture reusable lessons, update Memory OS, create a memory proposal, or do a memory retrospective. Do not use for ordinary coding tasks.
 ---
 
 # Memory Curator

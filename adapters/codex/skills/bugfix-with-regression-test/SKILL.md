@@ -1,4 +1,4 @@
-﻿---
+---
 name: bugfix-with-regression-test
 description: Use for bug fixes where the user asks for a robust fix, regression protection, or preventing recurrence. Do not use for quick explanations only.
 ---

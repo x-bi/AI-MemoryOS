@@ -1,4 +1,4 @@
-﻿---
+---
 name: frontend-component-review
 description: Use when the user asks to review a frontend component, UI interaction, form flow, or user-facing frontend behavior.
 ---

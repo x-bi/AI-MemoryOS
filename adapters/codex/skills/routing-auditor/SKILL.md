@@ -1,4 +1,4 @@
-﻿---
+---
 name: routing-auditor
 description: Use when the user explicitly asks to audit routing, fix route misclassification, or improve task/domain/skill routing in Memory OS.
 ---

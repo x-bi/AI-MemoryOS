@@ -32,6 +32,20 @@ foreach ($item in $required) {
   if (-not (Test-Path -LiteralPath $path)) { $missing += $item }
 }
 
+$bomFiles = @()
+$skillFilesToCheck = @()
+foreach ($skill in @("memory-curator", "routing-auditor", "bugfix-with-regression-test", "frontend-component-review")) {
+  $skillFilesToCheck += (Join-Path $Root "adapters\codex\skills\$skill\SKILL.md")
+  $skillFilesToCheck += (Join-Path $env:USERPROFILE ".codex\skills\$skill\SKILL.md")
+}
+foreach ($path in $skillFilesToCheck) {
+  if (-not (Test-Path -LiteralPath $path)) { continue }
+  $bytes = [System.IO.File]::ReadAllBytes($path)
+  if ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) {
+    $bomFiles += $path
+  }
+}
+
 $codexSkillRoot = Join-Path $env:USERPROFILE ".codex\skills"
 $activeSkills = @("memory-curator", "routing-auditor", "bugfix-with-regression-test", "frontend-component-review")
 $missingCodexSkills = @()
@@ -62,12 +76,13 @@ foreach ($item in $templateChecks) {
   if (-not $text.StartsWith("---")) { $badTemplates += $item }
 }
 
-if ($missing.Count -gt 0 -or $missingCodexSkills.Count -gt 0 -or $junctionCodexSkills.Count -gt 0 -or $badTemplates.Count -gt 0) {
+if ($missing.Count -gt 0 -or $missingCodexSkills.Count -gt 0 -or $junctionCodexSkills.Count -gt 0 -or $badTemplates.Count -gt 0 -or $bomFiles.Count -gt 0) {
   Write-Host "Memory OS validation failed."
   if ($missing.Count -gt 0) { Write-Host "Missing files:"; $missing | ForEach-Object { Write-Host "- $_" } }
   if ($missingCodexSkills.Count -gt 0) { Write-Host "Missing .codex synced skills:"; $missingCodexSkills | ForEach-Object { Write-Host "- $_" } }
   if ($junctionCodexSkills.Count -gt 0) { Write-Host ".codex skills should be real copied directories, not junctions:"; $junctionCodexSkills | ForEach-Object { Write-Host "- $_" } }
   if ($badTemplates.Count -gt 0) { Write-Host "Templates missing frontmatter:"; $badTemplates | ForEach-Object { Write-Host "- $_" } }
+  if ($bomFiles.Count -gt 0) { Write-Host "SKILL.md files must be UTF-8 without BOM:"; $bomFiles | ForEach-Object { Write-Host "- $_" } }
   exit 1
 }
 
