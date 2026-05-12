@@ -76,8 +76,11 @@ if ($tpl.enable_system_commands) {
 }
 
 $git = Get-Content -LiteralPath (Join-Path $Root ".obsidian\plugins\obsidian-git\data.json") -Raw -Encoding UTF8 | ConvertFrom-Json
-if (-not $git.disablePush) {
-  throw "Obsidian Git push should stay disabled until remote workflow is confirmed"
+if ($git.disablePush) {
+  throw "Obsidian Git push should be enabled for this vault"
+}
+if ($git.autoPushInterval -lt 1) {
+  throw "Obsidian Git autoPushInterval should be enabled"
 }
 if ($git.autoSaveInterval -lt 1) {
   throw "Obsidian Git autoSaveInterval should be enabled"

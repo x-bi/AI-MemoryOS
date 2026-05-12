@@ -11,7 +11,7 @@
 - Dataview：已写入安全基线配置，JS 查询关闭
 - Dashboard：已创建 `dashboard/` 文件
 - Advanced URI：已安装，默认配置即可
-- Obsidian Git：已配置本地自动备份，暂不开 push / pull
+- Obsidian Git：已配置本地自动备份和自动 push，暂不开自动 pull
 
 ## Git 配置
 
@@ -25,8 +25,10 @@ Git / plugin id: obsidian-git
 Vault backup interval in minutes: 10 或 30
 Auto Backup after file change: on
 Pull updates on startup: off
-Push on backup: off
-Commit message: memory: auto backup {{date}}
+Push on backup: on
+Auto push interval: 10
+Manual commit message: memory: manual vault sync {{date}}
+Auto commit message: memory: obsidian auto backup {{date}}
 ```
 
 当前本机 Git 用户信息已存在，可以 commit。
@@ -86,4 +88,4 @@ https://github.com/x-bi/AI-MemoryOS.git
 x-bi <924992512@qq.com>
 ```
 
-Obsidian Git 当前禁用了 push。确认 GitHub 仓库可用并完成首次手动 push 后，再决定是否开启自动 push。
+Obsidian Git 当前已启用自动 push。建议先手动执行一次 `git push`，确认凭据可用；之后由 Obsidian Git 自动提交并推送。

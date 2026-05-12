@@ -21,7 +21,7 @@ x-bi <924992512@qq.com>
 ## Push Policy
 
 - 当前允许手动 push。
-- Obsidian Git 当前关闭自动 push，避免误推未审核内容。
+- Obsidian Git 已启用自动 push，用于同步已确认的本地 vault 变更。
 - 首选流程：
 
 ```text
@@ -30,7 +30,7 @@ local changes
 → validate-obsidian.ps1
 → git diff / review
 → commit
-→ manual push
+→ manual push 或 Obsidian Git auto push
 ```
 
 ## Remote Safety
