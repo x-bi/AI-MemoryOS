@@ -1,5 +1,13 @@
 # Memory Changelog 记忆变更日志
 
+## 2026-05-12
+
+- 接受 proposal：`2026-05-12-set-default-memoryos-read-budget-for-complex-tasks`。
+- 将普通复杂任务的 MemoryOS 默认读取预算设为不超过 2k tokens。
+- 在 `_index.md` 和 `core/memory-rules.md` 中写入读取预算边界。
+- 明确 2k 预算只统计 MemoryOS 自身读取内容，不包含业务项目代码、diff、报错日志、接口文档、终端输出、当前对话或 Codex 系统上下文。
+- 维护、weekly audit、proposal 晋升、skill 晋升等任务可临时放宽到 5k-8k tokens，但需要说明读取范围。
+
 ## 2026-05-11
 
 - 创建 AI Memory OS 仓库。

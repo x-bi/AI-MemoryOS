@@ -8,6 +8,8 @@
 - 记忆复盘：读本文件和少量相关 rules / workflows / domains / router 页面。
 - 维护模式：可以审计、整理、晋升 proposal，但仍需保留变更记录。
 
+普通复杂任务的 MemoryOS 读取预算默认不超过 2k tokens；该预算只统计 MemoryOS 自身内容，不包含业务项目代码、diff、报错日志、接口文档、终端输出、当前对话或 Codex 系统上下文。维护、weekly audit、proposal 晋升、skill 晋升等任务可临时放宽到 5k-8k tokens，但必须说明读取范围。
+
 ## Routing 路由
 
 1. 先判断 task_type：explain / debug / implement / review / architecture / retrospective / maintenance。

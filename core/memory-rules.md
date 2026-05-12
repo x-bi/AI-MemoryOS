@@ -20,3 +20,11 @@
 2. 人工审核 scope、重复、过期、风险。
 3. 通过后晋升到 rules / wiki / router / skills / evals。
 4. 更新 changelog。
+
+## 读取预算
+
+- 普通复杂任务默认 MemoryOS 读取预算不超过 2k tokens。
+- 默认读取顺序：先读 `_index.md`，最多再读 3 个直接相关页面。
+- 预计超过 2k tokens 时，先说明读取范围和原因，再继续。
+- 2k 预算只统计 MemoryOS 自身内容，不包含业务项目代码、diff、报错日志、接口文档、终端输出、用户当前对话或 Codex 系统上下文。
+- MemoryOS 维护、weekly audit、proposal 晋升、skill 晋升等任务可临时放宽到 5k-8k tokens，但必须说明范围，并避免一次性展开无关候选 skills、历史日志或 proposal 堆积内容。

@@ -88,7 +88,9 @@ Obsidian vault 也打开这个目录。
 _index.md + 最多 3 个直接相关页面
 ```
 
-如果需要扩大读取范围，Codex 应先说明原因。
+普通复杂任务的 MemoryOS 读取预算默认不超过 2k tokens。这个预算只统计 MemoryOS 自身内容，不包含业务项目代码、diff、报错日志、接口文档、终端输出、用户当前对话或 Codex 系统上下文。
+
+如果需要扩大读取范围，Codex 应先说明原因。MemoryOS 维护、weekly audit、proposal 晋升、skill 晋升等任务可临时放宽到 5k-8k tokens，但必须说明读取范围。
 
 ## 6. 什么时候会用 Codex Skills
 
