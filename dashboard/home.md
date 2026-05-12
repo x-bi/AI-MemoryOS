@@ -9,6 +9,8 @@
 
 ## Core
 
+- [[docs/usage-manual]]
+
 - [[STATUS]]
 - [[ROADMAP]]
 - [[GOVERNANCE]]
