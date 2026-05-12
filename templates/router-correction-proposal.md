@@ -11,24 +11,23 @@ tags:
   - router/correction
 ---
 
-# Router Correction Proposal
+# Router Correction Proposal 路由纠正提案
 
-## Original User Expression
+## Original User Expression 用户原始表达
 
-## Wrong Initial Routing
-
-- task_type:
-- domain:
-- skill:
-
-## Correct Routing
+## Wrong Initial Routing 错误初始路由
 
 - task_type:
 - domain:
 - skill:
 
-## Suggested Changes
+## Correct Routing 正确路由
+
+- task_type:
+- domain:
+- skill:
+
+## Suggested Changes 建议修改
 
 - router:
 - evals:
-

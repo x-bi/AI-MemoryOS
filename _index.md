@@ -1,6 +1,6 @@
-# Memory OS Index
+# Memory OS Index 记忆索引
 
-## Read Budget
+## Read Budget 读取预算
 
 默认不要读取本仓库。只有在用户明确要求以下模式时才读取：
 
@@ -8,14 +8,14 @@
 - 记忆复盘：读本文件和少量相关 rules / workflows / domains / router 页面。
 - 维护模式：可以审计、整理、晋升 proposal，但仍需保留变更记录。
 
-## Routing
+## Routing 路由
 
 1. 先判断 task_type：explain / debug / implement / review / architecture / retrospective / maintenance。
 2. 再判断 domain：frontend / testing / backend / scripting / devops / security。
 3. 再选择 workflow / skill / markdown。
 4. 低置信度时先问一个关键问题，不扩大读取。
 
-## Core Files
+## Core Files 核心文件
 
 - `STATUS.md`：当前完成度和剩余工作。
 - `ROADMAP.md`：7 / 30 / 90 天推进路线。
@@ -32,7 +32,7 @@
 - `domains/frontend/`：前端优先领域包。
 - `proposals/pending/`：唯一默认写入入口。
 
-## Domain Entry
+## Domain Entry 领域入口
 
 - 前端：`domains/frontend/README.md`
 - 测试：`domains/testing/README.md`
@@ -41,7 +41,7 @@
 - DevOps：`domains/devops/README.md`
 - 安全：`domains/security/README.md`
 
-## Adapter Files
+## Adapter Files 适配器文件
 
 - `adapters/codex/AGENTS.md`：Codex 接入说明。
 - `adapters/codex/skills/`：Codex 专用 skills 源目录。

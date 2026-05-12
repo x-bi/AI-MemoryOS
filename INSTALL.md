@@ -1,6 +1,6 @@
-# Install And Usage
+# Install And Usage 安装与使用
 
-## Codex
+## Codex 接入
 
 当前已完成：
 
@@ -35,7 +35,7 @@
 
 `--add-dir` 只授予访问权限，不会自动加载外置仓库里的 AGENTS 或 skills。Codex skills 必须出现在 Codex 可发现路径中；当前同时维护 `.agents/skills` 和 `.codex/skills` 两组 junction。
 
-## Optional MCP
+## Optional MCP 可选 MCP
 
 如果要启用 MCP，先验证：
 

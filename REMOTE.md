@@ -1,24 +1,24 @@
-# Remote Repository
+# Remote Repository 远程仓库
 
-## Origin
+## Origin 远程地址
 
 ```text
 https://github.com/x-bi/AI-MemoryOS.git
 ```
 
-## Branch
+## Branch 分支
 
 ```text
 main
 ```
 
-## Local Git Identity
+## Local Git Identity 本仓库 Git 身份
 
 ```text
 x-bi <924992512@qq.com>
 ```
 
-## Push Policy
+## Push Policy 推送策略
 
 - 当前允许手动 push。
 - Obsidian Git 已启用自动 push，用于同步已确认的本地 vault 变更。
@@ -33,6 +33,6 @@ local changes
 → manual push 或 Obsidian Git auto push
 ```
 
-## Remote Safety
+## Remote Safety 远程安全
 
 推送前做本地敏感信息扫描。扫描模式不要写入仓库文档；无输出才推送。

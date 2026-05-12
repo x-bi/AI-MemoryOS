@@ -12,23 +12,23 @@ tags:
 
 # Proposal: <title>
 
-## Source
+## Source 来源
 
 - Date: {{DATE:YYYY-MM-DD}}
-- Trigger:
-- Related task:
+- Trigger 触发原因：
+- Related task 关联任务：
 
-## Summary
+## Summary 摘要
 
 一句话说明要沉淀什么。
 
-## Scope
+## Scope 适用范围
 
-- Global / domain / stack / project-specific:
-- Applies to:
-- Does not apply to:
+- Global / domain / stack / project-specific：
+- Applies to 适用于：
+- Does not apply to 不适用于：
 
-## Proposed Destination
+## Proposed Destination 建议落点
 
 - rules:
 - workflow:
@@ -38,17 +38,16 @@ tags:
 - router:
 - eval:
 
-## Rationale
+## Rationale 保留理由
 
 为什么值得长期保留。
 
-## Risks
+## Risks 风险
 
 - 是否过度泛化：
 - 是否包含敏感信息：
 - 是否与现有规则冲突：
 
-## Draft
+## Draft 草稿
 
 待晋升内容草稿。
-

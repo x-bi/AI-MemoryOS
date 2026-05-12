@@ -1,4 +1,4 @@
-# Obsidian Setup Report
+# Obsidian Setup Report 配置报告
 
 ## 当前已配置
 

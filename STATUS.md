@@ -1,4 +1,4 @@
-# AI Memory OS Status
+# AI Memory OS Status 当前状态
 
 ## 已完成
 

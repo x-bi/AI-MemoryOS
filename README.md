@@ -1,19 +1,33 @@
 # AI Memory OS
 
-跨模型、跨项目的工程记忆系统。Memory OS 本体保持模型无关；各模型通过 `adapters/` 接入。
+AI Memory OS 是一个跨模型、跨项目的工程记忆系统。它以 Markdown + Git 为事实源，通过 Codex Skills、受限 MCP、Obsidian dashboard 和 proposal 审核流程，让工程经验可以长期沉淀、审核、回滚和复用。
 
-## 设计原则
+## 核心原则
 
-- 默认低消耗：普通任务不读取 Memory OS。
-- 事实源可审计：长期记忆以 Markdown + Git 管理。
-- 新经验先进入 `proposals/pending/`，不直接污染正式规则。
-- 模型适配层单独放在 `adapters/`，避免被 Codex、Claude、Cursor 等工具锁定。
+- 普通任务默认不读取 Memory OS，避免不必要的上下文消耗。
+- 新经验默认只写入 `proposals/pending/`，不直接污染正式规则。
+- 项目本地事实优先于全局记忆。
+- 敏感信息、token、客户数据、生产日志原文不进入仓库。
+- Obsidian 用于浏览、审核、dashboard 和 Git 同步；Codex/MCP 用于受控读写。
 
-## 推荐使用方式
+## 目录入口
 
-- Codex：读取 `adapters/codex/AGENTS.md` 的接入说明，并通过 symlink 暴露 `adapters/codex/skills/*` 到 `%USERPROFILE%\.agents\skills`。
-- 其他模型：优先读取 `adapters/generic/SYSTEM.md`，再按需补充自己的 adapter。
+- [[docs/usage-manual]]：使用手册。
+- [[dashboard/home]]：Obsidian 首页。
+- [[STATUS]]：当前完成度和剩余工作。
+- [[GOVERNANCE]]：治理和晋升规则。
+- [[INSTALL]]：安装与接入说明。
+- [[REMOTE]]：远程仓库与推送策略。
 
-## Manual
+## 架构
+
+```text
+AI-MemoryOS Markdown + Git = 唯一事实源
+Codex Skills = 高频任务工作流
+MCP = 受限自动化工具层
+Obsidian = 人工审核、dashboard、浏览前台
+```
+
+## 使用手册
 
 - [[docs/usage-manual]]

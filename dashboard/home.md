@@ -1,34 +1,34 @@
-# AI Memory OS Home
+# AI Memory OS Home 首页
 
-## Daily Entry
+这是 Obsidian 中的 Memory OS 总入口。
 
-- [[dashboard/pending-proposals]]
-- [[dashboard/weekly-audit]]
-- [[dashboard/skills]]
-- [[dashboard/router-evals]]
+## Daily Entry 日常入口
 
-## Core
+- [[dashboard/pending-proposals]]：查看待审核经验。
+- [[dashboard/weekly-audit]]：每周审计入口。
+- [[dashboard/skills]]：查看技能状态。
+- [[dashboard/router-evals]]：查看路由测试样例。
 
-- [[docs/usage-manual]]
+## Core 核心文档
 
-- [[STATUS]]
-- [[ROADMAP]]
-- [[GOVERNANCE]]
-- [[INSTALL]]
-- [[REMOTE]]
-- [[OBSIDIAN_SETUP]]
+- [[docs/usage-manual]]：使用手册。
+- [[STATUS]]：当前完成度。
+- [[ROADMAP]]：路线图。
+- [[GOVERNANCE]]：治理规则。
+- [[INSTALL]]：安装和接入说明。
+- [[REMOTE]]：远程仓库说明。
+- [[OBSIDIAN_SETUP]]：Obsidian 配置说明。
 
-## Workflows
+## Workflows 工作流
 
-- [[workflows/memory-retrospective]]
-- [[workflows/proposal-promotion]]
-- [[workflows/weekly-audit]]
+- [[workflows/memory-retrospective]]：记忆复盘。
+- [[workflows/proposal-promotion]]：proposal 晋升。
+- [[workflows/weekly-audit]]：每周审计。
 
-## Pending Queue
+## Pending Queue 待审核队列
 
 ```dataview
 TABLE file.mtime AS updated, status, source, destination
 FROM "proposals/pending"
 SORT file.mtime DESC
 ```
-
