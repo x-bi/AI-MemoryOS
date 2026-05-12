@@ -3,8 +3,9 @@
 ## 已完成
 
 - 独立仓库：`C:\Users\btf\AI-MemoryOS`。
-- Codex skill 暴露：`C:\Users\btf\.agents\skills` 使用 junction 指向 `adapters/codex/skills`。
-- Codex skill 暴露：`C:\Users\btf\.codex\skills` 也使用 junction 指向 `adapters/codex/skills`，匹配当前 Codex 桌面技能发现路径。
+- Codex skill 源目录：`C:\Users\btf\AI-MemoryOS\adapters\codex\skills`。
+- Codex Desktop 发现目录：`C:\Users\btf\.codex\skills`，使用真实目录副本，不再依赖 junction。
+- 自动同步：`ai_memoryos` MCP 启动时会同步 active skills 到 Codex Desktop 发现目录。
 - 全局 Codex 接入：`C:\Users\btf\.codex\AGENTS.md` 已追加低消耗读取规则。
 - 全局 Codex config：已把 `c:\users\btf\ai-memoryos` 标记为 trusted。
 - MVP skills：`memory-curator`、`routing-auditor`、`bugfix-with-regression-test`、`frontend-component-review`。

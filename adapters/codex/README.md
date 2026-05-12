@@ -4,7 +4,9 @@
 
 - 全局 `C:\Users\btf\.codex\AGENTS.md` 已追加 Memory OS 读取规则。
 - `C:\Users\btf\.codex\config.toml` 已 trust `c:\users\btf\ai-memoryos`。
-- `C:\Users\btf\.agents\skills` 已通过 junction 暴露 4 个 active skills。
+- `C:\Users\btf\AI-MemoryOS\adapters\codex\skills` 是 active skills 源目录。
+- `C:\Users\btf\.codex\skills` 是 Codex Desktop 实际发现目录，使用真实目录副本。
+- `ai_memoryos` MCP 启动时会自动同步源目录到 Codex Desktop 发现目录。
 
 ## 使用边界
 
@@ -15,4 +17,4 @@
 
 ## Skill 暴露策略
 
-只暴露高频、低误触发的 active skills。候选 skills 保留在 `skills/`，待真实案例验证后再暴露。
+只同步高频、低误触发的 active skills。候选 skills 保留在 `skills/`，待真实案例验证后再同步到 Codex Desktop。
