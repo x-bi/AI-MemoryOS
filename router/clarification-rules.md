@@ -1,4 +1,4 @@
-﻿# Clarification Rules
+# Clarification Rules
 
 只在以下情况反问：
 

@@ -1,4 +1,4 @@
-﻿# Skill Map
+# Skill Map
 
 | Skill | Use When | Do Not Use When |
 |---|---|---|

@@ -1,4 +1,4 @@
-﻿# Routing Rules
+# Routing Rules
 
 1. 先判断用户目标，不按关键词机械触发。
 2. 普通任务不读 AI Memory OS。

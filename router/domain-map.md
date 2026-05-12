@@ -1,4 +1,4 @@
-﻿# Domain Map
+# Domain Map
 
 | Signal | Domain | Read |
 |---|---|---|

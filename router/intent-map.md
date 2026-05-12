@@ -1,4 +1,4 @@
-﻿# Intent Map
+# Intent Map
 
 ## task_type
 

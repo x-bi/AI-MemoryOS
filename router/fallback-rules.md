@@ -1,4 +1,4 @@
-﻿# Fallback Rules
+# Fallback Rules
 
 - 找不到领域：按通用工程任务处理。
 - 找不到 skill：直接用项目上下文完成，不强行触发 skill。
