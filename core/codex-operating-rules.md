@@ -1,4 +1,4 @@
-﻿# Codex Operating Rules
+# Codex Operating Rules
 
 ## 默认行为
 
