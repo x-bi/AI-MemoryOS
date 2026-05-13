@@ -10,8 +10,9 @@
 
 ## 使用边界
 
-- 普通任务不读取 Memory OS。
-- 复杂任务先读 `C:\Users\btf\AI-MemoryOS\_index.md`。
+- 每个输入先做轻量 Memory OS Gate 判定，判定本身不读取 Memory OS。
+- 普通 explain / debug / small implement 不读取 Memory OS。
+- 架构、重构、复杂排错、长期规范、安全/权限/发布流程等任务可自动读 `C:\Users\btf\AI-MemoryOS\_index.md`。
 - 记忆复盘只写 `proposals/pending/`。
 - 外置仓库里的 AGENTS.md 不会自动生效；生效入口是全局 AGENTS 和当前项目 AGENTS。
 

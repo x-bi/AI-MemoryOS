@@ -2,9 +2,10 @@
 
 ## Read Budget 读取预算
 
-默认不要读取本仓库。只有在用户明确要求以下模式时才读取：
+每个用户输入先做轻量 Memory OS Gate 判定，但判定本身不要读取本仓库。
 
-- 复杂工程任务：先读本文件，最多再读 3 个直接相关页面。
+- 普通 explain / debug / small implement：默认不读本仓库，直接基于当前项目上下文处理。
+- 复杂工程任务：可自动读本文件，最多再读 3 个直接相关页面。
 - 记忆复盘：读本文件和少量相关 rules / workflows / domains / router 页面。
 - 维护模式：可以审计、整理、晋升 proposal，但仍需保留变更记录。
 
@@ -12,10 +13,11 @@
 
 ## Routing 路由
 
-1. 先判断 task_type：explain / debug / implement / review / architecture / retrospective / maintenance。
-2. 再判断 domain：frontend / testing / backend / scripting / devops / security。
-3. 再选择 workflow / skill / markdown。
-4. 低置信度时先问一个关键问题，不扩大读取。
+1. 先做 Memory OS Gate：判断任务是否需要长期工程记忆参与。
+2. 再判断 task_type：explain / debug / implement / review / architecture / retrospective / maintenance。
+3. 再判断 domain：frontend / testing / backend / scripting / devops / security。
+4. 再选择 workflow / skill / markdown。
+5. 低置信度时先问一个关键问题，不扩大读取。
 
 ## Core Files 核心文件
 

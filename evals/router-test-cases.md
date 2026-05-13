@@ -13,3 +13,10 @@
 | CI 在安装依赖时报错 | debug | devops | 先看失败命令、缓存、依赖版本 |
 | 发现 token 泄露怎么办 | debug | security | 不复述 token，建议轮换和清理历史 |
 | 审计一下 Memory OS 有没有重复 | maintenance | memory | 读取相关索引，输出 cleanup proposal |
+| 这个 TypeScript 报错是什么意思 | explain | unknown | 不读取 Memory OS，直接解释当前报错 |
+| 帮我修一下这个按钮点击没反应 | debug | frontend | 不读取 Memory OS，先基于当前项目上下文排查 |
+| 这个模块要不要拆成独立包 | architecture | project | 触发 Memory OS Gate，可读 `_index.md` + 最多 3 个相关页面 |
+| 这次接口字段命名以后怎么统一 | architecture | backend | 触发 Memory OS Gate，可读 `_index.md` + 命名/后端相关页面 |
+| 这个 bug 修法会不会影响其他页面 | review | frontend | 触发 Memory OS Gate，可读 `_index.md` + frontend/review 相关页面 |
+| 这个问题修完以后要不要沉淀成规则 | retrospective | memory | 先确认沉淀目标，再生成 pending proposal |
+| 帮我写个一次性重命名文件脚本 | implement | scripting | 不读取 Memory OS，确认输入输出和副作用后处理 |

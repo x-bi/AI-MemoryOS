@@ -4,8 +4,9 @@
 
 ## Usage
 
-- 普通任务不要读取 AI Memory OS。
-- 复杂工程任务可先读 `C:\Users\btf\AI-MemoryOS\_index.md`，最多再读 3 个相关页面。
+- 每个用户输入先做轻量 Memory OS Gate 判定，但判定本身不要读取 AI Memory OS。
+- 普通 explain / debug / small implement 不读取 AI Memory OS。
+- 复杂工程任务可自动读 `C:\Users\btf\AI-MemoryOS\_index.md`，最多再读 3 个相关页面。
 - 记忆复盘只写 `C:\Users\btf\AI-MemoryOS\proposals\pending\`。
 - Codex Skills 通过 junction 映射到 `%USERPROFILE%\.codex\skills`；不要假设外部仓库里的 skills 会自动发现。
 

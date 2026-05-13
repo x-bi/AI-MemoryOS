@@ -21,6 +21,14 @@
 3. 通过后晋升到 rules / wiki / router / skills / evals。
 4. 更新 changelog。
 
+## 读取与写入边界
+
+- 每个用户输入先做轻量 Memory OS Gate 判定，但判定本身不要读取 Memory OS。
+- 复杂工程任务可以自动读取 Memory OS，入口为 `_index.md`，最多再读 3 个直接相关页面。
+- 普通解释、普通排错、小范围实现、当前项目上下文足够的任务，不读取 Memory OS。
+- 读取 Memory OS 不等于写入记忆。
+- 只有用户明确要求沉淀、复盘、更新 Memory OS、生成 proposal，或用户确认沉淀建议后，才写入 `proposals/pending/`。
+
 ## 读取预算
 
 - 普通复杂任务默认 MemoryOS 读取预算不超过 2k tokens。

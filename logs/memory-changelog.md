@@ -1,5 +1,11 @@
 # Memory Changelog 记忆变更日志
 
+## 2026-05-13
+
+- 增加 Memory OS Gate 读取边界：每个用户输入先做轻量判定，但判定本身不读取 Memory OS。
+- 将“用户明确声明复杂任务才读取”调整为“Codex 自动判断是否需要长期工程记忆参与”。
+- 保留写入边界：读取 Memory OS 不等于写入记忆，写入仍需用户明确要求或确认，并只写 `proposals/pending/`。
+
 ## 2026-05-12
 
 - 接受 proposal：`2026-05-12-set-default-memoryos-read-budget-for-complex-tasks`。
