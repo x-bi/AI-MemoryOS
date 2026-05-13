@@ -1,4 +1,4 @@
-﻿# Frontend Domain
+# Frontend Domain
 
 前端是 Memory OS 的第一优先领域，但不是唯一领域。
 
@@ -9,3 +9,7 @@
 - 组件边界与状态归属。
 - 设计系统复用。
 - 可测试性与回归保护。
+
+## Workflows
+
+- `workflows/frontend-regression-verification-strategy.md`：前端代码修改后的回归验证分层策略和验证副作用控制。

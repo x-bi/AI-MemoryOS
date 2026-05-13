@@ -2,6 +2,10 @@
 
 ## 2026-05-13
 
+- 接受 proposal：`2026-05-13-frontend-regression-verification-strategy`。
+- 新增 `workflows/frontend-regression-verification-strategy.md`，定义前端代码修改后的回归验证分层策略。
+- 明确构建、测试、类型检查、lint / format 自动修复、代码生成、依赖安装、dev server、文档生成等验证副作用的处理边界。
+- 在 `domains/frontend/README.md` 和 `domains/testing/README.md` 增加 workflow 引用。
 - 增加 Memory OS Gate 读取边界：每个用户输入先做轻量判定，但判定本身不读取 Memory OS。
 - 将“用户明确声明复杂任务才读取”调整为“Codex 自动判断是否需要长期工程记忆参与”。
 - 保留写入边界：读取 Memory OS 不等于写入记忆，写入仍需用户明确要求或确认，并只写 `proposals/pending/`。
