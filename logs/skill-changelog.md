@@ -1,5 +1,13 @@
 # Skill Changelog 技能变更日志
 
+## 2026-05-14
+
+- 新增 active Codex skill：`pr-review`。
+- 该 skill 用于 PR、commit、diff、staged changes 和当前改动的风险审查。
+- 输出顺序固定为 Findings / Open questions / Test gaps / Summary。
+- 明确该 skill 触发不等于读取 Memory OS；只有影响面大、跨模块、安全或长期规则相关 review 才升级读取。
+- 优化 `vue-change-self-check`：主 `SKILL.md` 压缩为触发和核心流程，详细 checklist / output contract 移入 `references/` 按需读取，降低常规触发 token 成本。
+
 ## 2026-05-12
 
 - 新增 active Codex skill：`vue-change-self-check`。

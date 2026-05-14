@@ -4,7 +4,7 @@ AI Memory OS 是一个跨模型、跨项目的工程记忆系统。它以 Markdo
 
 ## 核心原则
 
-- 普通任务默认不读取 Memory OS，避免不必要的上下文消耗。
+- Codex 每个输入先读取轻量 `adapters/codex/gate.md`；L0/L1 不读取 Memory OS 正文，L2/L3 才按预算读取或写入。
 - 新经验默认只写入 `proposals/pending/`，不直接污染正式规则。
 - 项目本地事实优先于全局记忆。
 - 敏感信息、token、客户数据、生产日志原文不进入仓库。

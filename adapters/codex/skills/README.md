@@ -20,6 +20,8 @@ New-Item -ItemType Junction -Path C:\Users\btf\.codex\skills\<skill> -Target C:\
 - `routing-auditor`
 - `bugfix-with-regression-test`
 - `frontend-component-review`
+- `git-ops-guide`
+- `pr-review`
 - `vue-change-self-check`
 
 不要把所有候选 skill 都映射给 Codex。skills 过多会增加初始上下文和误触发风险。

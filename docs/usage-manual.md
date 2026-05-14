@@ -68,18 +68,20 @@ Obsidian vault 也打开这个目录。
 
 默认规则：
 
-- 不读取 AI Memory OS。
+- Codex 先读取轻量 `adapters/codex/gate.md` 做 L0-L3 判定。
+- L0/L1 不读取 Memory OS 正文。
+- L1 默认倾向触发轻量 workflow / skill，用于 review、自检、bugfix 回归风险、任务后复盘提醒等真实任务样例收集。
 - 不写长期记忆。
 - 只基于当前项目上下文处理。
 
 ## 5. 复杂工程任务怎么问
 
-当任务涉及架构、重构、复杂排错、跨模块影响时，可以显式允许读取 Memory OS。
+当任务涉及架构、重构、复杂排错、跨模块影响、安全/权限、发布流程或长期规范时，Codex 可进入 L2，读取 Memory OS 正文。
 
 推荐提示：
 
 ```text
-这是复杂工程任务，可以读取 C:\Users\btf\AI-MemoryOS\_index.md，最多再读 3 个相关页面。不要自动写入记忆。
+这是复杂工程任务，可以进入 L2，读取 C:\Users\btf\AI-MemoryOS\_index.md，最多再读 3 个相关页面。不要自动写入记忆。
 ```
 
 读取预算：
@@ -92,6 +94,14 @@ _index.md + 最多 3 个直接相关页面
 
 如果需要扩大读取范围，Codex 应先说明原因。MemoryOS 维护、weekly audit、proposal 晋升、skill 晋升等任务可临时放宽到 5k-8k tokens，但必须说明读取范围。
 
+Codex 最终回答会按 `gate.md` 追加 OS Trace Footer，例如：
+
+```text
+OS：L1；skills：pr-review；workflow：diff-review-lite；读取：gate；写入：无
+```
+
+该 trace 只记录触发路径，不展示 token 估算，也不会为了 trace 额外读取文件。
+
 ## 6. 什么时候会用 Codex Skills
 
 当前 active skills：
@@ -102,9 +112,10 @@ _index.md + 最多 3 个直接相关页面
 | routing-auditor | 你指出路由判断错了，或要求审计路由 |
 | bugfix-with-regression-test | 修 bug 且需要防回归、补测试 |
 | frontend-component-review | 审查前端组件、交互、表单、页面行为 |
+| pr-review | 审查 PR、commit、diff、staged changes 或当前改动风险 |
 | vue-change-self-check | Vue / uni-app / frontend 改动提交前自检、diff 风险扫描、编号风险清单 |
 
-注意：普通对话不会强制触发 skill。触发依赖任务意图和描述。
+注意：L1 当前阶段默认倾向触发轻量 workflow / skill，以收集真实任务样例；但 L1 不读取 Memory OS 正文。多个 skill 可以协作，但只读取完成任务所需的最小规则集。
 
 Codex Desktop 的实际发现目录是：
 
@@ -284,9 +295,10 @@ git -C C:\Users\btf\AI-MemoryOS push
 
 每次任务：
 
-- 普通任务：不读 Memory OS。
-- 复杂任务：读 `_index.md` 和少量相关页面。
-- 有长期价值：生成 pending proposal。
+- 每次输入：先读 `gate.md` 做 L0-L3 判定。
+- L0/L1：不读 Memory OS 正文，L1 可触发轻量 workflow / skill。
+- L2：读 `_index.md` 和少量相关页面。
+- L3：用户明确要求或确认后，生成 pending proposal。
 
 每周：
 

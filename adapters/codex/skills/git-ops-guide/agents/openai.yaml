@@ -1,0 +1,7 @@
+interface:
+  display_name: "Git Ops Guide"
+  short_description: "Explain Git command order and risks without running commands"
+  default_prompt: "Use $git-ops-guide to explain the Git commands for my goal in Chinese."
+
+policy:
+  allow_implicit_invocation: true

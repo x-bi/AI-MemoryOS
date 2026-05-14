@@ -1,5 +1,7 @@
 # Generic Adapter
 
+Generic adapter 不使用 Codex `gate.md` bootstrap。
+
 任意模型使用本仓库时，遵守四条规则：
 
 1. 默认不读取。

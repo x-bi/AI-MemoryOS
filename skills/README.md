@@ -16,6 +16,7 @@ MemoryOS 源目录是：
 - routing-auditor
 - bugfix-with-regression-test
 - frontend-component-review
+- pr-review
 - vue-change-self-check
 
 其他 skill 先作为候选规格保留，等真实任务验证后再通过 junction 映射到 Codex Desktop。

@@ -2,10 +2,12 @@
 
 ## Read Budget 读取预算
 
-每个用户输入先做轻量 Memory OS Gate 判定，但判定本身不要读取本仓库。
+每个用户输入先读取 `adapters/codex/gate.md` 做轻量 Memory OS Gate 判定；读取 gate 只用于加载运行策略，不等于读取 Memory OS 正文。
 
-- 普通 explain / debug / small implement：默认不读本仓库，直接基于当前项目上下文处理。
-- 复杂工程任务：可自动读本文件，最多再读 3 个直接相关页面。
+- L0：纯解释、纯问答、无文件改动、无决策影响的任务，读 gate 后直接执行，不读 Memory OS 正文。
+- L1：轻量 workflow / skill 默认倾向触发，读 gate 后不再读 Memory OS 正文。
+- L2：复杂工程任务，可自动读本文件，最多再读 3 个直接相关页面。
+- L3：仅用户明确要求或确认后写入 `proposals/pending/`。
 - 记忆复盘：读本文件和少量相关 rules / workflows / domains / router 页面。
 - 维护模式：可以审计、整理、晋升 proposal，但仍需保留变更记录。
 
@@ -13,7 +15,7 @@
 
 ## Routing 路由
 
-1. 先做 Memory OS Gate：判断任务是否需要长期工程记忆参与。
+1. 先读 `adapters/codex/gate.md` 做 Memory OS Gate：判断任务处于 L0/L1/L2/L3。
 2. 再判断 task_type：explain / debug / implement / review / architecture / retrospective / maintenance。
 3. 再判断 domain：frontend / testing / backend / scripting / devops / security。
 4. 再选择 workflow / skill / markdown。
@@ -48,6 +50,8 @@
 ## Adapter Files 适配器文件
 
 - `adapters/codex/AGENTS.md`：Codex 接入说明。
+- `adapters/codex/gate.md`：Codex 全局 bootstrap 读取的运行策略入口。
+- `adapters/codex/external-config.md`：Codex OS 外部配置副本，用于换机或新软件快速恢复。
 - `adapters/codex/skills/`：Codex 专用 skills 源目录。
 - `adapters/codex/config/recommended-config.toml`：全局 config 合并建议。
 - `adapters/generic/SYSTEM.md`：通用模型接入说明。

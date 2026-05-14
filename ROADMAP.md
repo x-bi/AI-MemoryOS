@@ -17,6 +17,15 @@
 - Obsidian dashboard、QuickAdd、Templater、Dataview、Git 已配置。
 - MCP adapter 已接入全局 Codex config。
 - 验证脚本已通过。
+- `pr-review` 已从 workflow 封装为 active Codex skill。
+- 已新增轻量 workflow 入口，用于在真实任务中收集 review、自检和复盘样例。
+
+## 当前阶段重点
+
+- 轻量 workflow 可以适度多触发，用于扩大真实案例输入。
+- Memory OS 正文读取仍限定在 L2 场景。
+- 写入仍限定为用户明确要求或确认后的 pending proposal。
+- 优先补真实 eval case 和 proposal 晋升样例，再扩展更多重型 skills。
 
 ## 30 天
 

@@ -2,10 +2,12 @@
 
 ## 默认行为
 
-- 每个用户输入先做轻量 Memory OS Gate 判定，但判定本身不要读取 AI Memory OS。
-- 普通 explain / debug / small implement 先使用当前项目上下文，不读取 AI Memory OS。
-- 架构决策、跨模块重构、复杂排错、长期规范、安全/权限/发布流程、跨项目复盘、记忆维护时，可自动读取 `_index.md`。
-- 读取外置记忆前先判断 task_type / domain / workflow。
+- 每个输入先读取 `adapters/codex/gate.md`，按其中规则处理回答风格、Memory OS Gate、验证策略和读写边界。
+- 读取 `gate.md` 不等于读取 Memory OS 正文。
+- L0/L1 不读取 Memory OS 正文；L1 默认倾向触发轻量 workflow / skill。
+- 架构决策、跨模块重构、复杂排错、长期规范、安全/权限/发布流程、跨项目复盘、记忆维护时，进入 L2，可自动读取 `_index.md` + 最多 3 个相关页面。
+- 写入 `proposals/pending/` 只在用户明确要求或确认后执行。
+- 最终回答按 `gate.md` 记录 OS Trace Footer。
 - 项目本地事实优先于 Memory OS 通用规则。
 
 ## 修改边界

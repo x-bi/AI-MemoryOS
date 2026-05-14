@@ -1,5 +1,22 @@
 # Router Changelog 路由变更日志
 
+## 2026-05-14
+
+- 放宽 OS 触发机制：收窄 L0 为纯解释/纯问答/无改动无决策任务，放宽 L1 为默认倾向触发轻量 workflow / skill。
+- L1 新增覆盖：普通 bugfix 后回归风险检查、功能实现后的风险扫描、排错结束后的经验判断、配置/脚本/接口字段/路由/权限/构建入口变更的轻量风险检查。
+- 明确 L1 可组合多个 workflow / skill，但只读取完成任务所需的最小规则集；重型 skill 的详细规则按需读取。
+- 新增 OS Trace Footer：最终回答末尾记录 L 级别、skills、workflow、读取和写入；不展示 token 估算，不为 trace 额外读取文件。
+- 继续保持 L2 正文读取和 L3 pending 写入保守，避免扩大 token 消耗和污染长期记忆。
+- 新增 `adapters/codex/gate.md` 作为 Codex 运行策略单一入口，统一维护回答风格、Memory OS Gate、验证策略和读写边界。
+- 全局 `C:\Users\btf\.codex\AGENTS.md` 调整为 bootstrap：只负责引导读取 `gate.md`，不再维护完整 L0-L3 和验证策略。
+- 将触发策略从简单/复杂两档调整为 L0-L3：
+  - L0：普通 explain/debug/small implement，不触发 OS。
+  - L1：轻量 workflow / skill，可适度多触发，但默认不读取 Memory OS。
+  - L2：读取 `_index.md` + 最多 3 个相关页面。
+  - L3：仅在用户明确要求或确认后写入 `proposals/pending/`。
+- 新增轻量入口：diff review、提交前自检、任务后复盘提醒。
+- 补充 `pr-review` 与轻量 workflow 的 router / skill trigger eval 样例。
+
 ## 2026-05-13
 
 - 新增 Memory OS Gate：每个输入先做轻量边界判定，但判定本身不读取 Memory OS。

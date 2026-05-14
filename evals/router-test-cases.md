@@ -4,6 +4,13 @@
 |---|---|---|---|
 | 这个报错怎么排查 | debug | unknown | 不读 Memory OS，先基于上下文排查 |
 | 帮我做一次代码 review | review | project | 进入 review 模式，优先问题和风险 |
+| 帮我 review 一下当前 diff | review | project | L1：触发轻量 review workflow，不默认读取 Memory OS |
+| 提交前帮我自检一下 | review | project | L1：检查 diff、入口、调用链和验证缺口，不默认读取 Memory OS |
+| 这个任务结束后有没有值得沉淀的经验 | retrospective | memory | L1：只判断是否值得沉淀，确认前不写入 |
+| 帮我修这个 bug | debug | project | L1：执行修复并做轻量回归风险检查，不默认读取 Memory OS |
+| 实现完这个功能后扫一遍风险 | review | project | L1：功能完成后的风险扫描，不默认读取 Memory OS |
+| 改了这个接口字段，帮我看下影响 | review | backend | L1：字段契约影响检查；跨模块或长期规范再升 L2 |
+| 修改路由配置后帮我检查一下 | review | project | L1：路由/配置轻量风险检查，不默认读取 Memory OS |
 | 这次经验沉淀一下 | retrospective | memory | 读取 `_index.md`，生成 pending proposal |
 | 前端组件交互有问题 | debug | frontend | 可按需读取 frontend checklist |
 | 帮我规划这个功能怎么做 | architecture | project | 可读 `_index.md`，最多 3 页相关文档 |
@@ -17,6 +24,6 @@
 | 帮我修一下这个按钮点击没反应 | debug | frontend | 不读取 Memory OS，先基于当前项目上下文排查 |
 | 这个模块要不要拆成独立包 | architecture | project | 触发 Memory OS Gate，可读 `_index.md` + 最多 3 个相关页面 |
 | 这次接口字段命名以后怎么统一 | architecture | backend | 触发 Memory OS Gate，可读 `_index.md` + 命名/后端相关页面 |
-| 这个 bug 修法会不会影响其他页面 | review | frontend | 触发 Memory OS Gate，可读 `_index.md` + frontend/review 相关页面 |
+| 这个 bug 修法会不会影响其他页面 | review | frontend | L1：先做影响面 review，不默认读取 Memory OS；跨模块或长期规则再升 L2 |
 | 这个问题修完以后要不要沉淀成规则 | retrospective | memory | 先确认沉淀目标，再生成 pending proposal |
 | 帮我写个一次性重命名文件脚本 | implement | scripting | 不读取 Memory OS，确认输入输出和副作用后处理 |

@@ -8,6 +8,7 @@
 | routing-auditor | active | 路由误判修正和 eval 增长入口 |
 | bugfix-with-regression-test | active | 高频工程任务，能减少重复 bug |
 | frontend-component-review | active | 前端 MVP 领域的核心 review 能力 |
+| pr-review | active | 标准化 PR / diff / commit review 输出，作为真实案例收集入口 |
 | vue-change-self-check | active | Vue / uni-app 提交前 diff 风险扫描，已在本地真实任务中验证 |
 
 ## Candidate Skills
@@ -16,7 +17,6 @@
 |---|---|---|
 | feature-planning | candidate | 多次需要复杂需求拆解 |
 | refactor-with-safety | candidate | 重构任务频繁出现且有风险 |
-| pr-review | candidate | 需要标准化 PR review 输出 |
 | test-strategy-review | candidate | 测试方案反复需要审查 |
 | prompt-improver | candidate | 提示词迭代成为高频任务 |
 | memory-auditor | candidate | pending/accepted 开始堆积 |

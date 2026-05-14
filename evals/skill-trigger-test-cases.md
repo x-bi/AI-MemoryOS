@@ -4,6 +4,12 @@
 |---|---|---|---|
 | 这次经验沉淀一下 | memory-curator | yes | 明确要求沉淀 |
 | 普通解释一下这个报错 | none | no | 解释任务不该触发记忆 |
+| 帮我 review 一下当前 diff | pr-review | yes | 明确要求审查当前变更 |
+| 看一下 staged changes 有没有明显问题 | pr-review | yes | 提交前代码审查入口 |
+| 解释一下这个函数为什么这么写 | none | no | 解释代码不等于 PR review |
+| 实现完这个功能后扫一遍风险 | pr-review | yes | L1 功能完成后的风险扫描入口 |
+| 改了接口字段，帮我看下影响 | pr-review | yes | L1 字段契约影响检查 |
+| 修改配置后提交前检查一下 | pr-review | yes | L1 配置变更提交前风险检查 |
 | 帮我审一下这个前端组件 | frontend-component-review | yes | 明确前端组件 review |
 | 这个 bug 修完加个回归测试 | bugfix-with-regression-test | yes | bugfix + regression |
 | 刚才你的路由判断错了 | routing-auditor | yes | 明确纠正路由误判 |
