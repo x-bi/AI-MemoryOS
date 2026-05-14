@@ -1,4 +1,4 @@
-﻿# React Component Patterns
+# React Component Patterns
 
 - 组件 props 保持可理解。
 - 状态尽量放在最小共享层级。

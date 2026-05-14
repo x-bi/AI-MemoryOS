@@ -1,4 +1,4 @@
-﻿# Memory Retrospective Workflow
+# Memory Retrospective Workflow
 
 ## Trigger
 

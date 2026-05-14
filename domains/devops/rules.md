@@ -1,4 +1,4 @@
-﻿# DevOps Rules
+# DevOps Rules
 
 - CI 问题先看失败步骤、环境差异、缓存、依赖版本。
 - 不把 secret 打印到日志。

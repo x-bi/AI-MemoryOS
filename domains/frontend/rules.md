@@ -1,4 +1,4 @@
-﻿# Frontend Rules
+# Frontend Rules
 
 - 不只实现 happy path，必须考虑 loading / error / empty / disabled。
 - 修复用户可感知 bug 时，优先补回归测试。

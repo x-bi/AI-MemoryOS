@@ -1,4 +1,4 @@
-﻿# Bugfix With Regression Test
+# Bugfix With Regression Test
 
 1. 复现或定位 bug。
 2. 找根因，不只改表象。

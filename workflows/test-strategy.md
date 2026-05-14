@@ -1,4 +1,4 @@
-﻿# Test Strategy
+# Test Strategy
 
 - 纯逻辑优先单测。
 - 组件行为用组件测试或集成测试。

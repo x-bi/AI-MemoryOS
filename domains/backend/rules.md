@@ -1,4 +1,4 @@
-﻿# Backend Rules
+# Backend Rules
 
 - API 返回结构要稳定。
 - 错误码、权限、幂等、超时要明确。

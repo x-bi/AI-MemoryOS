@@ -1,4 +1,4 @@
-﻿# Generic AI Adapter
+# Generic AI Adapter
 
 你可以读取本仓库作为工程记忆库，但必须遵守：
 

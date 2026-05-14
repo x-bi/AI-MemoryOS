@@ -1,4 +1,4 @@
-﻿# Frontend Common Failures
+# Frontend Common Failures
 
 - 提交按钮可点，但没有真正触发表单提交。
 - loading 只显示视觉效果，没有禁用重复操作。

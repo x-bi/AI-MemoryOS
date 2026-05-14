@@ -1,4 +1,4 @@
-﻿# Scripting Rules
+# Scripting Rules
 
 - 明确输入、输出、副作用。
 - 默认保护用户文件。

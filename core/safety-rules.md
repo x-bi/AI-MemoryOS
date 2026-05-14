@@ -1,4 +1,4 @@
-﻿# Safety Rules
+# Safety Rules
 
 ## 永不写入 Memory OS
 

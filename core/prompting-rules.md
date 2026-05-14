@@ -1,4 +1,4 @@
-﻿# Prompting Rules
+# Prompting Rules
 
 - 先给结论，再给原因、方案和步骤。
 - 技术回答优先最小可用示例。

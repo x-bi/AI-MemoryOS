@@ -1,4 +1,4 @@
-﻿# Engineering Rules
+# Engineering Rules
 
 - 优先正确性和可验证性。
 - 先理解现有系统，再做改动。

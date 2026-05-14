@@ -1,4 +1,4 @@
-﻿# Frontend Review Checklist
+# Frontend Review Checklist
 
 - [ ] 主流程是否可用。
 - [ ] loading / error / empty / disabled 是否覆盖。

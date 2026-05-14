@@ -1,4 +1,4 @@
-﻿# Testing Rules
+# Testing Rules
 
 - 修 bug 优先补回归测试。
 - 测行为，不测实现细节。

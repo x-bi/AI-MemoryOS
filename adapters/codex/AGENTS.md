@@ -1,4 +1,4 @@
-﻿# Codex Adapter
+# Codex Adapter
 
 此文件是 Codex 接入 AI Memory OS 的说明，不是全局事实源。
 

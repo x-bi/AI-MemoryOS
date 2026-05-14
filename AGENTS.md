@@ -1,4 +1,4 @@
-﻿# AI Memory OS Repository Rules
+# AI Memory OS Repository Rules
 
 本仓库是跨模型工程记忆事实源，不是某个项目的临时上下文。
 

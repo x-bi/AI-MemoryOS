@@ -1,4 +1,4 @@
-﻿# Prompting Failures
+# Prompting Failures
 
 - 未确认关键前提就执行。
 - 为普通任务读取过多长期记忆。

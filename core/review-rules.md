@@ -1,4 +1,4 @@
-﻿# Review Rules
+# Review Rules
 
 代码审查优先级：
 

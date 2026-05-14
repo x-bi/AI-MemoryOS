@@ -1,4 +1,4 @@
-﻿# Memory Rules
+# Memory Rules
 
 ## 可以沉淀
 

@@ -1,4 +1,4 @@
-﻿# Automation Patterns
+# Automation Patterns
 
 - dry-run。
 - idempotent。

@@ -10,6 +10,7 @@
 - 全局 Codex config：已把 `c:\users\btf\ai-memoryos` 标记为 trusted。
 - MVP skills：`memory-curator`、`routing-auditor`、`bugfix-with-regression-test`、`frontend-component-review`、`vue-change-self-check`。
 - 核心骨架：core / router / workflows / domains / stacks / prompts / anti-patterns / templates / evals / logs。
+- PR Review workflow：`workflows/pr-review.md` 已建立，并已去除 BOM，保持 UTF-8 no BOM。
 - MCP adapter：已新增受限 MCP server，并已写入全局 Codex config；默认只允许读库和写 `proposals/pending/`。
 - Obsidian 自动化：QuickAdd、Templater、Dataview、Advanced URI、Obsidian Git 已配置并可验证。
 - Obsidian 首页：`dashboard/home.md` 已创建，模板 frontmatter 已补齐。
@@ -18,7 +19,8 @@
 
 ## 剩余工作
 
-- 扩展 skills：feature-planning、refactor-with-safety、pr-review、test-strategy-review、prompt-improver、memory-auditor、skill-updater、backend-api-review、script-automation、playwright-e2e-review、ci-pipeline-review。
+- 扩展 skills：feature-planning、refactor-with-safety、test-strategy-review、prompt-improver、memory-auditor、skill-updater、backend-api-review、script-automation、playwright-e2e-review、ci-pipeline-review。
+- 将现有 `workflows/pr-review.md` 晋升/封装为可被 Codex 发现的 `pr-review` skill。
 - 补 router/evals 的真实样例，避免靠想象扩写。
 - 建立 proposal 晋升流程和 accepted/rejected 记录规范。
 - 为 Claude / Cursor / generic adapter 补更完整接入说明。

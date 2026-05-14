@@ -1,3 +1,3 @@
-﻿# Regression Testing
+# Regression Testing
 
 回归测试应该覆盖：触发条件、错误路径、修复后期望行为。不要只断言函数被调用。

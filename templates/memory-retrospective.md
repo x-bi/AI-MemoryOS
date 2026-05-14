@@ -1,4 +1,4 @@
-﻿# Memory Retrospective
+# Memory Retrospective
 
 ## What Happened
 

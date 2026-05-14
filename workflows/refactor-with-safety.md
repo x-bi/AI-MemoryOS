@@ -1,4 +1,4 @@
-﻿# Refactor With Safety
+# Refactor With Safety
 
 - 先确认行为不变的边界。
 - 优先小步重构。

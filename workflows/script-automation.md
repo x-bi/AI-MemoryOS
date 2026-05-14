@@ -1,4 +1,4 @@
-﻿# Script Automation Workflow
+# Script Automation Workflow
 
 - 先确认输入、输出、副作用和失败策略。
 - 文件处理优先使用结构化解析器。
