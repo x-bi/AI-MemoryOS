@@ -1,11 +1,43 @@
 # Claude Adapter
 
-Claude 使用本仓库时建议：
+This directory contains the Claude Code specific adapter for AI Memory OS.
 
-1. 普通任务不读 Memory OS。
-2. 复杂任务先读 `_index.md`。
-3. 最多再读 3 个相关页面。
-4. 新经验只生成 `proposals/pending/` 草稿。
-5. 不直接修改正式 rules / router / skills / evals。
+Memory OS itself stays model-neutral. Claude-specific instructions, skill copies, and local restore notes live here so they do not affect Codex, Cursor, or generic adapters.
 
-如果 Claude 项目需要长期接入，可把 `CLAUDE.md` 内容复制到项目根，或在 Claude Project Instructions 中引用本文件的规则。
+## Files
+
+- `CLAUDE.md`: User-level or project-level Claude Code bootstrap template.
+- `skills/`: Claude Code skill source directories adapted from Memory OS workflows.
+- `external-config.md`: Public, non-secret snapshot of local Claude Code setup needed to restore this integration on another machine.
+
+## Current Local Integration
+
+Claude Code is expected to use two layers:
+
+1. `C:\Users\btf\.claude\CLAUDE.md` loads the Memory OS gate rules.
+2. `ai_memoryos` MCP gives Claude restricted Memory OS tools for reading/searching and writing only pending proposals.
+
+Active Claude skills are mapped from:
+
+```text
+C:\Users\btf\AI-MemoryOS\adapters\claude\skills
+```
+
+to:
+
+```text
+C:\Users\btf\.claude\skills
+```
+
+Use junctions for active skills so the repository copy remains the single maintained Claude skill source.
+
+## Boundaries
+
+- Do not point Claude directly at `adapters/codex/skills`; Claude and Codex skill files are separate.
+- Do not store tokens, passwords, cookies, account data, private logs, or PII in this adapter.
+- Do not use Claude MCP access to bypass Memory OS proposal review.
+- New lessons still go through `proposals/pending/`.
+
+## Restore
+
+Follow `external-config.md` when rebuilding the Claude setup on a new machine.

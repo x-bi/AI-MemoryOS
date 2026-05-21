@@ -5,7 +5,7 @@ Memory OS 本体保持模型无关，模型差异放在 `adapters/`。
 ## 当前适配层
 
 - `codex/`：Codex AGENTS、skills、config 片段和使用说明。
-- `claude/`：Claude 读取入口和行为约束。
+- `claude/`：Claude Code 读取入口、行为约束、Claude 专用 skills 和外部配置恢复说明。
 - `cursor/`：Cursor rules 接入入口。
 - `generic/`：任意模型可读的通用系统说明。
 - `mcp/`：受限 MCP 自动化入口，只允许读库和写 pending proposal。
