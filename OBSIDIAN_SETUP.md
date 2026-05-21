@@ -26,7 +26,7 @@ Vault backup interval in minutes: 10 或 30
 Auto Backup after file change: on
 Pull updates on startup: off
 Push on backup: on
-Auto push interval: 10
+Auto push interval: 60
 Manual commit message: memory: manual vault sync {{date}}
 Auto commit message: memory: obsidian auto backup {{date}}
 ```
