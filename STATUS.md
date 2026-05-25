@@ -21,7 +21,7 @@
 - 路由策略：已从简单/复杂两档调整为 L0-L3 分层；当前阶段收窄 L0、放宽 L1，让轻量 workflow / skill 默认倾向触发，但 L2 读取和 L3 写入仍保持保守。
 - Codex Gate：已新增 `adapters/codex/gate.md`，统一维护回答风格、Memory OS Gate、验证策略和读写边界。
 - Codex 外部配置副本：已新增 `adapters/codex/external-config.md`，记录全局 bootstrap、config snippet、skill junction 和验证步骤。
-- 新开 Codex 会话后验证 6 个 active skills 是否出现在技能列表。
+- 新开 Codex 会话后验证 7 个 active skills 是否出现在技能列表。
 
 ## 剩余工作
 
@@ -34,3 +34,14 @@
 ## 当前策略
 
 先通过真实任务扩大样例输入，再分批扩展。每个输入先读取轻量 `gate.md`；L1 默认倾向触发轻量 workflow / skill，L2/L3 才按预算读取或写入。
+
+## Claude Code Adapter Status
+
+- Claude Code user gate is configured at `C:\Users\btf\.claude\CLAUDE.md` and synchronized from `adapters/claude/CLAUDE.md`.
+- Claude `ai_memoryos` MCP is configured in user scope and verified connected.
+- Claude skill source directory is `adapters/claude/skills`.
+- Claude skill discovery directory is `C:\Users\btf\.claude\skills`; active skills are junctions to the repository source.
+- Seven Claude skills are active: `memory-curator`, `routing-auditor`, `bugfix-with-regression-test`, `frontend-component-review`, `pr-review`, `vue-change-self-check`, and `git-ops-guide`.
+- Claude migration/reinstall snapshot is documented in `adapters/claude/external-config.md`.
+- Cursor / generic adapter still need deeper restore/setup documentation.
+- Claude plugin and slash commands are optional future improvements, not required for current Memory OS access.

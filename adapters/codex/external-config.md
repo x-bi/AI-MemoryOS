@@ -114,6 +114,7 @@ Active skills:
 - `routing-auditor`
 - `bugfix-with-regression-test`
 - `frontend-component-review`
+- `git-ops-guide`
 - `pr-review`
 - `vue-change-self-check`
 
@@ -129,6 +130,7 @@ foreach ($skill in @(
   "routing-auditor",
   "bugfix-with-regression-test",
   "frontend-component-review",
+  "git-ops-guide",
   "pr-review",
   "vue-change-self-check"
 )) {
@@ -204,10 +206,6 @@ The current local `C:\Users\btf\.codex\config.toml` may also contain entries unr
 
 Do not copy these as part of Memory OS setup unless that specific integration is needed.
 
-Current observed unmanaged skill entry:
-
-- `C:\Users\btf\.codex\skills\git-ops-guide` points to `C:\Users\btf\AI-MemoryOS\adapters\codex\skills\git-ops-guide`, but that source directory is currently untracked. Treat it as not part of the Memory OS active restore set until it is intentionally added to Git and documented in `skills/catalog.md`.
-
 ## Validation
 
 Run after setup:
@@ -226,7 +224,7 @@ Get-ChildItem C:\Users\btf\.codex\skills | Select-Object Name,LinkType,Target
 Expected result:
 
 - `AGENTS.md` is the bootstrap above.
-- Six active skills appear under `.codex\skills`.
+- Seven active skills appear under `.codex\skills`.
 - Active skills are junctions or symbolic links to `AI-MemoryOS\adapters\codex\skills`.
 - `SKILL.md` files are UTF-8 no BOM.
 - Optional MCP config points to an existing Node runtime and `adapters\mcp\server\obsidian-memory-os-mcp.mjs`.

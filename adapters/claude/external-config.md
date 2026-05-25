@@ -7,6 +7,7 @@ This file records local configuration outside AI Memory OS that is needed to con
 | Purpose | Path |
 |---|---|
 | Memory OS repo | `C:\Users\btf\AI-MemoryOS` |
+| Claude CLI | `C:\Users\btf\.local\bin\claude.exe` |
 | Claude user instructions | `C:\Users\btf\.claude\CLAUDE.md` |
 | Claude user config | `C:\Users\btf\.claude.json` |
 | Claude settings | `C:\Users\btf\.claude\settings.json` |
@@ -14,6 +15,36 @@ This file records local configuration outside AI Memory OS that is needed to con
 | Memory OS Claude skill source | `C:\Users\btf\AI-MemoryOS\adapters\claude\skills` |
 | Memory OS MCP server | `C:\Users\btf\AI-MemoryOS\adapters\mcp\server\obsidian-memory-os-mcp.mjs` |
 | Node runtime used for MCP | `C:\Program Files\nodejs\node.exe` |
+
+## Restore Order
+
+On a new machine or after reinstalling Claude Code:
+
+1. Restore or clone `C:\Users\btf\AI-MemoryOS`.
+2. Install Claude Code and confirm the CLI path.
+3. Restore user-level `CLAUDE.md`.
+4. Add `ai_memoryos` MCP.
+5. Create active Claude skill junctions.
+6. Validate MCP, skills, and file paths.
+
+Do not copy old Claude auth/session/cache files as part of Memory OS restore.
+
+## Claude CLI
+
+Current observed executable:
+
+```powershell
+C:\Users\btf\.local\bin\claude.exe
+```
+
+Validate:
+
+```powershell
+& C:\Users\btf\.local\bin\claude.exe --version
+& C:\Users\btf\.local\bin\claude.exe --help
+```
+
+If Claude is installed elsewhere, update local commands to use the actual CLI path. Do not commit machine-specific discovery output unless it affects the documented restore process.
 
 ## User CLAUDE.md
 
@@ -33,6 +64,7 @@ It provides the Claude Code Memory OS gate:
 Restore command:
 
 ```powershell
+Test-Path C:\Users\btf\AI-MemoryOS\adapters\claude\CLAUDE.md
 New-Item -ItemType Directory -Force -Path C:\Users\btf\.claude | Out-Null
 Copy-Item -LiteralPath C:\Users\btf\AI-MemoryOS\adapters\claude\CLAUDE.md `
   -Destination C:\Users\btf\.claude\CLAUDE.md -Force
@@ -51,6 +83,8 @@ C:\Program Files\nodejs\node.exe C:\Users\btf\AI-MemoryOS\adapters\mcp\server\ob
 Restore command:
 
 ```powershell
+Test-Path "C:\Program Files\nodejs\node.exe"
+Test-Path "C:\Users\btf\AI-MemoryOS\adapters\mcp\server\obsidian-memory-os-mcp.mjs"
 & C:\Users\btf\.local\bin\claude.exe mcp add --transport stdio --scope user ai_memoryos -- `
   "C:\Program Files\nodejs\node.exe" `
   "C:\Users\btf\AI-MemoryOS\adapters\mcp\server\obsidian-memory-os-mcp.mjs"
@@ -135,11 +169,60 @@ Expected result:
 - Each entry is a junction to `AI-MemoryOS\adapters\claude\skills`.
 - Each skill has a `SKILL.md` with valid frontmatter.
 
+## Files Not Backed Up Here
+
+Do not backup, copy, or commit these as part of Memory OS restore:
+
+- `C:\Users\btf\.claude\settings.json` values that contain auth, provider, account, or private endpoint data.
+- `C:\Users\btf\.claude\config.json` account or key state.
+- `C:\Users\btf\.claude.json` except for manually re-adding the documented `ai_memoryos` MCP entry through `claude mcp add`.
+- `C:\Users\btf\.claude\history.jsonl`.
+- `C:\Users\btf\.claude\sessions\`.
+- `C:\Users\btf\.claude\projects\`.
+- `C:\Users\btf\.claude\cache\`.
+- `C:\Users\btf\.claude\downloads\`.
+- `C:\Users\btf\.claude\telemetry\`.
+- Marketplace/plugin cache contents under `C:\Users\btf\.claude\plugins\` unless a specific Memory OS Claude plugin is intentionally created and documented later.
+
+If any of these files are needed for debugging, inspect them locally and summarize only non-sensitive facts.
+
 ## Unmanaged Local Claude Config
 
 `C:\Users\btf\.claude\settings.json`, `C:\Users\btf\.claude\config.json`, and `C:\Users\btf\.claude.json` may contain provider, authentication, plugin, project, or UI state unrelated to AI Memory OS.
 
 Do not copy secrets or account-specific values into this repository. Only record the Memory OS-relevant paths, MCP server name, command shape, and skill junction layout.
+
+Current observed unmanaged local directories include:
+
+- `backups`
+- `cache`
+- `downloads`
+- `ide`
+- `plugins`
+- `projects`
+- `sessions`
+- `telemetry`
+
+Treat them as Claude runtime state, not Memory OS adapter source.
+
+## Validation
+
+Run after setup:
+
+```powershell
+Get-Content C:\Users\btf\.claude\CLAUDE.md -Encoding utf8
+& C:\Users\btf\.local\bin\claude.exe mcp get ai_memoryos
+Get-ChildItem C:\Users\btf\.claude\skills | Select-Object Name,LinkType,Target
+rg -n "^---$|^name:|^description:" C:\Users\btf\AI-MemoryOS\adapters\claude\skills -g SKILL.md
+```
+
+Expected result:
+
+- User `CLAUDE.md` matches `adapters/claude/CLAUDE.md`.
+- `ai_memoryos` is connected.
+- Seven active skills appear under `.claude\skills`.
+- Active skills are junctions to `AI-MemoryOS\adapters\claude\skills`.
+- Claude adapter files contain no tokens, passwords, cookies, private endpoint credentials, account data, or PII.
 
 ## Read Boundary
 

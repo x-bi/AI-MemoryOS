@@ -30,3 +30,20 @@
 ## Promotion Rule
 
 候选 skill 不自动暴露给 Codex。只有当真实任务证明其高频、边界清晰、低误触发时，才移动到 `adapters/codex/skills/`，再通过 junction 映射到 `.codex\skills`。
+
+
+## Active Claude Skills
+
+Claude Code uses separate adapted skill files under `adapters/claude/skills`.
+
+| Skill | Status | Notes |
+|---|---|---|
+| memory-curator | active | Claude version writes only pending proposals after explicit request or confirmation. |
+| routing-auditor | active | Claude version audits Memory OS routing and preserves proposal review boundaries. |
+| bugfix-with-regression-test | active | Claude version keeps root-cause and regression-protection workflow. |
+| frontend-component-review | active | Claude version reviews user-facing frontend behavior and UI interaction risk. |
+| pr-review | active | Claude version keeps findings-first review output. |
+| vue-change-self-check | active | Claude version keeps diff-first numbered risk scan and reference files. |
+| git-ops-guide | active | Claude version gives Git guidance only and must not execute Git commands. |
+
+For Claude Code, promote or update skills separately under `adapters/claude/skills`, then expose them through junctions in `C:\Users\btf\.claude\skills`. Do not point Claude directly at `adapters/codex/skills`.

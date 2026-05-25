@@ -31,3 +31,4 @@ Obsidian = 人工审核、dashboard、浏览前台
 ## 使用手册
 
 - [[docs/usage-manual]]
+- [Claude Code 接入恢复说明](adapters/claude/external-config.md)

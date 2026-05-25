@@ -311,3 +311,30 @@ git -C C:\Users\btf\AI-MemoryOS push
 - 审计 router 是否臃肿。
 - 审计 skills 是否误触发。
 - 决定候选 skills 是否晋升为 active skills。
+
+### Claude Code 接入
+
+Claude Code 也可以接入 Memory OS，但使用 Claude 专用 adapter：
+
+```text
+adapters/claude/
+```
+
+当前 Claude 接入由三部分组成：
+
+- `C:\Users\btf\.claude\CLAUDE.md`：用户级 Memory OS Gate。
+- `ai_memoryos` MCP：受限读取/搜索 Memory OS，并只写 `proposals/pending/`。
+- `C:\Users\btf\.claude\skills`：Claude skill 发现目录，active skills 通过 junction 指向 `adapters/claude/skills`。
+
+Claude 的迁移、重装和验证步骤记录在：
+
+```text
+adapters/claude/external-config.md
+```
+
+Claude 和 Codex 的 skill 文件分开维护，避免工具约束和触发规则互相污染：
+
+```text
+Codex:  adapters/codex/skills
+Claude: adapters/claude/skills
+```

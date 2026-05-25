@@ -42,3 +42,11 @@
 - 建 monthly review。
 - 把高频路由误判提升为正式 router 规则。
 - 对 stale memories 做归档。
+
+## Claude Code Baseline
+
+- Claude Code user gate is restored from `adapters/claude/CLAUDE.md`.
+- Claude Code `ai_memoryos` MCP is connected through the shared restricted MCP server.
+- Seven active Claude skills are adapted and mapped through junctions from `C:\Users\btf\.claude\skills` to `adapters/claude/skills`.
+- Claude Code migration and reinstall steps are recorded in `adapters/claude/external-config.md`.
+- Optional later work: package the Claude adapter as a Claude plugin and add slash commands for common Memory OS workflows.

@@ -41,3 +41,21 @@ adapters/mcp/config/codex-mcp.example.toml
 ```
 
 把片段合并到 `C:\Users\btf\.codex\config.toml` 后，重启 Codex。
+
+## Claude Code Configuration
+
+Claude Code also uses the same restricted MCP server under the user-scope name `ai_memoryos`.
+
+Current command shape:
+
+```text
+C:\Program Files\nodejs\node.exe C:\Users\btf\AI-MemoryOS\adapters\mcp\server\obsidian-memory-os-mcp.mjs
+```
+
+Restore and validation steps are documented in:
+
+```text
+adapters/claude/external-config.md
+```
+
+The same MCP safety boundary applies to Claude: read/search Memory OS, list/create/append pending proposals, and do not directly modify formal rules, router, skills, evals, accepted proposals, or rejected proposals.

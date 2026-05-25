@@ -20,3 +20,25 @@ MemoryOS 源目录是：
 - vue-change-self-check
 
 其他 skill 先作为候选规格保留，等真实任务验证后再通过 junction 映射到 Codex Desktop。
+
+## Claude Code Skills
+
+Claude Code uses a separate adapter-specific skill source:
+
+- `C:\Users\btf\AI-MemoryOS\adapters\claude\skills`
+
+Claude Code discovers active skills from:
+
+- `C:\Users\btf\.claude\skills`
+
+The Claude discovery directory uses junctions to the repository source, just like Codex, but the files are not shared with Codex. Keep Claude and Codex skill files separate because their tool boundaries, trigger wording, and operating constraints differ.
+
+Current active Claude skills:
+
+- memory-curator
+- routing-auditor
+- bugfix-with-regression-test
+- frontend-component-review
+- pr-review
+- vue-change-self-check
+- git-ops-guide

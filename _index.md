@@ -56,3 +56,11 @@
 - `adapters/codex/config/recommended-config.toml`：全局 config 合并建议。
 - `adapters/generic/SYSTEM.md`：通用模型接入说明。
 - `adapters/mcp/`：受限 MCP 自动化入口，只允许读库和写 pending proposal。
+
+## Claude Adapter Current Entry
+
+- `adapters/claude/CLAUDE.md`: Claude Code Memory OS Gate template, synchronized to `C:\Users\btf\.claude\CLAUDE.md`.
+- `adapters/claude/external-config.md`: Claude Code external setup snapshot for migration or reinstall.
+- `adapters/claude/skills/`: Claude-specific skill sources. These are separate from Codex skills.
+- `C:\Users\btf\.claude\skills`: Claude Code skill discovery root; active skills are junctions to `adapters/claude/skills`.
+- `ai_memoryos`: shared restricted MCP server, configured in Claude user scope and allowed only to read/search Memory OS and write pending proposals.

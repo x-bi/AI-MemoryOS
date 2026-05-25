@@ -72,3 +72,26 @@ adapters/mcp/config/codex-mcp.example.toml
 ```
 
 MCP server 默认只写 `proposals/pending/`，不直接修改正式规则。
+
+# Claude Code 接入
+
+Claude Code 的本机接入副本记录在：
+
+```text
+adapters/claude/external-config.md
+```
+
+当前 Claude 接入包含：
+
+- `C:\Users\btf\.claude\CLAUDE.md`：用户级 Memory OS Gate。
+- `ai_memoryos` MCP：受限读取/搜索 Memory OS，并只写 `proposals/pending/`。
+- `C:\Users\btf\.claude\skills`：Claude 实际发现目录，active skills 通过 junction 指向 `adapters/claude/skills`。
+
+Claude 和 Codex 的 skill 源文件分开维护：
+
+```text
+Codex:  adapters/codex/skills
+Claude: adapters/claude/skills
+```
+
+换机或重装 Claude Code 时，按 `adapters/claude/external-config.md` 的 Restore Order 恢复，不要复制 `.claude` 下的 auth、session、cache、history 或项目运行态文件。
