@@ -36,6 +36,14 @@ function normalizeRelative(input) {
   if (resolved.includes(`${path.sep}.git${path.sep}`)) {
     throw new Error(".git is not readable through MCP");
   }
+  const relNormalized = normalized.replaceAll("\\", "/");
+  const restrictedReadPaths = [
+    "proposals/accepted/",
+    "proposals/rejected/",
+  ];
+  if (restrictedReadPaths.some((p) => relNormalized.startsWith(p))) {
+    throw new Error(`${relNormalized} is not readable through MCP`);
+  }
   return { relative: normalized, absolute: resolved };
 }
 
@@ -59,10 +67,12 @@ async function fileExists(file) {
   }
 }
 
+const RESTRICTED_DIRS = new Set([".git", "node_modules", ".obsidian"]);
+
 async function walk(dir, out = []) {
   const entries = await fs.readdir(dir, { withFileTypes: true });
   for (const entry of entries) {
-    if (entry.name === ".git" || entry.name === "node_modules") continue;
+    if (RESTRICTED_DIRS.has(entry.name)) continue;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       await walk(full, out);
@@ -92,12 +102,18 @@ async function memorySearch(args) {
   const files = await walk(ROOT);
   const allowedExt = new Set([".md", ".txt", ".toml", ".json", ".ps1"]);
   const lowerQuery = query.toLowerCase();
+  const restrictedPrefixes = [
+    `proposals${path.sep}accepted${path.sep}`,
+    `proposals${path.sep}rejected${path.sep}`,
+    `raw${path.sep}videos${path.sep}`,
+    `raw${path.sep}sessions${path.sep}`,
+  ];
   const matches = [];
 
   for (const file of files) {
     if (!allowedExt.has(path.extname(file).toLowerCase())) continue;
     const rel = path.relative(ROOT, file);
-    if (rel.startsWith(`raw${path.sep}videos`) || rel.startsWith(`raw${path.sep}sessions`)) continue;
+    if (restrictedPrefixes.some((p) => rel.startsWith(p))) continue;
     const stat = await fs.stat(file);
     if (stat.size > MAX_READ_BYTES) continue;
     const text = await fs.readFile(file, "utf8");
