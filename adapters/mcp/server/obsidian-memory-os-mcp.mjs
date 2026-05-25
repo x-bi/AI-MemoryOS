@@ -37,13 +37,6 @@ function normalizeRelative(input) {
     throw new Error(".git is not readable through MCP");
   }
   const relNormalized = normalized.replaceAll("\\", "/");
-  const restrictedReadPaths = [
-    "proposals/accepted/",
-    "proposals/rejected/",
-  ];
-  if (restrictedReadPaths.some((p) => relNormalized.startsWith(p))) {
-    throw new Error(`${relNormalized} is not readable through MCP`);
-  }
   return { relative: normalized, absolute: resolved };
 }
 
@@ -103,8 +96,6 @@ async function memorySearch(args) {
   const allowedExt = new Set([".md", ".txt", ".toml", ".json", ".ps1"]);
   const lowerQuery = query.toLowerCase();
   const restrictedPrefixes = [
-    `proposals${path.sep}accepted${path.sep}`,
-    `proposals${path.sep}rejected${path.sep}`,
     `raw${path.sep}videos${path.sep}`,
     `raw${path.sep}sessions${path.sep}`,
   ];
