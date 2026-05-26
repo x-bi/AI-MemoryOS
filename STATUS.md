@@ -36,6 +36,12 @@
 
 先通过真实任务扩大样例输入，再分批扩展。每个输入先读取轻量 `gate.md`；L1 默认倾向触发轻量 workflow / skill，L2/L3 才按预算读取或写入。
 
+## CodeGraph Integration Status
+
+- CodeGraph optional integration is installed with `@colbymchenry/codegraph@0.9.4`.
+- OS policy, workflow, shared wrapper, project helper, Codex MCP template, Claude MCP restore notes, and CodeGraph external config snapshot have been added.
+- Global CodeGraph switch is currently disabled in private registry until projects are explicitly registered and enabled.
+
 ## Claude Code Adapter Status
 
 - Claude Code user gate is configured at `C:\Users\btf\.claude\CLAUDE.md` and synchronized from `adapters/claude/CLAUDE.md`.

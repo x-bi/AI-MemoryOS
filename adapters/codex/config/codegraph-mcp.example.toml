@@ -1,0 +1,17 @@
+# Optional CodeGraph MCP config for Codex Desktop.
+# Merge manually into C:\Users\btf\.codex\config.toml only when CodeGraph is enabled.
+# Do not let the CodeGraph installer rewrite C:\Users\btf\.codex\AGENTS.md.
+
+[mcp_servers.codegraph]
+command = "powershell"
+args = [
+  "-NoProfile",
+  "-ExecutionPolicy",
+  "Bypass",
+  "-File",
+  "C:\\Users\\btf\\AI-MemoryOS\\tools\\codegraph-wrapper.ps1",
+  "serve"
+]
+enabled = true
+startup_timeout_sec = 10
+tool_timeout_sec = 60

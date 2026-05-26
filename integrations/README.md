@@ -1,5 +1,17 @@
 # Integrations
 
+## CodeGraph
+
+Optional project-code graph acceleration is documented in:
+
+```text
+integrations/codegraph.md
+workflows/codegraph-assisted-project-analysis.md
+adapters/codegraph/external-config.md
+```
+
+CodeGraph is disabled by default until explicitly enabled in `private/codegraph/registry.json`.
+
 这里记录 MCP / Apps / GitHub / Figma / Obsidian 等外部上下文接入原则。
 
 ## 总原则
