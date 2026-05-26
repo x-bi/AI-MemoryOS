@@ -39,6 +39,7 @@
 ## Claude Code Adapter Status
 
 - Claude Code user gate is configured at `C:\Users\btf\.claude\CLAUDE.md` and synchronized from `adapters/claude/CLAUDE.md`.
+- Temporary Claude L2 Bias is enabled in the Claude gate: borderline L1/L2 tasks prefer L2 while Claude has more available usage budget; Codex gate and L3 write boundaries are unchanged.
 - Claude `ai_memoryos` MCP is configured in user scope and verified connected.
 - Claude skill source directory is `adapters/claude/skills`.
 - Claude skill discovery directory is `C:\Users\btf\.claude\skills`; active skills are junctions to the repository source.

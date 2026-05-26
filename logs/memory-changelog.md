@@ -1,5 +1,10 @@
 # Memory Changelog 记忆变更日志
 
+## 2026-05-26
+
+- 在 `adapters/claude/CLAUDE.md` 增加 Temporary Claude L2 Bias：仅 Claude adapter 在 L1/L2 边界任务上更倾向 L2，用于当前 Claude 使用量更充足阶段；不影响 Codex、shared skill specs、L0 和 L3 写入边界。
+- 在 `adapters/claude/external-config.md`、`_index.md`、`STATUS.md` 留痕，方便后续根据 Claude/Codex 使用量变化回顾或移除该临时 overlay。
+
 ## 2026-05-25
 
 - 收紧 MCP `memory_search` 默认范围：默认只搜索 active memory surface 和 `proposals/pending/`，accepted/rejected proposal 历史需要显式 `scope=history` 或 `scope=all`。

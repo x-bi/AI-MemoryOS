@@ -60,6 +60,7 @@ It provides the Claude Code Memory OS gate:
 - L2 reads `_index.md` plus at most 3 directly relevant pages.
 - L3 writes only `proposals/pending/` after explicit user request or confirmation.
 - Project-local instructions and code facts override Memory OS general rules.
+- Temporary Claude L2 Bias is enabled as a Claude-only adapter overlay while Claude has more available usage budget. Borderline L1/L2 tasks should prefer L2 when Memory OS context may prevent repeated mistakes. This overlay does not affect Codex, shared skill specs, or L3 write boundaries.
 
 Restore command:
 
@@ -234,6 +235,7 @@ Expected result:
 - Seven active skills appear under `.claude\skills`.
 - Active skills are junctions to `AI-MemoryOS\adapters\claude\skills`.
 - Managed skill source hashes match the shared specs.
+- Temporary Claude L2 Bias appears in `C:\Users\btf\.claude\CLAUDE.md` until explicitly removed or revised.
 - Claude adapter files contain no tokens, passwords, cookies, private endpoint credentials, account data, or PII.
 
 ## Read Boundary

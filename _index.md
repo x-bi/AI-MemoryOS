@@ -62,6 +62,7 @@
 ## Claude Adapter Current Entry
 
 - `adapters/claude/CLAUDE.md`: Claude Code Memory OS Gate template, synchronized to `C:\Users\btf\.claude\CLAUDE.md`.
+- Claude currently has a temporary Claude-only L2 Bias overlay in `adapters/claude/CLAUDE.md`: borderline L1/L2 tasks prefer L2 while Claude has more available usage budget. This does not affect Codex, shared skill specs, or L3 write boundaries.
 - `adapters/claude/external-config.md`: Claude Code external setup snapshot for migration or reinstall.
 - `adapters/claude/skills/`: Claude-specific skill sources. These are separate from Codex skills.
 - `C:\Users\btf\.claude\skills`: Claude Code skill discovery root; active skills are junctions to `adapters/claude/skills`.
