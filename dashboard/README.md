@@ -6,6 +6,7 @@
 
 - [[dashboard/home]]：总入口。
 - [[dashboard/pending-proposals]]：待审核 proposal。
+- [[dashboard/future-directions]]：重大方向说明。
 - [[dashboard/accepted-proposals]]：已接受 proposal。
 - [[dashboard/rejected-proposals]]：已拒绝 proposal。
 - [[dashboard/skills]]：active skills 和 candidate specs。

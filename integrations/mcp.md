@@ -58,4 +58,4 @@ Restore and validation steps are documented in:
 adapters/claude/external-config.md
 ```
 
-The same MCP safety boundary applies to Claude: read/search Memory OS, list/create/append pending proposals, and do not directly modify formal rules, router, skills, evals, accepted proposals, or rejected proposals.
+The same MCP safety boundary applies to Claude: read/search Memory OS including read-only future direction notes, list/create/append pending proposals, and do not directly modify formal rules, router, skills, evals, future direction notes, accepted proposals, or rejected proposals.

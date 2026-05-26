@@ -2,6 +2,15 @@
 
 ## 2026-05-26
 
+- 在 Codex / Claude gate 中新增 CodeGraph 使用预算：明确单文件/小范围问题直接读文件，候选 1-3 个文件时优先 direct read，`codegraph_files` 仅作为候选范围判断，跨模块调用链/影响面/架构问题再优先使用 graph；同步更新 `adapters/codex/gate.md`、`adapters/claude/CLAUDE.md` 和 `C:\Users\btf\.claude\CLAUDE.md`。
+
+- 新增 `proposals/future-directions/` 作为重大方向说明目录，用于保存长期架构意图和未来迁移背景，不作为可直接晋升的 pending proposal。
+- 将“单一通用 OS + 本地配置隔离 overlay”记录迁入 future directions，并补齐 `_index.md`、`proposals/README.md`、dashboard、weekly audit、MCP search policy 和验证脚本入口。
+- 接受 proposal：`2026-05-26-separate-daily-pending-proposals-from-future-direction-notes`。正式区分 `pending proposal` 与 `future direction note`，并在 `GOVERNANCE.md`、`core/memory-rules.md`、Codex / Claude gate 中写入读写边界。
+- 补齐 Claude 侧连接说明：`adapters/claude/CLAUDE.md`、`adapters/claude/external-config.md`、`adapters/claude/README.md` 和 `integrations/mcp.md` 明确 `proposals/future-directions/` 可读可搜但不可通过 MCP 写入或直接晋升。
+- 恢复 Claude user-scope `ai_memoryos` MCP 连接并同步 `C:\Users\btf\.claude\CLAUDE.md`；`tools/validate-memory-os.ps1` 增加 Claude user gate 与 `adapters/claude/CLAUDE.md` 的哈希一致性检查。
+- 接入 CodeGraph 作为 Memory OS 可选项目代码图加速层：完成 Claude MCP 配置、wrapper 脚本、集成策略文档（`integrations/codegraph.md`）、slot 模型、热分支策略和恢复策略。CodeGraph 索引存储于 `private/codegraph/`，不在业务项目仓库内创建 `.codegraph/`。
+- 在 Final Trace 增加 `graph: codegraph N` 字段，记录每轮 CodeGraph 工具调用次数；未调用时标记 `graph: none`。同步更新 `adapters/claude/CLAUDE.md` 和 `C:\Users\btf\.claude\CLAUDE.md`。
 - 在 `adapters/claude/CLAUDE.md` 增加 Temporary Claude L2 Bias：仅 Claude adapter 在 L1/L2 边界任务上更倾向 L2，用于当前 Claude 使用量更充足阶段；不影响 Codex、shared skill specs、L0 和 L3 写入边界。
 - 在 `adapters/claude/external-config.md`、`_index.md`、`STATUS.md` 留痕，方便后续根据 Claude/Codex 使用量变化回顾或移除该临时 overlay。
 

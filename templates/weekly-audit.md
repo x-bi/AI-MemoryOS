@@ -13,6 +13,7 @@ tags:
 
 - Output path 输出路径：`logs/audits/{{DATE:YYYY-MM-DD}}.md`
 - Pending proposals 待审核提案：
+- Future directions 重大方向说明（仅检查是否需要专题回顾，不直接晋升）：
 - Duplicates 重复内容：
 - Conflicts 冲突内容：
 - Stale content 过期内容：

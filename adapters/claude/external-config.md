@@ -59,6 +59,7 @@ It provides the Claude Code Memory OS gate:
 - L0/L1 do not read Memory OS content by default.
 - L2 reads `_index.md` plus at most 3 directly relevant pages.
 - L3 writes only `proposals/pending/` after explicit user request or confirmation.
+- `proposals/future-directions/` is long-term direction context, not a pending proposal queue and not directly promotable. It is normally read-only; local file writes there require an explicit future-direction or architecture-intent request.
 - Project-local instructions and code facts override Memory OS general rules.
 - Temporary Claude L2 Bias is enabled as a Claude-only adapter overlay while Claude has more available usage budget. Borderline L1/L2 tasks should prefer L2 when Memory OS context may prevent repeated mistakes. This overlay does not affect Codex, shared skill specs, or L3 write boundaries.
 
@@ -106,9 +107,9 @@ ai_memoryos ... Status: Connected
 
 MCP safety boundary:
 
-- Read/search Memory OS text files.
+- Read/search Memory OS text files, including `proposals/future-directions/` as read-only long-term direction notes.
 - Create or append only `proposals/pending/`.
-- Do not use MCP to directly modify formal rules, router, skills, evals, accepted proposals, or rejected proposals.
+- Do not use MCP to directly modify formal rules, router, skills, evals, future direction notes, accepted proposals, or rejected proposals.
 
 ## Optional CodeGraph MCP Server
 
@@ -253,6 +254,7 @@ Expected result:
 
 - User `CLAUDE.md` matches `adapters/claude/CLAUDE.md`.
 - `ai_memoryos` is connected.
+- `ai_memoryos` uses the current repository MCP server, so `memory_search` can read `proposals/future-directions/` while writes remain limited to `proposals/pending/`.
 - Seven active skills appear under `.claude\skills`.
 - Active skills are junctions to `AI-MemoryOS\adapters\claude\skills`.
 - Managed skill source hashes match the shared specs.

@@ -15,7 +15,7 @@ Memory OS itself stays model-neutral. Claude-specific instructions, skill copies
 Claude Code is expected to use two layers:
 
 1. `C:\Users\btf\.claude\CLAUDE.md` loads the Memory OS gate rules.
-2. `ai_memoryos` MCP gives Claude restricted Memory OS tools for reading/searching and writing only pending proposals.
+2. `ai_memoryos` MCP gives Claude restricted Memory OS tools for reading/searching, including read-only future direction notes, and writing only pending proposals.
 
 Active Claude skills are mapped from:
 
@@ -37,6 +37,7 @@ Use junctions for active skills so the repository copy remains the single mainta
 - Do not store tokens, passwords, cookies, account data, private logs, or PII in this adapter.
 - Do not use Claude MCP access to bypass Memory OS proposal review.
 - New lessons still go through `proposals/pending/`.
+- `proposals/future-directions/` is read-only long-term direction context, not a pending proposal queue.
 
 ## Restore
 

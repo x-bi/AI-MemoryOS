@@ -16,6 +16,14 @@ FROM "proposals/pending"
 SORT file.mtime DESC
 ```
 
+## Future Directions
+
+```dataview
+TABLE file.mtime AS updated, type, status
+FROM "proposals/future-directions"
+SORT file.mtime DESC
+```
+
 ## Checkpoints
 
 - [[GOVERNANCE]]

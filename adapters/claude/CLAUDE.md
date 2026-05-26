@@ -30,7 +30,7 @@ Before each task, classify the Memory OS level:
 - L0: Pure explanation, Q&A, single-point debugging, or simple local task. Do not read Memory OS content.
 - L1: Lightweight workflow such as review, self-check, bugfix regression risk, routing/config/permission/build-entry checks, or post-task lightweight reflection. Prefer local/project facts first. Do not read Memory OS content unless the user explicitly asks.
 - L2: Complex engineering tasks involving architecture, cross-module refactor, complex debugging, CI/CD, security/permissions, release flow, long-term conventions, broad review, or Memory OS maintenance. Read `C:\Users\btf\AI-MemoryOS\_index.md`, then read at most 3 directly relevant pages.
-- L3: Memory writing. Only create or update `C:\Users\btf\AI-MemoryOS\proposals\pending\` when the user explicitly asks to capture, reflect, update Memory OS, generate a proposal, or confirms a suggested capture.
+- L3: Memory writing. Only create or update `C:\Users\btf\AI-MemoryOS\proposals\pending\` when the user explicitly asks to capture, reflect, update Memory OS, generate a proposal, or confirms a suggested capture. Long-term future direction notes may be written to `C:\Users\btf\AI-MemoryOS\proposals\future-directions\` only when the user explicitly asks to record a future direction or architecture intent; they are not directly promotable pending proposals.
 
 ## Temporary Claude L2 Bias
 
@@ -63,6 +63,7 @@ Review this temporary overlay when Claude/Codex usage balance changes.
 - Project-local `CLAUDE.md`, `AGENTS.md`, README, and code facts override Memory OS general rules.
 - Reading Memory OS does not mean writing memory.
 - New lessons must first go to `proposals/pending/`; do not directly modify formal rules, router, skills, or evals unless the user explicitly enters maintenance/promotion mode.
+- `proposals/future-directions/` contains long-term direction notes. Read it only for relevant architecture, governance, Memory OS maintenance, or future-direction tasks; write there only on explicit future-direction/architecture-intent requests; do not treat it as a pending proposal or directly promotable rule.
 - Do not store tokens, passwords, secrets, cookies, PII, private production logs, customer private code, or unredacted sensitive data in Memory OS.
 - Do not scan `raw/`, `proposals/accepted/`, or `proposals/rejected/` unless the user explicitly asks or the task clearly requires it.
 
@@ -89,10 +90,25 @@ When the user asks to build, generate, update, sync, prepare, open, or use a pro
 - Never create `.codegraph` in the formal project root; generated graphs and private worktrees must stay under `C:\Users\btf\AI-MemoryOS\private\codegraph\`.
 - If CodeGraph is disabled or unavailable, say so and fall back to `rg` and direct source reads.
 
+## CodeGraph Usage Budget
+
+Use CodeGraph for call-chain, impact, architecture, and unclear-entry analysis. Do not route every code question through broad graph context by default.
+
+Before calling broad graph tools such as `codegraph_context`, choose the cheapest reliable path:
+
+- If the user gives an explicit file, page, symbol location, or small local range, read that file or range directly.
+- If the entry is unclear, first use `rg --files`, `rg`, or `codegraph_files` only to estimate candidate scope.
+- If the candidate set is 1-3 files, read those files directly instead of using broad graph context.
+- If the candidate set is 4-10 files and relationships are unclear, use the smallest graph tool that answers the question.
+- Use graph-first for cross-module flows, call paths, callers/callees, impact analysis, architecture questions, or public/shared symbol changes.
+- Count only actual CodeGraph MCP tool calls in the final trace; direct reads, `rg`, and non-CodeGraph file reads are not graph calls.
+
 ## Final Trace
 
 Except for very short confirmations, append one line at the end:
 
 ```text
-OS: Lx; skills: ...; workflow: ...; read: ...; write: ...
+OS: Lx; skills: ...; workflow: ...; read: ...; graph: codegraph N; write: ...
 ```
+
+- `graph: codegraph N` records the number of CodeGraph tool calls made this turn. Use `graph: none` when no CodeGraph calls were made.

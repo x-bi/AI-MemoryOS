@@ -94,6 +94,7 @@ $required = @(
   "evals\router-test-cases.md",
   "evals\skill-trigger-test-cases.md",
   "dashboard\home.md",
+  "dashboard\future-directions.md",
   "templates\proposal.md",
   "templates\router-correction-proposal.md",
   "templates\weekly-audit.md",
@@ -160,6 +161,7 @@ $claudeSkillRoot = Join-Path $env:USERPROFILE ".claude\skills"
 $missingClaudeSkills = @()
 $nonJunctionClaudeSkills = @()
 $wrongTargetClaudeSkills = @()
+$claudeGateSyncProblems = @()
 foreach ($skill in $activeSkills) {
   $claudePath = Join-Path $claudeSkillRoot $skill
   $claudeSkillFile = Join-Path $claudePath "SKILL.md"
@@ -178,6 +180,20 @@ foreach ($skill in $activeSkills) {
   $actualTarget = @($claudeItem.Target)[0]
   if ([string]::IsNullOrWhiteSpace($actualTarget) -or ((Resolve-Path -LiteralPath $actualTarget).Path -ne (Resolve-Path -LiteralPath $expectedTarget).Path)) {
     $wrongTargetClaudeSkills += $skill
+  }
+}
+
+$claudeAdapterGate = Join-Path $Root "adapters\claude\CLAUDE.md"
+$claudeUserGate = Join-Path $env:USERPROFILE ".claude\CLAUDE.md"
+if (Test-Path -LiteralPath $claudeAdapterGate) {
+  if (-not (Test-Path -LiteralPath $claudeUserGate)) {
+    $claudeGateSyncProblems += "Missing user Claude gate: $claudeUserGate"
+  } else {
+    $adapterGateHash = (Get-FileHash -LiteralPath $claudeAdapterGate -Algorithm SHA256).Hash
+    $userGateHash = (Get-FileHash -LiteralPath $claudeUserGate -Algorithm SHA256).Hash
+    if ($adapterGateHash -ne $userGateHash) {
+      $claudeGateSyncProblems += "User Claude gate differs from adapters\claude\CLAUDE.md"
+    }
   }
 }
 
@@ -289,6 +305,25 @@ foreach ($proposalDir in $proposalDirs) {
   }
 }
 
+$futureDirectionProblems = @()
+$futureDirectionsDir = Join-Path $Root "proposals\future-directions"
+if (Test-Path -LiteralPath $futureDirectionsDir) {
+  Get-ChildItem -LiteralPath $futureDirectionsDir -Filter "*.md" -File | Where-Object { $_.Name -ne "README.md" } | ForEach-Object {
+    $relative = Get-MemoryOsRelativePath -RootPath $Root -Path $_.FullName
+    $text = Get-Content -LiteralPath $_.FullName -Raw -Encoding UTF8
+    if (-not $text.StartsWith("---")) {
+      $futureDirectionProblems += "$relative missing frontmatter"
+      return
+    }
+    if ($text -notmatch "(?m)^type:\s*future-direction-note\s*$") {
+      $futureDirectionProblems += "$relative missing type: future-direction-note"
+    }
+    if ($text -notmatch "(?m)^not_directly_promotable:\s*true\s*$") {
+      $futureDirectionProblems += "$relative missing not_directly_promotable: true"
+    }
+  }
+}
+
 $brokenWikiLinks = @()
 foreach ($file in $allFiles | Where-Object { $_.Extension -eq ".md" }) {
   $relative = Get-MemoryOsRelativePath -RootPath $Root -Path $file.FullName
@@ -305,7 +340,7 @@ foreach ($file in $allFiles | Where-Object { $_.Extension -eq ".md" }) {
   }
 }
 
-if ($missing.Count -gt 0 -or $missingCodexSkills.Count -gt 0 -or $nonJunctionCodexSkills.Count -gt 0 -or $wrongTargetCodexSkills.Count -gt 0 -or $missingClaudeSkills.Count -gt 0 -or $nonJunctionClaudeSkills.Count -gt 0 -or $wrongTargetClaudeSkills.Count -gt 0 -or $badTemplates.Count -gt 0 -or $skillSyncProblems.Count -gt 0 -or $skillTriggerEvalProblems.Count -gt 0 -or $bomFiles.Count -gt 0 -or $sensitiveNameFiles.Count -gt 0 -or $proposalStatusProblems.Count -gt 0 -or $brokenWikiLinks.Count -gt 0) {
+if ($missing.Count -gt 0 -or $missingCodexSkills.Count -gt 0 -or $nonJunctionCodexSkills.Count -gt 0 -or $wrongTargetCodexSkills.Count -gt 0 -or $missingClaudeSkills.Count -gt 0 -or $nonJunctionClaudeSkills.Count -gt 0 -or $wrongTargetClaudeSkills.Count -gt 0 -or $claudeGateSyncProblems.Count -gt 0 -or $badTemplates.Count -gt 0 -or $skillSyncProblems.Count -gt 0 -or $skillTriggerEvalProblems.Count -gt 0 -or $bomFiles.Count -gt 0 -or $sensitiveNameFiles.Count -gt 0 -or $proposalStatusProblems.Count -gt 0 -or $futureDirectionProblems.Count -gt 0 -or $brokenWikiLinks.Count -gt 0) {
   Write-Host "Memory OS validation failed."
   if ($missing.Count -gt 0) { Write-Host "Missing files:"; $missing | ForEach-Object { Write-Host "- $_" } }
   if ($missingCodexSkills.Count -gt 0) { Write-Host "Missing .codex skill junctions:"; $missingCodexSkills | ForEach-Object { Write-Host "- $_" } }
@@ -314,12 +349,14 @@ if ($missing.Count -gt 0 -or $missingCodexSkills.Count -gt 0 -or $nonJunctionCod
   if ($missingClaudeSkills.Count -gt 0) { Write-Host "Missing .claude skill junctions:"; $missingClaudeSkills | ForEach-Object { Write-Host "- $_" } }
   if ($nonJunctionClaudeSkills.Count -gt 0) { Write-Host ".claude skills should be junctions to MemoryOS source:"; $nonJunctionClaudeSkills | ForEach-Object { Write-Host "- $_" } }
   if ($wrongTargetClaudeSkills.Count -gt 0) { Write-Host ".claude skill junctions point to wrong targets:"; $wrongTargetClaudeSkills | ForEach-Object { Write-Host "- $_" } }
+  if ($claudeGateSyncProblems.Count -gt 0) { Write-Host "Claude gate sync problems:"; $claudeGateSyncProblems | ForEach-Object { Write-Host "- $_" } }
   if ($badTemplates.Count -gt 0) { Write-Host "Templates missing frontmatter:"; $badTemplates | ForEach-Object { Write-Host "- $_" } }
   if ($skillSyncProblems.Count -gt 0) { Write-Host "Managed skill sync problems:"; $skillSyncProblems | ForEach-Object { Write-Host "- $_" } }
   if ($skillTriggerEvalProblems.Count -gt 0) { Write-Host "Skill trigger eval problems:"; $skillTriggerEvalProblems | ForEach-Object { Write-Host "- $_" } }
   if ($bomFiles.Count -gt 0) { Write-Host "SKILL.md files must be UTF-8 without BOM:"; $bomFiles | ForEach-Object { Write-Host "- $_" } }
   if ($sensitiveNameFiles.Count -gt 0) { Write-Host "Sensitive-looking files must stay out of Memory OS:"; $sensitiveNameFiles | ForEach-Object { Write-Host "- $_" } }
   if ($proposalStatusProblems.Count -gt 0) { Write-Host "Proposal status/frontmatter problems:"; $proposalStatusProblems | ForEach-Object { Write-Host "- $_" } }
+  if ($futureDirectionProblems.Count -gt 0) { Write-Host "Future direction frontmatter problems:"; $futureDirectionProblems | ForEach-Object { Write-Host "- $_" } }
   if ($brokenWikiLinks.Count -gt 0) { Write-Host "Broken wiki links:"; $brokenWikiLinks | ForEach-Object { Write-Host "- $_" } }
   exit 1
 }

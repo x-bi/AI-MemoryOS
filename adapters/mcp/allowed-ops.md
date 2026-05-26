@@ -17,6 +17,7 @@
 - `templates/**/*.md`
 - `logs/**/*.md`
 - `proposals/pending/*.md`
+- `proposals/future-directions/*.md`
 
 ## Explicit History Search
 
@@ -28,6 +29,8 @@ Only when a maintenance, audit, promotion, or rejection-review task explicitly n
 ## Explicit Read
 
 `memory_read` may read a specific relative file under the default search or explicit history search paths.
+
+`proposals/future-directions/*.md` is read-only through MCP. New future direction notes should be created through explicit repository maintenance, not through the pending-proposal write tools.
 
 Do not use MCP to read local private overlays. Human operators, Codex local tasks, or adapter-specific skills may still read `private/` only when explicitly intended and allowed by their own rules.
 

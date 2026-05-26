@@ -25,6 +25,7 @@ const ACTIVE_SEARCH_PATHS = [
   "templates",
   "logs",
   "proposals/pending",
+  "proposals/future-directions",
 ];
 const HISTORY_SEARCH_PATHS = [
   "proposals/accepted",

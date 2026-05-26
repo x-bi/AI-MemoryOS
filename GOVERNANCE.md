@@ -10,6 +10,9 @@
 - 新经验只能先进入 `proposals/pending/`。
 - 人工审核后，才可晋升到 rules / wiki / router / skills / evals。
 - accepted / rejected 都要保留原因。
+- `proposals/future-directions/` 用于重大方向说明和长期架构意图，不是 pending proposal 队列。
+- future direction note 只能在用户明确要求记录长期方向、架构意图或进入维护模式时创建；它不直接晋升为正式规则。
+- 当 future direction note 准备落地时，必须再拆成具体 proposal、设计文档、迁移计划或任务清单。
 
 ## 晋升条件
 
@@ -31,10 +34,11 @@
 ## 审计节奏
 
 - 每周：pending proposals、重复项、明显过期项。
+- 每月或专题：future direction notes 是否仍有效、是否需要拆出具体 proposal 或迁移计划。
 - 每月：stale / duplicate / conflicting memory、skills description 重叠、router 臃肿。
 
 ## 审计记录
 
 - 每次审计生成 `logs/audits/YYYY-MM-DD.md`，优先从 `templates/weekly-audit.md` 复制。
-- 审计记录至少包含 pending 数量、晋升/拒绝候选、冲突或过期内容、后续动作。
+- 审计记录至少包含 pending 数量、晋升/拒绝候选、future direction 回顾候选、冲突或过期内容、后续动作。
 - 修改正式 rules / router / skills / evals 时，同步在审计或变更记录中留下原因和影响范围。

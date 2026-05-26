@@ -16,10 +16,18 @@
 
 ## 写入流程
 
-1. 先写 `proposals/pending/`。
+1. 普通经验、规则、workflow、router、skill、docs 优化建议，先写 `proposals/pending/`。
 2. 人工审核 scope、重复、过期、风险。
 3. 通过后晋升到 rules / wiki / router / skills / evals。
 4. 更新 changelog。
+
+## 重大方向说明
+
+- `proposals/future-directions/` 保存长期重大方向、架构意图和未来迁移背景。
+- future direction note 不是普通 pending proposal，不进入“审核后直接晋升为正式规则”的流程。
+- 只有用户明确要求记录长期方向、架构意图，或明确进入 Memory OS 维护模式时，才写入 `proposals/future-directions/`。
+- 真正落地前，应基于 future direction note 再拆出具体 proposal、设计文档、迁移计划或任务清单。
+- future direction note 不得包含 token、密码、密钥、账号、auth 文件、PII、客户数据、生产日志原文或未脱敏项目代码。
 
 ## 读取与写入边界
 
@@ -29,6 +37,7 @@
 - L2 可自动读取 `_index.md`，并在预算内最多读取 3 个直接相关页面。
 - 读取 Memory OS 不等于写入记忆。
 - L3 仅在用户明确要求沉淀、复盘、更新 Memory OS、生成 proposal，或用户确认沉淀建议后，才写入 `proposals/pending/`。
+- 重大长期方向说明是维护类写入；仅在用户明确要求记录长期方向或架构意图时，写入 `proposals/future-directions/`，且不得被当作可直接晋升的 pending proposal。
 
 ## 读取预算
 

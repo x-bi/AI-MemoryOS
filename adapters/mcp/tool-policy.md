@@ -4,7 +4,7 @@
 
 | Tool | Access | Purpose |
 |---|---|---|
-| `memory_search` | read | 默认只搜索 active memory surface；显式 `scope=history` 才搜索 accepted/rejected proposal 历史 |
+| `memory_search` | read | 默认搜索 active memory surface、pending proposals 和 future direction notes；显式 `scope=history` 才搜索 accepted/rejected proposal 历史 |
 | `memory_read` | read | 读取指定相对路径文件；不读取 `.git/` 或 `private/` |
 | `list_pending_proposals` | read | 列出待审核 proposal |
 | `create_pending_proposal` | write pending only | 创建 pending proposal |
@@ -32,7 +32,7 @@ This MCP restriction does not prohibit explicit local work on `private/` by a hu
 { "scope": "active" }
 ```
 
-Default active search includes current Memory OS source files and `proposals/pending/`.
+Default active search includes current Memory OS source files, `proposals/pending/`, and `proposals/future-directions/`.
 
 Historical proposals are excluded by default. Use these only when the user asks for maintenance, audit, promotion, or rejection review:
 
@@ -41,7 +41,7 @@ Historical proposals are excluded by default. Use these only when the user asks 
 { "scope": "all" }
 ```
 
-`scope=history` searches only `proposals/accepted/` and `proposals/rejected/`. `scope=all` searches active memory plus proposal history.
+`scope=history` searches only `proposals/accepted/` and `proposals/rejected/`. `scope=all` searches active memory, future direction notes, and proposal history.
 
 Search uses simple multi-term scoring. Exact phrase matches rank highest, path matches help ranking, and single-term matches can still surface related maintenance evidence when the query mixes English and Chinese terms.
 

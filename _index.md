@@ -7,7 +7,7 @@
 - L0：纯解释、纯问答、无文件改动、无决策影响的任务，读 gate 后直接执行，不读 Memory OS 正文。
 - L1：轻量 workflow / skill 默认倾向触发，读 gate 后不再读 Memory OS 正文。
 - L2：复杂工程任务，可自动读本文件，最多再读 3 个直接相关页面。
-- L3：仅用户明确要求或确认后写入 `proposals/pending/`。
+- L3：仅用户明确要求或确认后写入 `proposals/pending/`；重大长期方向说明仅在用户明确要求记录方向或架构意图时写入 `proposals/future-directions/`。
 - 记忆复盘：读本文件和少量相关 rules / workflows / domains / router 页面。
 - 维护模式：可以审计、整理、晋升 proposal，但仍需保留变更记录。
 
@@ -37,6 +37,7 @@
 - `workflows/`：可复用执行流程。
 - `domains/frontend/`：前端优先领域包。
 - `proposals/pending/`：唯一默认写入入口。
+- `proposals/future-directions/`：重大方向说明和长期架构意图，不作为可直接晋升的 pending proposal。
 
 ## Domain Entry 领域入口
 

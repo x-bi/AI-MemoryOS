@@ -17,6 +17,19 @@ When the user asks to build, generate, update, sync, prepare, open, or use a pro
 - Never create `.codegraph` in the formal project root; generated graphs and private worktrees must stay under `C:\Users\btf\AI-MemoryOS\private\codegraph\`.
 - If CodeGraph is disabled or unavailable, say so and fall back to `rg` and direct source reads.
 
+## CodeGraph Usage Budget
+
+Use CodeGraph for call-chain, impact, architecture, and unclear-entry analysis. Do not route every code question through broad graph context by default.
+
+Before calling broad graph tools such as `codegraph_context`, choose the cheapest reliable path:
+
+- If the user gives an explicit file, page, symbol location, or small local range, read that file or range directly.
+- If the entry is unclear, first use `rg --files`, `rg`, or `codegraph_files` only to estimate candidate scope.
+- If the candidate set is 1-3 files, read those files directly instead of using broad graph context.
+- If the candidate set is 4-10 files and relationships are unclear, use the smallest graph tool that answers the question.
+- Use graph-first for cross-module flows, call paths, callers/callees, impact analysis, architecture questions, or public/shared symbol changes.
+- Count only actual CodeGraph MCP/tool calls in the final trace; direct reads, `rg`, and non-CodeGraph file reads are not graph calls.
+
 ## 回答风格
 
 默认中文；代码、命令、报错、日志、接口字段和术语保留原文。结论先行，简洁直接，按原因、方案、步骤展开。信息不足先问关键前提；方案有问题直接指出。涉及改代码、配置或脚本，未获授权时先说明改法、范围、原因，再问是否执行。
@@ -28,7 +41,7 @@ When the user asks to build, generate, update, sync, prepare, open, or use a pro
 - L0：纯解释、纯问答、无文件改动、无决策影响。直接执行，不读正文。
 - L1：轻量 workflow / skill，默认倾向触发，不读正文。覆盖 diff/PR/commit/staged review、提交前自检、bugfix 回归风险、功能后风险扫描、排错后经验判断、任务后轻量复盘、配置/脚本/字段/路由/权限/构建入口变更检查。
 - L2：复杂工程任务。读 `_index.md` + 最多 3 个相关页面。覆盖架构、跨模块重构、复杂排错、CI/CD、安全权限、发布、长期规范、影响面大的 review、Memory OS 维护。
-- L3：写 `proposals/pending/`。仅用户明确要求沉淀、复盘、更新 Memory OS、生成 proposal，或用户确认沉淀建议后执行。
+- L3：写 `proposals/pending/`。仅用户明确要求沉淀、复盘、更新 Memory OS、生成 proposal，或用户确认沉淀建议后执行。重大长期方向说明仅在用户明确要求记录方向或架构意图时写入 `proposals/future-directions/`，且不作为可直接晋升的 pending proposal。
 
 允许多个 workflow / skill 协作，但只读取完成任务所需的最小规则集。多 skill 协作需满足：用户明确要求、任务天然跨多个检查面、一个 skill 输出会成为另一个 skill 输入，或多个 skill 覆盖不同风险面且不重复读取大量正文。重型 skill 的详细 checklist / output contract 按需读取。
 
@@ -36,7 +49,7 @@ When the user asks to build, generate, update, sync, prepare, open, or use a pro
 
 - 读取 Memory OS 不等于写入记忆。
 - L1/L2 任务结束时，如果出现明显可复用经验，可以提示一个沉淀候选并询问是否生成 pending proposal；不要自动写入。
-- 新经验只能先写 `proposals/pending/`；不要直接改正式 rules / router / skills / evals，除非用户明确进入维护或晋升模式。
+- 新经验只能先写 `proposals/pending/`；重大方向说明写入 `proposals/future-directions/`，仅作为未来拆解具体 proposal / migration plan 的背景。不要直接改正式 rules / router / skills / evals，除非用户明确进入维护或晋升模式。
 - 项目本地 `AGENTS.md`、README、代码事实优先于 AI Memory OS。
 - Codex Desktop 从 `C:\Users\btf\.codex\skills` 发现 skills；active skills 通过 junction 映射。不要假设外部仓库 skills 会自动发现。
 
@@ -53,9 +66,9 @@ When the user asks to build, generate, update, sync, prepare, open, or use a pro
 
 除极短确认外，最终回答末尾追加一行：
 
-`OS：Lx；skills：...；workflow：...；读取：...；写入：...`
+`OS：Lx；skills：...；workflow：...；读取：...；graph：codegraph N；写入：...`
 
-只记录本次 OS 触发路径；不展示 token 估算，不为生成 trace 额外读取文件或运行统计命令。
+只记录本次 OS 触发路径；不展示 token 估算，不为生成 trace 额外读取文件或运行统计命令。`graph：codegraph N` 记录本轮 CodeGraph 工具调用次数，未调用时写 `graph：none`。
 
 ## Fallback
 

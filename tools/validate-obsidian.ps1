@@ -89,6 +89,7 @@ if ($git.autoSaveInterval -lt 1) {
 $dashboards = @(
   "dashboard\home.md",
   "dashboard\pending-proposals.md",
+  "dashboard\future-directions.md",
   "dashboard\accepted-proposals.md",
   "dashboard\rejected-proposals.md",
   "dashboard\skills.md",

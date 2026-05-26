@@ -46,7 +46,7 @@
 
 - Claude Code user gate is configured at `C:\Users\btf\.claude\CLAUDE.md` and synchronized from `adapters/claude/CLAUDE.md`.
 - Temporary Claude L2 Bias is enabled in the Claude gate: borderline L1/L2 tasks prefer L2 while Claude has more available usage budget; Codex gate and L3 write boundaries are unchanged.
-- Claude `ai_memoryos` MCP is configured in user scope and verified connected.
+- Claude `ai_memoryos` MCP is configured in user scope and verified connected; it uses the shared MCP server, which can search `proposals/future-directions/` read-only while writes remain limited to `proposals/pending/`.
 - Claude skill source directory is `adapters/claude/skills`.
 - Claude skill discovery directory is `C:\Users\btf\.claude\skills`; active skills are junctions to the repository source.
 - Seven Claude skills are active: `memory-curator`, `routing-auditor`, `bugfix-with-regression-test`, `frontend-component-review`, `pr-review`, `vue-change-self-check`, and `git-ops-guide`.
