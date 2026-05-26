@@ -1,6 +1,6 @@
 # Allowed Operations
 
-## Read
+## Default Search
 
 - `README.md`
 - `_index.md`
@@ -14,9 +14,24 @@
 - `rules/**/*.md`
 - `skills/**/*.md`
 - `evals/**/*.md`
-- `proposals/**/*.md`
 - `templates/**/*.md`
 - `logs/**/*.md`
+- `proposals/pending/*.md`
+
+## Explicit History Search
+
+Only when a maintenance, audit, promotion, or rejection-review task explicitly needs proposal history:
+
+- `proposals/accepted/*.md`
+- `proposals/rejected/*.md`
+
+## Explicit Read
+
+`memory_read` may read a specific relative file under the default search or explicit history search paths.
+
+Do not use MCP to read local private overlays. Human operators, Codex local tasks, or adapter-specific skills may still read `private/` only when explicitly intended and allowed by their own rules.
+
+- `private/`
 
 ## Write
 
@@ -28,7 +43,8 @@ Only:
 
 - `.git/`
 - `.obsidian/workspace*.json`
+- `private/`
+- `raw/`
 - `raw/videos/`
 - `raw/sessions/`
 - files larger than the configured read limit
-

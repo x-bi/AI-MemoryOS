@@ -1,0 +1,144 @@
+{
+  "skills": [
+    {
+      "name": "memory-curator",
+      "status": "active",
+      "source": "skills/memory-curator/SKILL_SPEC.md",
+      "managed": true,
+      "adapters": {
+        "codex": {
+          "enabled": true,
+          "output": "adapters/codex/skills/memory-curator/SKILL.md",
+          "agentName": "Codex",
+          "description": "Use when the user explicitly asks to capture reusable lessons, update Memory OS, create a memory proposal, or do a memory retrospective. Do not use for ordinary coding tasks."
+        },
+        "claude": {
+          "enabled": true,
+          "output": "adapters/claude/skills/memory-curator/SKILL.md",
+          "agentName": "Claude",
+          "description": "Capture reusable engineering lessons into AI Memory OS, update Memory OS through pending proposals, create memory proposals, or perform memory retrospectives. Use only when the user explicitly asks to capture, reflect, remember, update Memory OS, generate a proposal, or review what should be retained. Do not use for ordinary coding, debugging, or review tasks unless the user asks to preserve the lesson."
+        }
+      }
+    },
+    {
+      "name": "routing-auditor",
+      "status": "active",
+      "source": "skills/routing-auditor/SKILL_SPEC.md",
+      "managed": true,
+      "adapters": {
+        "codex": {
+          "enabled": true,
+          "output": "adapters/codex/skills/routing-auditor/SKILL.md",
+          "agentName": "Codex",
+          "description": "Use when the user explicitly asks to audit routing, fix route misclassification, or improve task/domain/skill routing in Memory OS."
+        },
+        "claude": {
+          "enabled": true,
+          "output": "adapters/claude/skills/routing-auditor/SKILL.md",
+          "agentName": "Claude",
+          "description": "Audit or improve AI Memory OS routing. Use when the user explicitly asks to audit routing, fix route misclassification, improve task/domain/skill routing, update routing heuristics, investigate why a task chose the wrong Memory OS level, or create a router correction proposal. Do not use for ordinary code routing inside application projects."
+        }
+      }
+    },
+    {
+      "name": "bugfix-with-regression-test",
+      "status": "active",
+      "source": "skills/bugfix-with-regression-test/SKILL_SPEC.md",
+      "managed": true,
+      "adapters": {
+        "codex": {
+          "enabled": true,
+          "output": "adapters/codex/skills/bugfix-with-regression-test/SKILL.md",
+          "agentName": "Codex",
+          "description": "Use for bug fixes where the user asks for a robust fix, regression protection, or preventing recurrence. Do not use for quick explanations only."
+        },
+        "claude": {
+          "enabled": true,
+          "output": "adapters/claude/skills/bugfix-with-regression-test/SKILL.md",
+          "agentName": "Claude",
+          "description": "Fix bugs with root-cause analysis and regression protection. Use when the user asks for a robust fix, asks to prevent recurrence, mentions regression tests, asks why a bug happened, or wants a bug fixed safely rather than patched superficially. Do not use for quick explanations only."
+        }
+      }
+    },
+    {
+      "name": "frontend-component-review",
+      "status": "active",
+      "source": "skills/frontend-component-review/SKILL_SPEC.md",
+      "managed": true,
+      "adapters": {
+        "codex": {
+          "enabled": true,
+          "output": "adapters/codex/skills/frontend-component-review/SKILL.md",
+          "agentName": "Codex",
+          "description": "Use when the user asks to review a frontend component, UI interaction, form flow, or user-facing frontend behavior."
+        },
+        "claude": {
+          "enabled": true,
+          "output": "adapters/claude/skills/frontend-component-review/SKILL.md",
+          "agentName": "Claude",
+          "description": "Review frontend components, UI interactions, form flows, and user-facing frontend behavior. Use when the user asks to review a component, page interaction, form workflow, loading/error/empty state, accessibility, visual behavior, or frontend UX risk. Do not use for general backend review or implementation-only requests."
+        }
+      }
+    },
+    {
+      "name": "pr-review",
+      "status": "active",
+      "source": "skills/pr-review/SKILL_SPEC.md",
+      "managed": true,
+      "adapters": {
+        "codex": {
+          "enabled": true,
+          "output": "adapters/codex/skills/pr-review/SKILL.md",
+          "agentName": "Codex",
+          "description": "Use when the user asks to review a PR, commit, diff, staged changes, or current code changes for bugs, regressions, risk, or missing tests. Do not use for simple explanations or implementation-only requests."
+        },
+        "claude": {
+          "enabled": true,
+          "output": "adapters/claude/skills/pr-review/SKILL.md",
+          "agentName": "Claude",
+          "description": "Review pull requests, commits, diffs, staged changes, or current code changes for bugs, regressions, risky behavior, contract breaks, and missing tests. Use when the user asks for a code review, PR review, diff review, staged review, commit review, or asks whether recent changes are safe. Do not use for implementation-only requests or simple explanations."
+        }
+      }
+    },
+    {
+      "name": "vue-change-self-check",
+      "status": "active",
+      "source": "skills/vue-change-self-check/SKILL_SPEC.md",
+      "managed": true,
+      "adapters": {
+        "codex": {
+          "enabled": true,
+          "output": "adapters/codex/skills/vue-change-self-check/SKILL.md",
+          "agentName": "Codex",
+          "description": "Use for Vue, uni-app, or frontend pre-commit/post-change self-checks. Scan diff first, output stable numbered risks, and wait for user choice before fixing. Do not use for ordinary bugfix implementation."
+        },
+        "claude": {
+          "enabled": true,
+          "output": "adapters/claude/skills/vue-change-self-check/SKILL.md",
+          "agentName": "Claude",
+          "description": "Perform diff-first self-checks for Vue, uni-app, or frontend changes before commit or after implementation. Use when the user asks for a frontend self-check, pre-commit scan, post-change risk scan, Vue regression check, uni-app regression check, or asks to inspect recent frontend changes without immediately fixing them. Output stable numbered risks and wait for the user to choose what to fix."
+        }
+      }
+    },
+    {
+      "name": "git-ops-guide",
+      "status": "active",
+      "source": "skills/git-ops-guide/SKILL_SPEC.md",
+      "managed": true,
+      "adapters": {
+        "codex": {
+          "enabled": true,
+          "output": "adapters/codex/skills/git-ops-guide/SKILL.md",
+          "agentName": "Codex",
+          "description": "Use for Git command guidance. Explain command order, ask when the goal is ambiguous, warn on destructive or history-changing commands, and never execute Git commands."
+        },
+        "claude": {
+          "enabled": true,
+          "output": "adapters/claude/skills/git-ops-guide/SKILL.md",
+          "agentName": "Claude",
+          "description": "Provide Git command guidance without executing Git commands. Use when the user asks what Git command or command order to run, wants a Git command explained, describes a desired Git outcome but is unsure of steps, or asks for safe guidance around reset, revert, rebase, restore, branch, commit, pull, push, merge, stash, or clean. Do not use when the user asks Claude to run Git commands directly."
+        }
+      }
+    }
+  ]
+}

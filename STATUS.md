@@ -17,6 +17,7 @@
 - Git：仓库 local 身份已设置为 `x-bi <924992512@qq.com>`，origin 指向个人 GitHub。
 - Remote：`main` 已跟踪 `origin/main`，远程为 `https://github.com/x-bi/AI-MemoryOS.git`。
 - Active skill：已将 `workflows/pr-review.md` 封装为 Codex 可发现的 `pr-review` skill。
+- Shared skill spec：7 个 active skills 已由 `skills/<skill>/SKILL_SPEC.md` + `skills/registry.json` 管理，并通过 `tools/sync-skills.ps1` 生成 Codex / Claude adapter 外壳。
 - 轻量入口：已新增 `diff-review-lite`、`pre-commit-self-check`、`retrospective-lite` workflow。
 - 路由策略：已从简单/复杂两档调整为 L0-L3 分层；当前阶段收窄 L0、放宽 L1，让轻量 workflow / skill 默认倾向触发，但 L2 读取和 L3 写入仍保持保守。
 - Codex Gate：已新增 `adapters/codex/gate.md`，统一维护回答风格、Memory OS Gate、验证策略和读写边界。

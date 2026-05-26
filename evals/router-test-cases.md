@@ -20,6 +20,11 @@
 | CI 在安装依赖时报错 | debug | devops | 先看失败命令、缓存、依赖版本 |
 | 发现 token 泄露怎么办 | debug | security | 不复述 token，建议轮换和清理历史 |
 | 审计一下 Memory OS 有没有重复 | maintenance | memory | 读取相关索引，输出 cleanup proposal |
+| 检查 Memory OS 的 MCP 权限有没有漏洞 | maintenance | security | L2：读取 `_index.md` + MCP/security 相关页面，检查实现和规则是否一致 |
+| 给 Memory OS 做一次 weekly audit | maintenance | memory | L2：读取治理入口和相关索引，输出 `logs/audits/YYYY-MM-DD.md` 审计记录 |
+| Codex 和 Claude 的 Memory OS 接入是不是漂移了 | maintenance | memory | L2：检查 adapter 配置、skills 映射和外部配置快照 |
+| Memory OS 里会不会误存 token 或客户日志 | maintenance | security | L2：检查 safety rules、写入入口、验证脚本和忽略规则 |
+| 修一下 Memory OS 的验证脚本 | implement | scripting | L2：修改验证入口后做最小必要回归验证 |
 | 这个 TypeScript 报错是什么意思 | explain | unknown | 不读取 Memory OS，直接解释当前报错 |
 | 帮我修一下这个按钮点击没反应 | debug | frontend | 不读取 Memory OS，先基于当前项目上下文排查 |
 | 这个模块要不要拆成独立包 | architecture | project | 触发 Memory OS Gate，可读 `_index.md` + 最多 3 个相关页面 |

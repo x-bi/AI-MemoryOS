@@ -2,6 +2,8 @@
 
 这些目录是 MemoryOS active Codex skills 的源目录。
 
+这些 `SKILL.md` 由 `skills/registry.json` 和 `skills/<skill>/SKILL_SPEC.md` 生成。修改 active skill 核心逻辑时，先改共享 spec，再运行 `tools/sync-skills.ps1`；不要手写两份 Codex / Claude 外壳。
+
 Codex Desktop 实际读取：
 
 ```text

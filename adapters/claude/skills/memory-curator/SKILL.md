@@ -1,11 +1,12 @@
 ---
 name: memory-curator
-description: Capture reusable engineering lessons into AI Memory OS, update Memory OS through pending proposals, create memory proposals, or perform memory retrospectives. Use only when the user explicitly asks to capture, reflect, remember, update Memory OS, generate a proposal, or review what should be retained. Do not use for ordinary coding, debugging, or review tasks unless the user asks to preserve the lesson.
+description: "Capture reusable engineering lessons into AI Memory OS, update Memory OS through pending proposals, create memory proposals, or perform memory retrospectives. Use only when the user explicitly asks to capture, reflect, remember, update Memory OS, generate a proposal, or review what should be retained. Do not use for ordinary coding, debugging, or review tasks unless the user asks to preserve the lesson."
 ---
+<!-- Generated from skills/memory-curator/SKILL_SPEC.md; source-sha256: 49b9247482da6c34e48a93c6e0e0f6c28c76d5ea607ee20d7e0a81d02fa8ed43; adapter: claude. Do not edit by hand; run tools/sync-skills.ps1. -->
 
 # Memory Curator
 
-Curate reusable lessons without bypassing review.
+Curate reusable engineering lessons without bypassing review.
 
 ## Workflow
 

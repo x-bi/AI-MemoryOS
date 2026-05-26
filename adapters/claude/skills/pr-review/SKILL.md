@@ -1,7 +1,8 @@
 ---
 name: pr-review
-description: Review pull requests, commits, diffs, staged changes, or current code changes for bugs, regressions, risky behavior, contract breaks, and missing tests. Use when the user asks for a code review, PR review, diff review, staged review, commit review, or asks whether recent changes are safe. Do not use for implementation-only requests or simple explanations.
+description: "Review pull requests, commits, diffs, staged changes, or current code changes for bugs, regressions, risky behavior, contract breaks, and missing tests. Use when the user asks for a code review, PR review, diff review, staged review, commit review, or asks whether recent changes are safe. Do not use for implementation-only requests or simple explanations."
 ---
+<!-- Generated from skills/pr-review/SKILL_SPEC.md; source-sha256: 6e720bb02698a398f2eca6d931c49fd2736831c42ad1a8f5e7e753851e7fe215; adapter: claude. Do not edit by hand; run tools/sync-skills.ps1. -->
 
 # PR Review
 
@@ -10,7 +11,7 @@ Review as a bug finder, not as a summarizer.
 ## Workflow
 
 1. Identify the changed files, diff scope, and intended behavior.
-2. Read project-local `CLAUDE.md`, `AGENTS.md`, README, and nearby code facts when they affect the review.
+2. Read project-local instructions, README, and nearby code facts when they affect the review.
 3. Inspect the diff for behavior regressions, boundary cases, data contracts, permissions, routing, async state, and data-flow risks.
 4. Check whether tests or verification cover the risky paths.
 5. Report findings first, ordered by severity.

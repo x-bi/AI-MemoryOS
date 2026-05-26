@@ -1,7 +1,8 @@
 ---
 name: vue-change-self-check
-description: Perform diff-first self-checks for Vue, uni-app, or frontend changes before commit or after implementation. Use when the user asks for a frontend self-check, pre-commit scan, post-change risk scan, Vue regression check, uni-app regression check, or asks to inspect recent frontend changes without immediately fixing them. Output stable numbered risks and wait for the user to choose what to fix.
+description: "Perform diff-first self-checks for Vue, uni-app, or frontend changes before commit or after implementation. Use when the user asks for a frontend self-check, pre-commit scan, post-change risk scan, Vue regression check, uni-app regression check, or asks to inspect recent frontend changes without immediately fixing them. Output stable numbered risks and wait for the user to choose what to fix."
 ---
+<!-- Generated from skills/vue-change-self-check/SKILL_SPEC.md; source-sha256: e8c422f87121e0553019cf5163bdd366d012ae3a584dd15ee1ad5f11032c1f81; adapter: claude. Do not edit by hand; run tools/sync-skills.ps1. -->
 
 # Vue Change Self Check
 

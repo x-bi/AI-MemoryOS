@@ -6,6 +6,17 @@ Thumbs.db
 *.tmp
 *.bak
 
+# local secrets and credential stores
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+*.p12
+*.kdbx
+*.sqlite
+*.db
+
 # local editor state
 .obsidian/workspace*.json
 .obsidian/cache/

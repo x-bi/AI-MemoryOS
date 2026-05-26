@@ -108,6 +108,16 @@ MCP safety boundary:
 
 Codex Desktop discovers skills from `C:\Users\btf\.codex\skills`. Each active skill should be a junction to the Memory OS source directory.
 
+Active `SKILL.md` files are generated from shared specs:
+
+```text
+skills/registry.json
+skills/<skill>/SKILL_SPEC.md
+tools/sync-skills.ps1
+```
+
+Do not edit generated adapter `SKILL.md` files by hand. Update the shared spec or registry adapter description, then run `tools/sync-skills.ps1`.
+
 Active skills:
 
 - `memory-curator`
@@ -227,6 +237,7 @@ Expected result:
 - Seven active skills appear under `.codex\skills`.
 - Active skills are junctions or symbolic links to `AI-MemoryOS\adapters\codex\skills`.
 - `SKILL.md` files are UTF-8 no BOM.
+- Managed skill source hashes match `skills/<skill>/SKILL_SPEC.md`.
 - Optional MCP config points to an existing Node runtime and `adapters\mcp\server\obsidian-memory-os-mcp.mjs`.
 - Git local config has the intended `user.name`, `user.email`, `origin`, and `main` upstream.
 - Obsidian config is restored by tracked `.obsidian/` files, not by this external config snapshot.

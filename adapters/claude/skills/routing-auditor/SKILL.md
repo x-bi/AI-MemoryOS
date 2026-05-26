@@ -1,7 +1,8 @@
 ---
 name: routing-auditor
-description: Audit or improve AI Memory OS routing. Use when the user explicitly asks to audit routing, fix route misclassification, improve task/domain/skill routing, update routing heuristics, investigate why a task chose the wrong Memory OS level, or create a router correction proposal. Do not use for ordinary code routing inside application projects.
+description: "Audit or improve AI Memory OS routing. Use when the user explicitly asks to audit routing, fix route misclassification, improve task/domain/skill routing, update routing heuristics, investigate why a task chose the wrong Memory OS level, or create a router correction proposal. Do not use for ordinary code routing inside application projects."
 ---
+<!-- Generated from skills/routing-auditor/SKILL_SPEC.md; source-sha256: f4d56a7e9491e28aee47b870bd1eb12c7f000d8b2ed7c9ff68da8c2a90c8c43d; adapter: claude. Do not edit by hand; run tools/sync-skills.ps1. -->
 
 # Routing Auditor
 

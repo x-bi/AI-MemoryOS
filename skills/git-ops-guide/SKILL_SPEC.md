@@ -1,9 +1,3 @@
----
-name: git-ops-guide
-description: "Provide Git command guidance without executing Git commands. Use when the user asks what Git command or command order to run, wants a Git command explained, describes a desired Git outcome but is unsure of steps, or asks for safe guidance around reset, revert, rebase, restore, branch, commit, pull, push, merge, stash, or clean. Do not use when the user asks Claude to run Git commands directly."
----
-<!-- Generated from skills/git-ops-guide/SKILL_SPEC.md; source-sha256: 3f628607c6a9303b5afe01f0cedf2a6c2463297a12212a5982d095908bb7f197; adapter: claude. Do not edit by hand; run tools/sync-skills.ps1. -->
-
 # Git Ops Guide
 
 Give Git operation guidance in Chinese. Never execute Git commands under this skill.
@@ -15,7 +9,7 @@ Give Git operation guidance in Chinese. Never execute Git commands under this sk
 - The user asks to explain one concrete command, such as `git pull` or `git reset --soft HEAD~1`.
 - The user wants guidance only.
 
-Do not use when the user asks Claude to run Git commands, directly change repository state, or only wants a broad Git concept explanation.
+Do not use when the user asks {{AGENT_NAME}} to run Git commands, directly change repository state, or only wants a broad Git concept explanation.
 
 ## Decision Rules
 

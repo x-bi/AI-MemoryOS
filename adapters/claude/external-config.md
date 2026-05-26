@@ -123,6 +123,16 @@ Active Claude skills should be junctions to:
 C:\Users\btf\AI-MemoryOS\adapters\claude\skills
 ```
 
+Active `SKILL.md` files are generated from shared specs:
+
+```text
+skills/registry.json
+skills/<skill>/SKILL_SPEC.md
+tools/sync-skills.ps1
+```
+
+Do not edit generated adapter `SKILL.md` files by hand. Update the shared spec or registry adapter description, then run `tools/sync-skills.ps1`.
+
 Active skills:
 
 - `pr-review`
@@ -168,6 +178,7 @@ Expected result:
 - The seven active skills appear under `.claude\skills`.
 - Each entry is a junction to `AI-MemoryOS\adapters\claude\skills`.
 - Each skill has a `SKILL.md` with valid frontmatter.
+- Managed skill source hashes match `skills/<skill>/SKILL_SPEC.md`.
 
 ## Files Not Backed Up Here
 
@@ -222,6 +233,7 @@ Expected result:
 - `ai_memoryos` is connected.
 - Seven active skills appear under `.claude\skills`.
 - Active skills are junctions to `AI-MemoryOS\adapters\claude\skills`.
+- Managed skill source hashes match the shared specs.
 - Claude adapter files contain no tokens, passwords, cookies, private endpoint credentials, account data, or PII.
 
 ## Read Boundary

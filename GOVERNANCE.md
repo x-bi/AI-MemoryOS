@@ -32,3 +32,9 @@
 
 - 每周：pending proposals、重复项、明显过期项。
 - 每月：stale / duplicate / conflicting memory、skills description 重叠、router 臃肿。
+
+## 审计记录
+
+- 每次审计生成 `logs/audits/YYYY-MM-DD.md`，优先从 `templates/weekly-audit.md` 复制。
+- 审计记录至少包含 pending 数量、晋升/拒绝候选、冲突或过期内容、后续动作。
+- 修改正式 rules / router / skills / evals 时，同步在审计或变更记录中留下原因和影响范围。

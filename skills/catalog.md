@@ -8,6 +8,7 @@
 | routing-auditor | active | 路由误判修正和 eval 增长入口 |
 | bugfix-with-regression-test | active | 高频工程任务，能减少重复 bug |
 | frontend-component-review | active | 前端 MVP 领域的核心 review 能力 |
+| git-ops-guide | active | Git 命令指导，不执行 Git 命令；shared spec 试点 |
 | pr-review | active | 标准化 PR / diff / commit review 输出，作为真实案例收集入口 |
 | vue-change-self-check | active | Vue / uni-app 提交前 diff 风险扫描，已在本地真实任务中验证 |
 
@@ -47,3 +48,19 @@ Claude Code uses separate adapted skill files under `adapters/claude/skills`.
 | git-ops-guide | active | Claude version gives Git guidance only and must not execute Git commands. |
 
 For Claude Code, promote or update skills separately under `adapters/claude/skills`, then expose them through junctions in `C:\Users\btf\.claude\skills`. Do not point Claude directly at `adapters/codex/skills`.
+
+## Managed Shared Specs
+
+`skills/registry.json` is the source of truth for skills generated from shared specs. Managed skills keep model-independent instructions in `skills/<skill>/SKILL_SPEC.md` and generate adapter-specific `SKILL.md` files with `tools/sync-skills.ps1`.
+
+Current managed active skills:
+
+| Skill | Source | Generated Adapters |
+|---|---|---|
+| memory-curator | `skills/memory-curator/SKILL_SPEC.md` | Codex, Claude |
+| routing-auditor | `skills/routing-auditor/SKILL_SPEC.md` | Codex, Claude |
+| bugfix-with-regression-test | `skills/bugfix-with-regression-test/SKILL_SPEC.md` | Codex, Claude |
+| frontend-component-review | `skills/frontend-component-review/SKILL_SPEC.md` | Codex, Claude |
+| pr-review | `skills/pr-review/SKILL_SPEC.md` | Codex, Claude |
+| vue-change-self-check | `skills/vue-change-self-check/SKILL_SPEC.md` | Codex, Claude |
+| git-ops-guide | `skills/git-ops-guide/SKILL_SPEC.md` | Codex, Claude |

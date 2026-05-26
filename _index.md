@@ -53,6 +53,8 @@
 - `adapters/codex/gate.md`：Codex 全局 bootstrap 读取的运行策略入口。
 - `adapters/codex/external-config.md`：Codex OS 外部配置副本，用于换机或新软件快速恢复。
 - `adapters/codex/skills/`：Codex 专用 skills 源目录。
+- `skills/registry.json`：managed shared skill specs 的名单源，用于生成 Codex / Claude adapter skill 外壳。
+- `skills/<skill>/SKILL_SPEC.md`：模型无关的 skill 核心逻辑。
 - `adapters/codex/config/recommended-config.toml`：全局 config 合并建议。
 - `adapters/generic/SYSTEM.md`：通用模型接入说明。
 - `adapters/mcp/`：受限 MCP 自动化入口，只允许读库和写 pending proposal。

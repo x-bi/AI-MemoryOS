@@ -1,11 +1,12 @@
 ---
 name: git-ops-guide
-description: Use for Git command guidance. Explain command order, ask when the goal is ambiguous, warn on destructive or history-changing commands, and never execute Git commands.
+description: "Use for Git command guidance. Explain command order, ask when the goal is ambiguous, warn on destructive or history-changing commands, and never execute Git commands."
 ---
+<!-- Generated from skills/git-ops-guide/SKILL_SPEC.md; source-sha256: 3f628607c6a9303b5afe01f0cedf2a6c2463297a12212a5982d095908bb7f197; adapter: codex. Do not edit by hand; run tools/sync-skills.ps1. -->
 
 # Git Ops Guide
 
-Give Git operation guidance in Chinese. Do not execute Git commands.
+Give Git operation guidance in Chinese. Never execute Git commands under this skill.
 
 ## Use When
 
@@ -14,7 +15,7 @@ Give Git operation guidance in Chinese. Do not execute Git commands.
 - The user asks to explain one concrete command, such as `git pull` or `git reset --soft HEAD~1`.
 - The user wants guidance only.
 
-Do not use when the user asks Codex to run Git commands, directly change repo state, or only wants a broad Git concept explanation.
+Do not use when the user asks Codex to run Git commands, directly change repository state, or only wants a broad Git concept explanation.
 
 ## Decision Rules
 
@@ -73,3 +74,7 @@ For a single-command explanation, use:
 - `风险和检查`
 
 Put commands in fenced code blocks. Explain key parameters, why the command appears there, expected result, common mistakes, when to run `git status`, and likely failure points.
+
+## Memory OS Boundary
+
+Do not read or write Memory OS for ordinary Git guidance. Only suggest a pending proposal if the user explicitly asks to capture a reusable Git workflow lesson.

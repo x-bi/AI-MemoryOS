@@ -1,5 +1,19 @@
 # Memory Changelog 记忆变更日志
 
+## 2026-05-25
+
+- 收紧 MCP `memory_search` 默认范围：默认只搜索 active memory surface 和 `proposals/pending/`，accepted/rejected proposal 历史需要显式 `scope=history` 或 `scope=all`。
+- 明确 MCP 不读取本机 `private/` overlay；这不影响人工、Codex 本地任务或 adapter-specific skill 在明确意图下读取自己的私有 overlay。
+- 更新 `adapters/mcp/allowed-ops.md` 和 `adapters/mcp/tool-policy.md`，区分默认搜索、显式历史搜索、显式读取和写入边界。
+- 加固 MCP server：新增 `realpath` 边界校验、pending proposal 敏感内容预检、multi-term search scoring。
+- 扩展 `tools/validate-memory-os.ps1`：检查 Claude/Codex skill junction、敏感文件名、proposal status/frontmatter、broken wiki links。
+- 新增 `logs/audits/README.md`，并在 `GOVERNANCE.md`、`templates/weekly-audit.md` 中明确审计记录落点。
+- 补充 Memory OS 维护、安全和 adapter drift 相关 router / skill trigger eval 样例。
+- 建立 shared skill spec 试点：新增 `skills/registry.json`、`skills/git-ops-guide/SKILL_SPEC.md` 和 `tools/sync-skills.ps1`，由共享核心生成 Codex / Claude 的 `git-ops-guide` 外壳，并在验证脚本中检查 source hash 防漂移。
+- 将 7 个 active skills 全部迁移为 managed shared specs：`memory-curator`、`routing-auditor`、`bugfix-with-regression-test`、`frontend-component-review`、`pr-review`、`vue-change-self-check`、`git-ops-guide`。
+- 扩展 skill trigger eval：每个 active skill 必须至少有一个正向触发样例，`git-ops-guide` 增加命令解释、命令顺序指导和“请求执行命令不触发”的样例。
+- 加固 shared skill 和治理验证：`tools/sync-skills.ps1` 拒绝 registry 路径逃逸；`tools/validate-memory-os.ps1` 不再整体跳过 `.obsidian/`，仅跳过 workspace/cache；accepted/rejected proposal 必须保留决策原因。
+
 ## 2026-05-14
 
 - 删除旧版手动提示词 `prompts/low-cost.md` 和 `prompts/complex-task.md`；Codex 任务量级统一以 `adapters/codex/gate.md` 的 L0/L1/L2/L3 Gate 为准。
