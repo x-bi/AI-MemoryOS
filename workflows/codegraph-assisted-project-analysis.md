@@ -29,6 +29,8 @@ Choose a slot:
 
 An active module slot may bind several closely related branches from the same development cycle, such as `feature-a` and `feature-a-dev`. The slot is shared by the group and is synced to whichever concrete branch is current.
 
+When creating an active module slot, use the business feature group name as the slot name. This name is shared by Codex and Claude and must not be a model name or a generic label such as `feature`, `hot`, `module`, or `current`.
+
 ## Prepare Graph
 
 For the selected slot:

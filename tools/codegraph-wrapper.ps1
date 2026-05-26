@@ -48,6 +48,19 @@ function Get-PreparePath {
   return (Get-Location).Path
 }
 
+function Get-FallbackProjectId($config) {
+  if ($config.codegraph -and $config.codegraph.projects) {
+    $projectNames = $config.codegraph.projects.PSObject.Properties.Name
+    if ($projectNames -contains "ai-memoryos") {
+      return "ai-memoryos"
+    }
+    if ($projectNames.Count -gt 0) {
+      return $projectNames[0]
+    }
+  }
+  return $null
+}
+
 $config = Get-CodeGraphConfig
 $enabled = $false
 if ($config.codegraph -and $null -ne $config.codegraph.enabled) {
@@ -69,9 +82,16 @@ if (-not $enabled) {
 }
 
 $preparePath = Get-PreparePath
-$prepareJson = & powershell -NoProfile -ExecutionPolicy Bypass -File $projectTool prepare -SourcePath $preparePath
+$prepareJson = & powershell -NoProfile -ExecutionPolicy Bypass -File $projectTool prepare -SourcePath $preparePath 2>$null
 if ($LASTEXITCODE -ne 0) {
-  throw "Unable to prepare CodeGraph private slot for path: $preparePath"
+  $fallbackProjectId = Get-FallbackProjectId $config
+  if ([string]::IsNullOrWhiteSpace($fallbackProjectId)) {
+    throw "Unable to prepare CodeGraph private slot for path: $preparePath"
+  }
+  $prepareJson = & powershell -NoProfile -ExecutionPolicy Bypass -File $projectTool prepare -ProjectId $fallbackProjectId
+  if ($LASTEXITCODE -ne 0) {
+    throw "Unable to prepare CodeGraph fallback project: $fallbackProjectId"
+  }
 }
 
 $prepared = $prepareJson | ConvertFrom-Json

@@ -1,5 +1,22 @@
 # Codex Gate
 
+## CodeGraph Trigger
+
+CodeGraph is an optional project-code graph acceleration layer managed by AI Memory OS.
+
+When the user asks to build, generate, update, sync, prepare, open, or use a project graph, CodeGraph, graph index, hot branch, hot branch group, module slot, heat branch, or current branch graph:
+
+- Treat the task as at least L1; use L2 only if broader Memory OS context is needed.
+- Prefer the OS-managed scripts over ad hoc CodeGraph commands:
+  - `C:\Users\btf\AI-MemoryOS\tools\codegraph-project.ps1`
+  - `C:\Users\btf\AI-MemoryOS\tools\codegraph-wrapper.ps1`
+- Check the CodeGraph global/project switch before graph work.
+- Register the current project if the user clearly asks to build a graph for it and a project id/path are available.
+- If the user says the current branch belongs to a hot branch group or module group, create/update a shared module slot with `add-module-slot`, then run `prepare`.
+- Shared module slot names must be business feature group names, reused across Codex and Claude. Do not use model names or generic names such as `feature`, `hot`, `module`, `current`, `codex`, or `claude`; prefer names like `jd-brocade-gift`.
+- Never create `.codegraph` in the formal project root; generated graphs and private worktrees must stay under `C:\Users\btf\AI-MemoryOS\private\codegraph\`.
+- If CodeGraph is disabled or unavailable, say so and fall back to `rg` and direct source reads.
+
 ## 回答风格
 
 默认中文；代码、命令、报错、日志、接口字段和术语保留原文。结论先行，简洁直接，按原因、方案、步骤展开。信息不足先问关键前提；方案有问题直接指出。涉及改代码、配置或脚本，未获授权时先说明改法、范围、原因，再问是否执行。

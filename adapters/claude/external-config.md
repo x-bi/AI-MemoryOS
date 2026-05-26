@@ -110,6 +110,27 @@ MCP safety boundary:
 - Create or append only `proposals/pending/`.
 - Do not use MCP to directly modify formal rules, router, skills, evals, accepted proposals, or rejected proposals.
 
+## Optional CodeGraph MCP Server
+
+Claude Code may also have a user-scope stdio MCP server named `codegraph` when CodeGraph is enabled:
+
+```powershell
+& C:\Users\btf\.local\bin\claude.exe mcp add --transport stdio --scope user codegraph -- `
+  powershell `
+  -NoProfile `
+  -ExecutionPolicy Bypass `
+  -File C:\Users\btf\AI-MemoryOS\tools\codegraph-wrapper.ps1 `
+  serve
+```
+
+Validate:
+
+```powershell
+& C:\Users\btf\.local\bin\claude.exe mcp get codegraph
+```
+
+CodeGraph is an optional project-code graph acceleration layer. Its runtime policy, wrapper, and restore notes are documented under `integrations/codegraph.md` and `adapters/codegraph/external-config.md`.
+
 ## Active Claude Skill Junctions
 
 Claude Code discovers skills from:

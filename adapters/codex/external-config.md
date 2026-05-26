@@ -88,6 +88,14 @@ Source snapshot:
 adapters/mcp/config/codex-mcp.example.toml
 ```
 
+Optional CodeGraph MCP snapshot:
+
+```text
+adapters/codex/config/codegraph-mcp.example.toml
+```
+
+CodeGraph is an optional project-code graph acceleration layer. Its runtime policy, wrapper, and restore notes are documented under `integrations/codegraph.md` and `adapters/codegraph/external-config.md`.
+
 Validate the server path:
 
 ```powershell

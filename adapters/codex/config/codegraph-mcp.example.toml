@@ -3,6 +3,7 @@
 # Do not let the CodeGraph installer rewrite C:\Users\btf\.codex\AGENTS.md.
 
 [mcp_servers.codegraph]
+type = "stdio"
 command = "powershell"
 args = [
   "-NoProfile",

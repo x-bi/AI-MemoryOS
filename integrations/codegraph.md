@@ -66,6 +66,8 @@ feature-a-fix
 
 The shared module slot can represent only one concrete branch or commit at a time. When the current branch changes within the group, the slot worktree is switched and synced to that branch. If two related branches need simultaneous comparison or their differences grow large, split them into separate slots.
 
+Module slot names are OS-level business feature group names, not agent-local labels. Codex and Claude must use the same slot name for the same development cycle. Do not use generic or model-specific names such as `feature`, `hot`, `module`, `current`, `codex`, or `claude`; use a stable business name such as `jd-brocade-gift`.
+
 ## Hot Branch Policy
 
 Pinned branches:

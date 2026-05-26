@@ -14,6 +14,13 @@
 | 这个 bug 修完加个回归测试 | bugfix-with-regression-test | yes | bugfix + regression |
 | 刚才你的路由判断错了 | routing-auditor | yes | 明确纠正路由误判 |
 | 检查当前 Vue 改动有没有回归风险 | vue-change-self-check | yes | Vue diff self-check |
+| 检查我的改动，包含未提交改动和某个提交 | pr-review + vue-change-self-check | yes | 当前仓库为 h5-vue 或轻量 diff 命中前端文件时，泛化改动检查应补触发 Vue/uni-app self-check |
+| 检查当前 diff 有没有问题 | pr-review + vue-change-self-check | yes | diff 命中 `.vue`、`src/pages.json`、`manifest.json` 或前端页面/路由/导航配置时，应补触发 Vue/uni-app self-check |
+| 看一下这个 H5 改动有没有回归风险 | vue-change-self-check | yes | 明确 H5 / 前端回归风险扫描 |
+| 检查当前 diff 有没有问题 | pr-review | yes | diff 只命中后端服务、脚本或文档时，不应误触发 Vue self-check |
+| 解释一下这个 Vue 组件为什么这么写 | none | no | 解释任务不等于 diff self-check |
+| 直接修复这个 Vue bug | bugfix-with-regression-test | yes | 用户要求实现修复，不是先做 self-check |
+| 帮我审一下这个按钮交互 | frontend-component-review | yes | 单个前端组件/交互审查不同于整个 diff self-check |
 | 处理 #2 | vue-change-self-check | yes | 延续上一轮编号风险处理 |
 | git reset --soft HEAD~1 是什么意思 | git-ops-guide | yes | 解释具体 Git 命令但不执行 |
 | 我想撤销刚刚的 commit 但保留改动，应该怎么做 | git-ops-guide | yes | 用户需要 Git 命令顺序指导 |

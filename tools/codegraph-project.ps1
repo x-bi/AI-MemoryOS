@@ -102,8 +102,17 @@ function Get-CodeGraphCommand {
 }
 
 function Invoke-Checked($file, [string[]]$arguments) {
-  & $file @arguments
-  if ($LASTEXITCODE -ne 0) {
+  $previousErrorActionPreference = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  try {
+    & $file @arguments > $null 2> $null
+    $exitCode = $LASTEXITCODE
+  }
+  finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+
+  if ($exitCode -ne 0) {
     throw "Command failed: $file $($arguments -join ' ')"
   }
 }
@@ -113,6 +122,31 @@ function Sanitize-SlotName([string]$name) {
     return "default"
   }
   return ($name -replace "[^A-Za-z0-9._-]", "_")
+}
+
+function Assert-ModuleSlotName([string]$name) {
+  $slot = Sanitize-SlotName $name
+  $genericNames = @(
+    "active",
+    "branch",
+    "claude",
+    "codegraph",
+    "codex",
+    "current",
+    "default",
+    "dev",
+    "feature",
+    "graph",
+    "hot",
+    "index",
+    "module",
+    "slot",
+    "temp"
+  )
+
+  if ($genericNames -contains $slot.ToLowerInvariant()) {
+    throw "Module slot name '$slot' is too generic. Use the business feature group name, for example 'jd-brocade-gift'."
+  }
 }
 
 function Get-BranchNames($items) {
@@ -270,7 +304,7 @@ function Prepare-ProjectSlot($registry, [string]$id, $project) {
     }
 
     Write-Registry $registry
-    $state | ConvertTo-Json -Depth 10
+    $state | ConvertTo-Json -Depth 10 -Compress
   }
   finally {
     $lockStream.Close()
@@ -332,6 +366,7 @@ switch ($Command) {
     if ($null -eq $Branches -or $Branches.Count -eq 0) {
       throw "At least one branch is required for add-module-slot."
     }
+    Assert-ModuleSlotName $SlotName
 
     $project = $registry.codegraph.projects[$ProjectId]
     if (-not $project.Contains("activeModuleSlots") -or $null -eq $project.activeModuleSlots) {
@@ -339,12 +374,21 @@ switch ($Command) {
     }
 
     $slot = Sanitize-SlotName $SlotName
+    $newBranches = Get-BranchNames @($Branches)
     $existing = @()
     foreach ($moduleSlot in @($project.activeModuleSlots)) {
       if ($null -eq $moduleSlot) {
         continue
       }
-      if ($moduleSlot.slot -ne $slot) {
+      $existingBranches = Get-BranchNames $moduleSlot.branches
+      $hasSameBranch = $false
+      foreach ($branch in $newBranches) {
+        if ($existingBranches -contains $branch) {
+          $hasSameBranch = $true
+          break
+        }
+      }
+      if ($moduleSlot.slot -ne $slot -and -not $hasSameBranch) {
         $existing += ,$moduleSlot
       }
     }

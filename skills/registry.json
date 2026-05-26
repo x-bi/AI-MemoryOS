@@ -110,13 +110,13 @@
           "enabled": true,
           "output": "adapters/codex/skills/vue-change-self-check/SKILL.md",
           "agentName": "Codex",
-          "description": "Use for Vue, uni-app, or frontend pre-commit/post-change self-checks. Scan diff first, output stable numbered risks, and wait for user choice before fixing. Do not use for ordinary bugfix implementation."
+          "description": "Use for Vue, uni-app, or frontend pre-commit/post-change self-checks. Also use when the user asks to inspect current changes, unstaged or staged changes, a commit, or a diff, and the current repo or lightweight diff file list indicates Vue/uni-app/frontend files such as .vue, pages.json, manifest.json, frontend route/page/navigation config, or uni-app subpackage pages. Can run alongside general PR review, but prefer stable numbered risk output and wait for the user to choose what to fix."
         },
         "claude": {
           "enabled": true,
           "output": "adapters/claude/skills/vue-change-self-check/SKILL.md",
           "agentName": "Claude",
-          "description": "Perform diff-first self-checks for Vue, uni-app, or frontend changes before commit or after implementation. Use when the user asks for a frontend self-check, pre-commit scan, post-change risk scan, Vue regression check, uni-app regression check, or asks to inspect recent frontend changes without immediately fixing them. Output stable numbered risks and wait for the user to choose what to fix."
+          "description": "Use for Vue, uni-app, or frontend pre-commit/post-change self-checks. Also use when the user asks to inspect current changes, unstaged or staged changes, a commit, or a diff, and the current repo or lightweight diff file list indicates Vue/uni-app/frontend files such as .vue, pages.json, manifest.json, frontend route/page/navigation config, or uni-app subpackage pages. Can run alongside general PR review, but prefer stable numbered risk output and wait for the user to choose what to fix."
         }
       }
     },

@@ -1,4 +1,10 @@
 # Skill Changelog 技能变更日志
+## 2026-05-26
+
+- 晋升 proposal：`修正 Vue/uni-app 改动检查未触发 vue-change-self-check`。
+- 扩展 `vue-change-self-check` 的触发边界：当用户要求检查当前改动、未提交改动、staged changes、commit 或 diff，且当前仓库或轻量 diff 文件列表命中 Vue / uni-app / frontend 信号时，应触发该 skill。
+- 明确 `pr-review` 与 `vue-change-self-check` 可以并行触发；前端 diff 自检场景优先使用稳定编号风险清单输出。
+- 为 Codex / Claude adapter 同步更新 skill description，并补充正反 eval 用例，防止泛化 review 吞掉前端自检。
 
 ## 2026-05-14
 
