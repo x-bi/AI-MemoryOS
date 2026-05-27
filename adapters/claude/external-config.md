@@ -48,28 +48,40 @@ If Claude is installed elsewhere, update local commands to use the actual CLI pa
 
 ## User CLAUDE.md
 
-`C:\Users\btf\.claude\CLAUDE.md` should be kept in sync with:
+`C:\Users\btf\.claude\CLAUDE.md` is a bootstrap redirect that instructs Claude Code to read the full gate from:
 
 ```text
-adapters/claude/CLAUDE.md
+C:\Users\btf\AI-MemoryOS\adapters\claude\CLAUDE.md
 ```
 
-It provides the Claude Code Memory OS gate:
-
-- L0/L1 do not read Memory OS content by default.
-- L2 reads `_index.md` plus at most 3 directly relevant pages.
-- L3 writes only `proposals/pending/` after explicit user request or confirmation.
-- `proposals/future-directions/` is long-term direction context, not a pending proposal queue and not directly promotable. It is normally read-only; local file writes there require an explicit future-direction or architecture-intent request.
-- Project-local instructions and code facts override Memory OS general rules.
-- Temporary Claude L2 Bias is enabled as a Claude-only adapter overlay while Claude has more available usage budget. Borderline L1/L2 tasks should prefer L2 when Memory OS context may prevent repeated mistakes. This overlay does not affect Codex, shared skill specs, or L3 write boundaries.
+It is not a copy of the gate file. Changing `adapters/claude/CLAUDE.md` takes effect immediately on the next Claude session without copying.
 
 Restore command:
 
 ```powershell
-Test-Path C:\Users\btf\AI-MemoryOS\adapters\claude\CLAUDE.md
 New-Item -ItemType Directory -Force -Path C:\Users\btf\.claude | Out-Null
-Copy-Item -LiteralPath C:\Users\btf\AI-MemoryOS\adapters\claude\CLAUDE.md `
-  -Destination C:\Users\btf\.claude\CLAUDE.md -Force
+Set-Content -LiteralPath C:\Users\btf\.claude\CLAUDE.md -Encoding UTF8 -Value @"
+# Claude Code Memory OS Bootstrap
+
+每个用户输入先读取：
+
+``````text
+C:\Users\btf\AI-MemoryOS\adapters\claude\CLAUDE.md
+``````
+
+并按其中规则处理回答风格、Memory OS Gate、任务量级、验证策略和写入边界。
+
+读取 ``````CLAUDE.md`````` 只用于加载 Claude 运行策略，不等于读取 Memory OS 正文。
+
+如果 ``````CLAUDE.md`````` 读取失败：
+
+- 使用简洁、直接、工程化的中文回答。
+- 普通 explain / 单点 debug / small implement 直接处理。
+- 涉及架构、跨模块、安全/权限、发布流程、Memory OS 维护、长期规范时，先询问用户是否读取 Memory OS。
+- 不自动写入 Memory OS；只有用户明确要求或确认后，才写入 ``````C:\Users\btf\AI-MemoryOS\proposals\pending\``````。
+
+项目本地 ``````CLAUDE.md``````、``````AGENTS.md``````、README、代码事实优先于 AI Memory OS。
+"@
 ```
 
 ## MCP Server
@@ -155,7 +167,7 @@ skills/<skill>/SKILL_SPEC.md
 tools/sync-skills.ps1
 ```
 
-Do not edit generated adapter `SKILL.md` files by hand. Update the shared spec or registry adapter description, then run `tools/sync-skills.ps1`.
+Do not edit generated adapter `SKILL.md` files by hand — they will be overwritten on the next sync. Update the shared spec (`skills/<skill>/SKILL_SPEC.md`) or registry adapter description instead, then run `tools/sync-skills.ps1` followed by `tools/validate-memory-os.ps1`. The shared spec is the single source of truth.
 
 Active skills:
 
@@ -253,13 +265,13 @@ rg -n "^---$|^name:|^description:" C:\Users\btf\AI-MemoryOS\adapters\claude\skil
 
 Expected result:
 
-- User `CLAUDE.md` matches `adapters/claude/CLAUDE.md`.
+- User `CLAUDE.md` is the bootstrap redirect (not a full gate copy).
+- `adapters/claude/CLAUDE.md` is the source of truth for the full gate.
 - `ai_memoryos` is connected.
 - `ai_memoryos` uses the current repository MCP server, so `memory_search` can read `proposals/future-directions/` while writes remain limited to `proposals/pending/`.
 - Seven active skills appear under `.claude\skills`.
 - Active skills are junctions to `AI-MemoryOS\adapters\claude\skills`.
 - Managed skill source hashes match the shared specs.
-- Temporary Claude L2 Bias appears in `C:\Users\btf\.claude\CLAUDE.md` until explicitly removed or revised.
 - Claude adapter files contain no tokens, passwords, cookies, private endpoint credentials, account data, or PII.
 
 ## Read Boundary

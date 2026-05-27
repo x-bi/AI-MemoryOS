@@ -189,10 +189,9 @@ if (Test-Path -LiteralPath $claudeAdapterGate) {
   if (-not (Test-Path -LiteralPath $claudeUserGate)) {
     $claudeGateSyncProblems += "Missing user Claude gate: $claudeUserGate"
   } else {
-    $adapterGateHash = (Get-FileHash -LiteralPath $claudeAdapterGate -Algorithm SHA256).Hash
-    $userGateHash = (Get-FileHash -LiteralPath $claudeUserGate -Algorithm SHA256).Hash
-    if ($adapterGateHash -ne $userGateHash) {
-      $claudeGateSyncProblems += "User Claude gate differs from adapters\claude\CLAUDE.md"
+    $userGateText = Get-Content -LiteralPath $claudeUserGate -Raw -Encoding UTF8
+    if ($userGateText -notmatch 'AI-MemoryOS\\adapters\\claude\\CLAUDE\.md') {
+      $claudeGateSyncProblems += "User Claude gate is not a bootstrap redirect to adapters\claude\CLAUDE.md"
     }
   }
 }

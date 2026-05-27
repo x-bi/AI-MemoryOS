@@ -124,7 +124,7 @@ skills/<skill>/SKILL_SPEC.md
 tools/sync-skills.ps1
 ```
 
-Do not edit generated adapter `SKILL.md` files by hand. Update the shared spec or registry adapter description, then run `tools/sync-skills.ps1`.
+Do not edit generated adapter `SKILL.md` files by hand — they will be overwritten on the next sync. Update the shared spec (`skills/<skill>/SKILL_SPEC.md`) or registry adapter description instead, then run `tools/sync-skills.ps1` followed by `tools/validate-memory-os.ps1`. The shared spec is the single source of truth.
 
 Active skills:
 
