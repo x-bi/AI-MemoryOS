@@ -1,5 +1,84 @@
 # Codex Gate
 
+Memory OS root:
+
+```text
+C:\Users\btf\AI-MemoryOS
+```
+
+## Default Language And Style
+
+- Reply in Chinese by default.
+- Keep code, commands, logs, error messages, API fields, and technical terms in their original form when clearer.
+- Lead with the conclusion, then give reasons, options, and steps as needed.
+- Be concise, direct, and engineering-oriented.
+
+## Memory OS Gate
+
+Reading this file only loads operating policy. It is not the same as reading Memory OS content.
+
+Before each task, classify the Memory OS level:
+
+- L0: Pure explanation, Q&A, single-point debugging, or simple local task. Do not read Memory OS content.
+- L1: Lightweight workflow such as review, self-check, bugfix regression risk, routing/config/permission/build-entry checks, or post-task lightweight reflection. Prefer local/project facts first. Do not read Memory OS content unless the user explicitly asks.
+- L2: Complex engineering tasks involving architecture, cross-module refactor, complex debugging, CI/CD, security/permissions, release flow, long-term conventions, broad review, or Memory OS maintenance. Read `C:\Users\btf\AI-MemoryOS\_index.md`, then read at most 3 directly relevant pages.
+- L3: Memory writing. Only create or update `C:\Users\btf\AI-MemoryOS\proposals\pending\` when the user explicitly asks to capture, reflect, update Memory OS, generate a proposal, or confirms a suggested capture. Long-term future direction notes may be written to `C:\Users\btf\AI-MemoryOS\proposals\future-directions\` only when the user explicitly asks to record a future direction or architecture intent; they are not directly promotable pending proposals.
+
+Multiple workflows/skills may collaborate when: the user explicitly requests it, the task naturally spans multiple check surfaces, one skill's output feeds another, or multiple skills cover different risk surfaces without redundant large reads. Heavy skill checklists and output contracts should be read on demand.
+
+## Codex L1 Tendency
+
+This is a Codex-only temporary adapter overlay. The current priority is expanding real task coverage: L1 defaults to triggered; L2 content reads and L3 writes remain conservative.
+
+This overlay does not change:
+
+- L0 tasks still do not read Memory OS content.
+- L2 still reads only `_index.md` plus directly relevant pages within the normal page budget.
+- L3 writing still requires explicit user request or confirmation.
+- Shared skill specs remain model-neutral.
+- Claude gate remains unchanged.
+
+Codex Desktop discovers skills from `C:\Users\btf\.codex\skills`; active skills are junction-mapped. Do not assume external repo skills are auto-discovered.
+
+Review this overlay when task coverage or model balance changes.
+
+## Read And Write Boundaries
+
+- Project-local `CLAUDE.md`, `AGENTS.md`, README, and code facts override Memory OS general rules.
+- Reading Memory OS does not mean writing memory.
+- L1/L2 tasks: if a clearly reusable lesson emerges, suggest a capture candidate and ask whether to generate a pending proposal; do not auto-write.
+- New lessons must first go to `proposals/pending/`; do not directly modify formal rules, router, skills, or evals unless the user explicitly enters maintenance/promotion mode.
+- `proposals/future-directions/` contains long-term direction notes. Read it only for relevant architecture, governance, Memory OS maintenance, or future-direction tasks; write there only on explicit future-direction/architecture-intent requests; do not treat it as a pending proposal or directly promotable rule.
+- Do not store tokens, passwords, secrets, cookies, PII, private production logs, customer private code, or unredacted sensitive data in Memory OS.
+- Do not scan `raw/`, `proposals/accepted/`, or `proposals/rejected/` unless the user explicitly asks or the task clearly requires it.
+- Do not execute git operations (commit, push, pull, merge, rebase, reset, checkout with path, clean, etc.) unless the user explicitly mentions the operation. This repository is shared; implicit git mutations affect all adapters and all users.
+
+## Verification
+
+- For code/config changes, prefer lightweight checks first: inspect diff, call chains, routes/entry points, field contracts, boundary states, and obvious runtime risk.
+- Do not run full builds, full test suites, dependency installs, generated-code updates, or format/lint commands with write effects unless the task requires it or the user asks.
+- Only run minimal validation commands when changes affect entry points/routes/config, public modules, platform branches, build chains, or when the user explicitly requests or confirms before commit.
+- Before and after commands with potential side effects, check workspace state; distinguish temporary artifacts from deliverables.
+- Coverage, test reports, screenshots, video, cache, and build directories are non-delivery artifacts; confirm paths before scoped cleanup. Do not auto-clean source, lockfiles, snapshots, generated files, or API type files.
+- Before cleaning build/test/cache artifacts, constrain the path. Do not broaden cleanup to the whole repository.
+
+## Cross-Adapter Sync
+
+The following shared sections exist in BOTH adapter gate files. When modifying any of these sections, you MUST synchronize the change to the other adapter:
+
+- `adapters/claude/CLAUDE.md` (Claude Code gate)
+- `adapters/codex/gate.md` (Codex gate)
+
+Sync scope:
+
+1. **Gate rules** (L0-L3 definitions, verification strategy, trace format, read/write boundaries) — any change must be applied to both files.
+2. **CodeGraph rules** (trigger, usage budget) — same.
+3. **MCP safety boundary** — when modifying `adapters/mcp/tool-policy.md` or `adapters/mcp/allowed-ops.md`, also update the MCP safety description in both `adapters/claude/external-config.md` and `adapters/codex/external-config.md`.
+4. **Skill roster changes** — when adding, removing, or renaming an active skill, update `skills/registry.json` then run `tools/sync-skills.ps1`. Skill descriptions are shared at the skill level; do not add per-adapter descriptions.
+5. **Shared tool paths** (wrapper, MCP server script, etc.) — when changing a path, update both external-config files.
+
+Model-specific overlays (e.g., Claude Temporary L2 Bias, Codex L1 Tendency) are exempt from sync and belong only to their respective adapter.
+
 ## CodeGraph Trigger
 
 CodeGraph is an optional project-code graph acceleration layer managed by AI Memory OS.
@@ -28,52 +107,23 @@ Before calling broad graph tools such as `codegraph_context`, choose the cheapes
 - If the candidate set is 1-3 files, read those files directly instead of using broad graph context.
 - If the candidate set is 4-10 files and relationships are unclear, use the smallest graph tool that answers the question.
 - Use graph-first for cross-module flows, call paths, callers/callees, impact analysis, architecture questions, or public/shared symbol changes.
-- Count only actual CodeGraph MCP/tool calls in the final trace; direct reads, `rg`, and non-CodeGraph file reads are not graph calls.
+- Count only actual CodeGraph MCP tool calls in the final trace; direct reads, `rg`, and non-CodeGraph file reads are not graph calls.
 
-## 回答风格
+## Final Trace
 
-默认中文；代码、命令、报错、日志、接口字段和术语保留原文。结论先行，简洁直接，按原因、方案、步骤展开。信息不足先问关键前提；方案有问题直接指出。涉及改代码、配置或脚本，未获授权时先说明改法、范围、原因，再问是否执行。
+Except for very short confirmations, append one line at the end:
 
-## Memory OS Gate
+```text
+OS: Lx; skills: ...; workflow: ...; read: ...; graph: codegraph N; write: ...
+```
 
-每个输入先做 Gate 判定。读取本文件只加载运行策略，不等于读取 Memory OS 正文。当前阶段优先扩大真实任务输入：L1 默认倾向触发；L2 正文读取和 L3 写入继续保守。
-
-- L0：纯解释、纯问答、无文件改动、无决策影响。直接执行，不读正文。
-- L1：轻量 workflow / skill，默认倾向触发，不读正文。覆盖 diff/PR/commit/staged review、提交前自检、bugfix 回归风险、功能后风险扫描、排错后经验判断、任务后轻量复盘、配置/脚本/字段/路由/权限/构建入口变更检查。
-- L2：复杂工程任务。读 `_index.md` + 最多 3 个相关页面。覆盖架构、跨模块重构、复杂排错、CI/CD、安全权限、发布、长期规范、影响面大的 review、Memory OS 维护。
-- L3：写 `proposals/pending/`。仅用户明确要求沉淀、复盘、更新 Memory OS、生成 proposal，或用户确认沉淀建议后执行。重大长期方向说明仅在用户明确要求记录方向或架构意图时写入 `proposals/future-directions/`，且不作为可直接晋升的 pending proposal。
-
-允许多个 workflow / skill 协作，但只读取完成任务所需的最小规则集。多 skill 协作需满足：用户明确要求、任务天然跨多个检查面、一个 skill 输出会成为另一个 skill 输入，或多个 skill 覆盖不同风险面且不重复读取大量正文。重型 skill 的详细 checklist / output contract 按需读取。
-
-## 读取和写入边界
-
-- 读取 Memory OS 不等于写入记忆。
-- L1/L2 任务结束时，如果出现明显可复用经验，可以提示一个沉淀候选并询问是否生成 pending proposal；不要自动写入。
-- 新经验只能先写 `proposals/pending/`；重大方向说明写入 `proposals/future-directions/`，仅作为未来拆解具体 proposal / migration plan 的背景。不要直接改正式 rules / router / skills / evals，除非用户明确进入维护或晋升模式。
-- 项目本地 `AGENTS.md`、README、代码事实优先于 AI Memory OS。
-- Codex Desktop 从 `C:\Users\btf\.codex\skills` 发现 skills；active skills 通过 junction 映射。不要假设外部仓库 skills 会自动发现。
-
-## 验证与回归自检策略
-
-- 验证代码改动时，默认先做轻量检查：查看 `git diff`、相关调用链、配置/路由/入口、字段契约、边界状态和明显运行风险。
-- 不要因“验证”默认执行完整构建、完整测试、代码生成、依赖安装，或带 `--fix` / `--write` 的 lint / format。
-- 只有改动影响入口/路由/配置、公共模块、平台分支、构建链路，或用户明确要求、提交前确认时，才执行最小必要验证命令。
-- 执行可能产生副作用的验证命令前后，检查工作区状态；区分临时产物和交付内容。
-- coverage、测试报告、截图、视频、缓存、构建目录等非交付产物，可确认路径后限定清理；源码、lockfile、snapshot、generated 文件、API 类型文件不能自动清理。
-- 清理构建/测试/缓存产物前必须限定路径，不要把 `git clean` 扩大成全仓清理。
-
-## OS Trace Footer
-
-除极短确认外，最终回答末尾追加一行：
-
-`OS：Lx；skills：...；workflow：...；读取：...；graph：codegraph N；写入：...`
-
-只记录本次 OS 触发路径；不展示 token 估算，不为生成 trace 额外读取文件或运行统计命令。`graph：codegraph N` 记录本轮 CodeGraph 工具调用次数，未调用时写 `graph：none`。
+- `graph: codegraph N` records the number of CodeGraph tool calls made this turn. Use `graph: none` when no CodeGraph calls were made.
 
 ## Fallback
 
-如果本文件读取失败：
+If this file cannot be read:
 
-- 使用简洁、直接、工程化的中文回答；普通 explain / 单点 debug / small implement 直接处理。
-- 涉及架构、跨模块、安全/权限、发布、Memory OS 维护、长期规范时，先询问是否读取 Memory OS。
-- 不自动写入 Memory OS；只有用户明确要求或确认后，才写入 `proposals/pending/`。
+- Use concise, direct, engineering-oriented Chinese responses.
+- Handle simple explain / single-point debug / small implement tasks directly.
+- For architecture, cross-module, security/permissions, release, Memory OS maintenance, or long-term conventions, ask the user whether to read Memory OS first.
+- Do not auto-write to Memory OS; only write to `proposals/pending/` after explicit user request or confirmation.

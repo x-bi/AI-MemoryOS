@@ -1,6 +1,6 @@
 ---
 name: git-ops-guide
-description: "Use for Git command guidance. Explain command order, ask when the goal is ambiguous, warn on destructive or history-changing commands, and never execute Git commands."
+description: "Provide Git command guidance without executing Git commands. Use when the user asks what Git command or command order to run, wants a Git command explained, describes a desired Git outcome but is unsure of steps, or asks for safe guidance around reset, revert, rebase, restore, branch, commit, pull, push, merge, stash, or clean. Do not use when the user asks Claude to run Git commands directly."
 ---
 <!-- Generated from skills/git-ops-guide/SKILL_SPEC.md; source-sha256: 3f628607c6a9303b5afe01f0cedf2a6c2463297a12212a5982d095908bb7f197; adapter: codex. Do not edit by hand; run tools/sync-skills.ps1. -->
 

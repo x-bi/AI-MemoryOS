@@ -1,5 +1,9 @@
 # Memory Changelog 记忆变更日志
 
+## 2026-05-27
+
+- 接受 proposal：`2026-05-26-infrastructure-integration-should-leave-trace`。在 `core/memory-rules.md` 增加基础设施/工具集成事件 P0/P1/P2 留痕规则，并在 `GOVERNANCE.md` 的审计节奏中加入集成事件 changelog 检查；留痕默认写入 `logs/memory-changelog.md`，当条目增多时可拆分为 `logs/integration-events.md`。
+
 ## 2026-05-26
 
 - 在 Codex / Claude gate 中新增 CodeGraph 使用预算：明确单文件/小范围问题直接读文件，候选 1-3 个文件时优先 direct read，`codegraph_files` 仅作为候选范围判断，跨模块调用链/影响面/架构问题再优先使用 graph；同步更新 `adapters/codex/gate.md`、`adapters/claude/CLAUDE.md` 和 `C:\Users\btf\.claude\CLAUDE.md`。

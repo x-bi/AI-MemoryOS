@@ -107,9 +107,9 @@ If the Codex bundled Node path changes, update only the `command` path in local 
 
 MCP safety boundary:
 
-- MCP server name: `ai_memoryos`.
-- Default allowed actions: read Memory OS and write only `proposals/pending/`.
-- Do not use MCP to directly modify formal rules / router / skills / evals.
+- Read/search Memory OS text files, including `proposals/future-directions/` as read-only long-term direction notes.
+- Create or append only `proposals/pending/`.
+- Do not use MCP to directly modify formal rules, router, skills, evals, future direction notes, accepted proposals, or rejected proposals.
 - Do not store tokens, passwords, secrets, cookies, account data, private logs, or PII in MCP config.
 
 ## Active Skill Junctions

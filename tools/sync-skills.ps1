@@ -104,7 +104,7 @@ foreach ($skillConfig in $managedSkills) {
     Assert-ExistingPathInside -Path $outputDir -RootPath $Root -Label "Generated skill output directory" | Out-Null
 
     $body = $sourceBody.Replace("{{AGENT_NAME}}", [string]$adapter.agentName).TrimEnd()
-    $description = ConvertTo-YamlDoubleQuoted -Value ([string]$adapter.description)
+    $description = ConvertTo-YamlDoubleQuoted -Value ([string]$skillConfig.description)
     $content = @"
 ---
 name: $($skillConfig.name)

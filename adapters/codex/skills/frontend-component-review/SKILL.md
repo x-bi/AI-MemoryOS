@@ -1,6 +1,6 @@
 ---
 name: frontend-component-review
-description: "Use when the user asks to review a frontend component, UI interaction, form flow, or user-facing frontend behavior."
+description: "Review frontend components, UI interactions, form flows, and user-facing frontend behavior. Use when the user asks to review a component, page interaction, form workflow, loading/error/empty state, accessibility, visual behavior, or frontend UX risk. Do not use for general backend review or implementation-only requests."
 ---
 <!-- Generated from skills/frontend-component-review/SKILL_SPEC.md; source-sha256: ab28f810b00ea500fe833afd8d350b7a23e14b8c1488fc8188c1241e6e234605; adapter: codex. Do not edit by hand; run tools/sync-skills.ps1. -->
 

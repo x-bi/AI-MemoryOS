@@ -23,7 +23,7 @@ C:\Users\btf\AI-MemoryOS
 
 ## Memory OS Gate
 
-Reading this file only loads Claude operating policy. It is not the same as reading Memory OS content.
+Reading this file only loads operating policy. It is not the same as reading Memory OS content.
 
 Before each task, classify the Memory OS level:
 
@@ -31,6 +31,8 @@ Before each task, classify the Memory OS level:
 - L1: Lightweight workflow such as review, self-check, bugfix regression risk, routing/config/permission/build-entry checks, or post-task lightweight reflection. Prefer local/project facts first. Do not read Memory OS content unless the user explicitly asks.
 - L2: Complex engineering tasks involving architecture, cross-module refactor, complex debugging, CI/CD, security/permissions, release flow, long-term conventions, broad review, or Memory OS maintenance. Read `C:\Users\btf\AI-MemoryOS\_index.md`, then read at most 3 directly relevant pages.
 - L3: Memory writing. Only create or update `C:\Users\btf\AI-MemoryOS\proposals\pending\` when the user explicitly asks to capture, reflect, update Memory OS, generate a proposal, or confirms a suggested capture. Long-term future direction notes may be written to `C:\Users\btf\AI-MemoryOS\proposals\future-directions\` only when the user explicitly asks to record a future direction or architecture intent; they are not directly promotable pending proposals.
+
+Multiple workflows/skills may collaborate when: the user explicitly requests it, the task naturally spans multiple check surfaces, one skill's output feeds another, or multiple skills cover different risk surfaces without redundant large reads. Heavy skill checklists and output contracts should be read on demand.
 
 ## Temporary Claude L2 Bias
 
@@ -62,16 +64,38 @@ Review this temporary overlay when Claude/Codex usage balance changes.
 
 - Project-local `CLAUDE.md`, `AGENTS.md`, README, and code facts override Memory OS general rules.
 - Reading Memory OS does not mean writing memory.
+- L1/L2 tasks: if a clearly reusable lesson emerges, suggest a capture candidate and ask whether to generate a pending proposal; do not auto-write.
 - New lessons must first go to `proposals/pending/`; do not directly modify formal rules, router, skills, or evals unless the user explicitly enters maintenance/promotion mode.
 - `proposals/future-directions/` contains long-term direction notes. Read it only for relevant architecture, governance, Memory OS maintenance, or future-direction tasks; write there only on explicit future-direction/architecture-intent requests; do not treat it as a pending proposal or directly promotable rule.
 - Do not store tokens, passwords, secrets, cookies, PII, private production logs, customer private code, or unredacted sensitive data in Memory OS.
 - Do not scan `raw/`, `proposals/accepted/`, or `proposals/rejected/` unless the user explicitly asks or the task clearly requires it.
+- Do not execute git operations (commit, push, pull, merge, rebase, reset, checkout with path, clean, etc.) unless the user explicitly mentions the operation. This repository is shared; implicit git mutations affect all adapters and all users.
 
 ## Verification
 
 - For code/config changes, prefer lightweight checks first: inspect diff, call chains, routes/entry points, field contracts, boundary states, and obvious runtime risk.
 - Do not run full builds, full test suites, dependency installs, generated-code updates, or format/lint commands with write effects unless the task requires it or the user asks.
+- Only run minimal validation commands when changes affect entry points/routes/config, public modules, platform branches, build chains, or when the user explicitly requests or confirms before commit.
+- Before and after commands with potential side effects, check workspace state; distinguish temporary artifacts from deliverables.
+- Coverage, test reports, screenshots, video, cache, and build directories are non-delivery artifacts; confirm paths before scoped cleanup. Do not auto-clean source, lockfiles, snapshots, generated files, or API type files.
 - Before cleaning build/test/cache artifacts, constrain the path. Do not broaden cleanup to the whole repository.
+
+## Cross-Adapter Sync
+
+The following shared sections exist in BOTH adapter gate files. When modifying any of these sections, you MUST synchronize the change to the other adapter:
+
+- `adapters/claude/CLAUDE.md` (Claude Code gate)
+- `adapters/codex/gate.md` (Codex gate)
+
+Sync scope:
+
+1. **Gate rules** (L0-L3 definitions, verification strategy, trace format, read/write boundaries) — any change must be applied to both files.
+2. **CodeGraph rules** (trigger, usage budget) — same.
+3. **MCP safety boundary** — when modifying `adapters/mcp/tool-policy.md` or `adapters/mcp/allowed-ops.md`, also update the MCP safety description in both `adapters/claude/external-config.md` and `adapters/codex/external-config.md`.
+4. **Skill roster changes** — when adding, removing, or renaming an active skill, update `skills/registry.json` then run `tools/sync-skills.ps1`. Skill descriptions are shared at the skill level; do not add per-adapter descriptions.
+5. **Shared tool paths** (wrapper, MCP server script, etc.) — when changing a path, update both external-config files.
+
+Model-specific overlays (e.g., Claude Temporary L2 Bias, Codex L1 Tendency) are exempt from sync and belong only to their respective adapter.
 
 ## CodeGraph Trigger
 

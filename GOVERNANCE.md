@@ -37,6 +37,8 @@
 - 每月或专题：future direction notes 是否仍有效、是否需要拆出具体 proposal 或迁移计划。
 - 每月：stale / duplicate / conflicting memory、skills description 重叠、router 臃肿。
 
+- 基础设施/工具集成事件审计：检查 P0/P1 集成事件是否有对应 changelog 条目；P2 日常操作不要求留痕。
+
 ## 审计记录
 
 - 每次审计生成 `logs/audits/YYYY-MM-DD.md`，优先从 `templates/weekly-audit.md` 复制。

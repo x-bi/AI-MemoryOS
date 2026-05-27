@@ -1,6 +1,6 @@
 ---
 name: bugfix-with-regression-test
-description: "Use for bug fixes where the user asks for a robust fix, regression protection, or preventing recurrence. Do not use for quick explanations only."
+description: "Fix bugs with root-cause analysis and regression protection. Use when the user asks for a robust fix, asks to prevent recurrence, mentions regression tests, asks why a bug happened, or wants a bug fixed safely rather than patched superficially. Do not use for quick explanations only."
 ---
 <!-- Generated from skills/bugfix-with-regression-test/SKILL_SPEC.md; source-sha256: 00ffb207f250e11d9b19d6f2f5718474ad4069350d1a5986ff79233dfabc5766; adapter: codex. Do not edit by hand; run tools/sync-skills.ps1. -->
 

@@ -1,6 +1,6 @@
 ---
 name: pr-review
-description: "Use when the user asks to review a PR, commit, diff, staged changes, or current code changes for bugs, regressions, risk, or missing tests. Do not use for simple explanations or implementation-only requests."
+description: "Review pull requests, commits, diffs, staged changes, or current code changes for bugs, regressions, risky behavior, contract breaks, and missing tests. Use when the user asks for a code review, PR review, diff review, staged review, commit review, or asks whether recent changes are safe. Do not use for implementation-only requests or simple explanations."
 ---
 <!-- Generated from skills/pr-review/SKILL_SPEC.md; source-sha256: 6e720bb02698a398f2eca6d931c49fd2736831c42ad1a8f5e7e753851e7fe215; adapter: codex. Do not edit by hand; run tools/sync-skills.ps1. -->
 

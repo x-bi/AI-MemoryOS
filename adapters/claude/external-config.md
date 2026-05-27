@@ -110,6 +110,7 @@ MCP safety boundary:
 - Read/search Memory OS text files, including `proposals/future-directions/` as read-only long-term direction notes.
 - Create or append only `proposals/pending/`.
 - Do not use MCP to directly modify formal rules, router, skills, evals, future direction notes, accepted proposals, or rejected proposals.
+- Do not store tokens, passwords, secrets, cookies, account data, private logs, or PII in MCP config.
 
 ## Optional CodeGraph MCP Server
 
