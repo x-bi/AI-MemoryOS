@@ -3,6 +3,7 @@
 ## 2026-05-27
 
 - 接受 proposal：`2026-05-26-infrastructure-integration-should-leave-trace`。在 `core/memory-rules.md` 增加基础设施/工具集成事件 P0/P1/P2 留痕规则，并在 `GOVERNANCE.md` 的审计节奏中加入集成事件 changelog 检查；留痕默认写入 `logs/memory-changelog.md`，当条目增多时可拆分为 `logs/integration-events.md`。
+- Claude adapter 部署模型从"副本同步"迁移到"bootstrap redirect"：`C:\Users\btf\.claude\CLAUDE.md` 不再是 `adapters/claude/CLAUDE.md` 的完整副本，改为仅包含指向源文件的 redirect 指令；gate 变更后无需手动同步。同步更新 `_index.md`、`adapters/claude/external-config.md` 和 `tools/validate-memory-os.ps1` 的校验逻辑。
 
 ## 2026-05-26
 
