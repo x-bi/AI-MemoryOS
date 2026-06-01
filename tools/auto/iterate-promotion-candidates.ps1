@@ -45,7 +45,12 @@ foreach ($finding in $findings) {
     continue
   }
   Assert-NoSensitiveContent -Text $append
-  Add-Content -LiteralPath $proposalPath -Value $append -Encoding UTF8
+  # Add-Content on Windows writes CRLF and may add a BOM; the repo stores .md
+  # as LF without BOM. Read-modify-write through Write-MemoryOsTextFile keeps
+  # it idempotent.
+  $existing = Get-Content -LiteralPath $proposalPath -Raw -Encoding UTF8
+  if ($null -eq $existing) { $existing = "" }
+  Write-MemoryOsTextFile -Path $proposalPath -Content ($existing.TrimEnd("`n") + "`n" + $append)
   $actions.Add([pscustomobject]@{ tier = "B"; action = "mark-promotion-candidate"; target = $finding.path; status = "updated" })
   $updated++
 }

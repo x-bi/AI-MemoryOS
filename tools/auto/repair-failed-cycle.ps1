@@ -31,9 +31,10 @@ if ($failedLogs.Count -eq 0) {
     $newText = $text
     foreach ($field in @("run_id", "script", "started_at", "status", "repair_attempts")) {
       if ($newText -notmatch "(?m)^${field}:") {
-        $newText = $newText -replace '(?s)^---\r?\n', "---`r`n${field}: `"`"`r`n"
+        $newText = $newText -replace '(?s)^---\r?\n', "---`n${field}: `"`"`n"
       }
     }
+    $newText = $newText -replace "`r`n", "`n"
     if ($RepairScope -in @("frontmatter", "runlog", "all") -and $newText -ne $text) {
       if ($WhatIfPreference) {
         $actions.Add((New-AutoAction -Tier "A" -Action "repair-cycle" -Target $relative -Status "whatif"))

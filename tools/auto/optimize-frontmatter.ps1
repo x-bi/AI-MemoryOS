@@ -12,15 +12,17 @@ $actions = New-Object System.Collections.Generic.List[object]
 
 foreach ($file in Get-MemoryOsFiles -Root $rootPath -Extensions @(".md")) {
   $text = Get-Content -LiteralPath $file.FullName -Raw -Encoding UTF8
-  $newText = $text
-  if (-not $newText.EndsWith("`n")) { $newText += "`r`n" }
+  if ($null -eq $text) { $text = "" }
+  # Normalize to LF and ensure exactly one trailing LF — idempotent across reruns
+  # and avoids fighting git's autocrlf on Windows checkouts.
+  $newText = $text -replace "`r`n", "`n"
+  $newText = $newText.TrimEnd("`n") + "`n"
   if ($newText -ne $text) {
     $relative = Get-MemoryOsRelativePath -Root $rootPath -Path $file.FullName
     if ($WhatIfPreference) {
       $actions.Add((New-AutoAction -Tier "A" -Action "normalize-trailing-newline" -Target $relative -Status "whatif"))
     } else {
-      $utf8 = New-Object System.Text.UTF8Encoding($false)
-      [System.IO.File]::WriteAllText($file.FullName, $newText, $utf8)
+      Write-MemoryOsTextFile -Path $file.FullName -Content $newText
       $actions.Add((New-AutoAction -Tier "A" -Action "normalize-trailing-newline" -Target $relative -Status "updated"))
     }
   }

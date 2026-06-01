@@ -30,7 +30,7 @@ if ($findings.Count -eq 0) {
     if ($files.Count -eq 0) { $files = @(([string]$finding.path) -split ";\s*") }
     $topic = if ($files.Count -gt 0) { Split-Path -Leaf $files[0] } else { "unknown" }
     $title = "Merge duplicate content: $topic"
-    $fileLines = ($files | ForEach-Object { "- $_" }) -join "`r`n"
+    $fileLines = ($files | ForEach-Object { "- $_" }) -join "`n"
     $draft = @"
 Review the duplicate content below and choose one canonical page to keep:
 

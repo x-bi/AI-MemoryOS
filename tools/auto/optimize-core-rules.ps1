@@ -35,7 +35,8 @@ if ($ApplyApproved) {
     foreach ($relative in $missingRefs) {
       $lines.Add("- `$relative`: C-tier approved index reference.")
     }
-    $newIndexText = $indexText.TrimEnd() + "`r`n`r`n## Auto Indexed References`r`n`r`n" + ($lines -join "`r`n") + "`r`n"
+    $newIndexText = $indexText.TrimEnd() + "`n`n## Auto Indexed References`n`n" + ($lines -join "`n") + "`n"
+    $newIndexText = $newIndexText -replace "`r`n", "`n"
     if ($WhatIfPreference) {
       $actions.Add((New-AutoAction -Tier "C" -Action "apply-approved" -Target "_index.md" -Status "whatif"))
     } else {

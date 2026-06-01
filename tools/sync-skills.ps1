@@ -116,6 +116,8 @@ $body
 "@
 
     $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+    # Normalize to LF — script source is CRLF, here-strings inherit that; repo stores LF.
+    $content = ($content -replace "`r`n", "`n").TrimEnd("`n") + "`n"
     [System.IO.File]::WriteAllText($outputPath, $content, $utf8NoBom)
     Write-Host "Synced $($skillConfig.name) -> $(Get-RelativePathText -Path $adapter.output)"
   }

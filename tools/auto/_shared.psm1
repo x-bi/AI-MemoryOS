@@ -1,5 +1,25 @@
 $ErrorActionPreference = "Stop"
 
+function Write-MemoryOsTextFile {
+  # Single chokepoint for writing text files in the auto pipeline.
+  # Normalizes CRLF -> LF and ensures exactly one trailing LF so reruns are
+  # idempotent and don't produce noisy diffs on Windows (where .ps1 here-strings
+  # carry CRLF but the repo stores .md/.json as LF per .gitattributes).
+  param(
+    [Parameter(Mandatory = $true)][string]$Path,
+    [Parameter(Mandatory = $true)][string]$Content,
+    [switch]$NoTrailingNewline
+  )
+
+  if ($null -eq $Content) { $Content = "" }
+  $normalized = $Content -replace "`r`n", "`n"
+  if (-not $NoTrailingNewline) {
+    $normalized = $normalized.TrimEnd("`n") + "`n"
+  }
+  $utf8 = New-Object System.Text.UTF8Encoding($false)
+  [System.IO.File]::WriteAllText($Path, $normalized, $utf8)
+}
+
 function Resolve-MemoryOsRoot {
   param([string]$Root = "C:\Users\btf\AI-MemoryOS")
 
@@ -709,8 +729,7 @@ $($rows -join "`r`n")
 
   Assert-NoSensitiveContent -Text $content
   $path = Join-Path $logDir "000-overview.md"
-  $utf8 = New-Object System.Text.UTF8Encoding($false)
-  [System.IO.File]::WriteAllText($path, $content, $utf8)
+  Write-MemoryOsTextFile -Path $path -Content $content
   return $path
 }
 
@@ -833,8 +852,7 @@ repair_attempts: $RepairAttempts
   $content = $frontMatter + "`r`n" + $body
 
   Assert-NoSensitiveContent -Text $content
-  $utf8 = New-Object System.Text.UTF8Encoding($false)
-  [System.IO.File]::WriteAllText($path, $content, $utf8)
+  Write-MemoryOsTextFile -Path $path -Content $content
   Write-AutoRunOverview -Root $rootPath | Out-Null
   Write-Host "Wrote run log: $(Get-MemoryOsRelativePath -Root $rootPath -Path $path)"
   return $path
@@ -946,8 +964,7 @@ function New-BTierProposal {
   if (-not (Test-Path -LiteralPath $pendingDir)) {
     New-Item -ItemType Directory -Path $pendingDir | Out-Null
   }
-  $utf8 = New-Object System.Text.UTF8Encoding($false)
-  [System.IO.File]::WriteAllText($path, $content, $utf8)
+  Write-MemoryOsTextFile -Path $path -Content $content
   if ($hasQuota) { $env:AI_MEMORYOS_AUTO_PROPOSAL_COUNT = [string]($count + 1) }
   return [pscustomobject]@{ tier = "B"; action = "proposal"; target = (Get-MemoryOsRelativePath -Root $rootPath -Path $path); status = "created" }
 }
@@ -988,8 +1005,7 @@ function New-CTierApprovalSheet {
   if (-not (Test-Path -LiteralPath $sheetDir)) {
     New-Item -ItemType Directory -Path $sheetDir | Out-Null
   }
-  $utf8 = New-Object System.Text.UTF8Encoding($false)
-  [System.IO.File]::WriteAllText($path, $content, $utf8)
+  Write-MemoryOsTextFile -Path $path -Content $content
   return New-AutoAction -Tier "C" -Action "approval-sheet" -Target (Get-MemoryOsRelativePath -Root $rootPath -Path $path) -Status "created"
 }
 
@@ -1305,8 +1321,7 @@ function New-AutoCycleSummary {
   $dir = Get-AutoRunOutputDirectory -Root $rootPath -RelativeDirectory "logs\auto-runs" -ScriptName "cycle-summary"
   $path = Join-Path $dir "$(Get-Date -Format 'yyyy-MM-dd-HHmmss')-cycle-summary-$(ConvertTo-AutoSlug -Text $Scope).md"
   Assert-NoSensitiveContent -Text $content
-  $utf8 = New-Object System.Text.UTF8Encoding($false)
-  [System.IO.File]::WriteAllText($path, $content, $utf8)
+  Write-MemoryOsTextFile -Path $path -Content $content
   return $path
 }
 

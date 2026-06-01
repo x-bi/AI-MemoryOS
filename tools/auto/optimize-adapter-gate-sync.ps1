@@ -20,7 +20,8 @@ if ($ApplyApproved) {
   if ($traceMatch.Success -and ($claudeGate -notmatch "Final Trace")) {
     $traceSection = $traceMatch.Value.Trim()
     $claudePath = Join-Path $rootPath "adapters\claude\CLAUDE.md"
-    $newText = $claudeGate.TrimEnd() + "`r`n`r`n" + $traceSection + "`r`n"
+    $newText = $claudeGate.TrimEnd() + "`n`n" + $traceSection + "`n"
+    $newText = $newText -replace "`r`n", "`n"
     if ($WhatIfPreference) {
       $actions.Add((New-AutoAction -Tier "C" -Action "apply-approved" -Target "adapters/claude/CLAUDE.md" -Status "whatif"))
     } else {
