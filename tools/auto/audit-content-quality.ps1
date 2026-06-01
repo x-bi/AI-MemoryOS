@@ -27,11 +27,17 @@ foreach ($file in Get-MemoryOsFiles -Root $rootPath -Extensions @(".md")) {
 
   $meaningfulLines = @($body -split "\r?\n" | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
   $placeholderOnly = $false
+  $joined = ""
   if ($meaningfulLines.Count -gt 0) {
     $joined = ($meaningfulLines -join " ").Trim()
     $placeholderOnly = $joined -match '(?i)^(todo|tbd|placeholder|coming soon)[\s\.\-:]*$'
   }
-  if ($meaningfulLines.Count -lt 5 -or $placeholderOnly) {
+  # Hollow if: explicit placeholder, OR completely empty, OR (very few lines AND very short body).
+  # Concise distilled entries (e.g. one-line anti-pattern, one-line debugging order) are NOT hollow
+  # as long as the normalized body has enough characters to carry real content.
+  $bodyChars = $joined.Length
+  $isHollow = $placeholderOnly -or ($meaningfulLines.Count -eq 0) -or ($meaningfulLines.Count -lt 3 -and $bodyChars -lt 20)
+  if ($isHollow) {
     $findings.Add((New-AutoFinding -Severity "warning" -Category "hollow-content" -Message "Markdown body appears too short or placeholder-only." -Path $relative -Tier "B"))
   }
 }
