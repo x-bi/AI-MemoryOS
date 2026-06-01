@@ -322,7 +322,7 @@ $proposalDirs = @(
 foreach ($proposalDir in $proposalDirs) {
   $fullDir = Join-Path $Root $proposalDir.Path
   if (-not (Test-Path -LiteralPath $fullDir)) { continue }
-  Get-ChildItem -LiteralPath $fullDir -Filter "*.md" -File | ForEach-Object {
+  Get-ChildItem -LiteralPath $fullDir -Filter "*.md" -File -Recurse | ForEach-Object {
     $relative = Get-MemoryOsRelativePath -RootPath $Root -Path $_.FullName
     $text = Get-Content -LiteralPath $_.FullName -Raw -Encoding UTF8
     if (-not $text.StartsWith("---")) {

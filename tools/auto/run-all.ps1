@@ -15,6 +15,7 @@ Import-Module (Join-Path $PSScriptRoot "_shared.psm1") -Force
 Test-MemoryOsRepo -Root $Root | Out-Null
 $rootPath = Resolve-MemoryOsRoot -Root $Root
 $modelProfileObj = Get-ModelProfile -Root $rootPath -Name $ModelProfile
+$outputContext = Enter-AutoRunOutputContext -ScriptName "run-all" -Detail $Phase
 
 function Invoke-AutoScript {
   param(
@@ -104,6 +105,7 @@ try {
 } finally {
   if ($null -eq $oldQuota) { $env:AI_MEMORYOS_AUTO_PROPOSAL_QUOTA = $null } else { $env:AI_MEMORYOS_AUTO_PROPOSAL_QUOTA = $oldQuota }
   if ($null -eq $oldCount) { $env:AI_MEMORYOS_AUTO_PROPOSAL_COUNT = $null } else { $env:AI_MEMORYOS_AUTO_PROPOSAL_COUNT = $oldCount }
+  Exit-AutoRunOutputContext -Context $outputContext
 }
 
 if ($failed -gt 0) {

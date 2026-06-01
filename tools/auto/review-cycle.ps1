@@ -16,12 +16,13 @@ $pendingDir = Join-Path $rootPath "proposals\pending"
 
 $runCount = 0
 if (Test-Path -LiteralPath $logDir) {
-  $runCount = @(Get-ChildItem -LiteralPath $logDir -Filter "*.md" -File).Count
+  $runCount = @(Get-ChildItem -LiteralPath $logDir -Filter "*.md" -File -Recurse |
+    Where-Object { $_.Name -ne "000-overview.md" -and $_.FullName -notmatch '\\approval-sheets\\' -and $_.FullName -notmatch '\\\.locks\\' }).Count
 }
 
 $pendingCount = 0
 if (Test-Path -LiteralPath $pendingDir) {
-  $pendingCount = @(Get-ChildItem -LiteralPath $pendingDir -Filter "*.md" -File).Count
+  $pendingCount = @(Get-ChildItem -LiteralPath $pendingDir -Filter "*.md" -File -Recurse).Count
 }
 
 $currentBranch = if ($Branch) { $Branch } else { Get-CurrentGitBranch -Root $rootPath }

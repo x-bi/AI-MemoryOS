@@ -127,6 +127,75 @@ function ConvertTo-AutoSlug {
   return $safe
 }
 
+function Get-AutoCurrentScriptName {
+  param([string]$DefaultName = "run")
+
+  foreach ($frame in Get-PSCallStack) {
+    if ([string]::IsNullOrWhiteSpace($frame.ScriptName)) { continue }
+    if ((Split-Path -Leaf $frame.ScriptName) -eq "_shared.psm1") { continue }
+    return ([System.IO.Path]::GetFileNameWithoutExtension($frame.ScriptName))
+  }
+  return $DefaultName
+}
+
+function New-AutoRunOutputFolderName {
+  param(
+    [string]$ScriptName = "run",
+    [string]$Detail = ""
+  )
+
+  $parts = @($ScriptName, $Detail) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+  $slug = ConvertTo-AutoSlug -Text ($parts -join "-")
+  $runId = [guid]::NewGuid().ToString("N").Substring(0, 12)
+  return "$(Get-Date -Format 'yyyy-MM-dd-HHmmss')-$slug-$runId"
+}
+
+function Enter-AutoRunOutputContext {
+  param(
+    [string]$ScriptName = "run",
+    [string]$Detail = ""
+  )
+
+  $old = $env:AI_MEMORYOS_AUTO_RUN_OUTPUT_DIR
+  $changed = $false
+  if ([string]::IsNullOrWhiteSpace($env:AI_MEMORYOS_AUTO_RUN_OUTPUT_DIR)) {
+    $env:AI_MEMORYOS_AUTO_RUN_OUTPUT_DIR = New-AutoRunOutputFolderName -ScriptName $ScriptName -Detail $Detail
+    $changed = $true
+  }
+  return [pscustomobject]@{ old = $old; changed = $changed }
+}
+
+function Exit-AutoRunOutputContext {
+  param([object]$Context)
+
+  if ($null -eq $Context -or -not $Context.changed) { return }
+  if ([string]::IsNullOrWhiteSpace($Context.old)) {
+    $env:AI_MEMORYOS_AUTO_RUN_OUTPUT_DIR = $null
+  } else {
+    $env:AI_MEMORYOS_AUTO_RUN_OUTPUT_DIR = $Context.old
+  }
+}
+
+function Get-AutoRunOutputDirectory {
+  param(
+    [string]$Root,
+    [string]$RelativeDirectory,
+    [string]$ScriptName = ""
+  )
+
+  $rootPath = Resolve-MemoryOsRoot -Root $Root
+  if ([string]::IsNullOrWhiteSpace($env:AI_MEMORYOS_AUTO_RUN_OUTPUT_DIR)) {
+    $name = if ([string]::IsNullOrWhiteSpace($ScriptName)) { Get-AutoCurrentScriptName } else { $ScriptName }
+    $env:AI_MEMORYOS_AUTO_RUN_OUTPUT_DIR = New-AutoRunOutputFolderName -ScriptName $name
+  }
+  $parent = Join-Path $rootPath $RelativeDirectory
+  $dir = Join-Path $parent $env:AI_MEMORYOS_AUTO_RUN_OUTPUT_DIR
+  if (-not (Test-Path -LiteralPath $dir)) {
+    New-Item -ItemType Directory -Path $dir | Out-Null
+  }
+  return $dir
+}
+
 function Assert-NoSensitiveContent {
   param([string]$Text)
 
@@ -502,6 +571,149 @@ function Get-AutoLabel {
   return $Key
 }
 
+function Get-AutoFrontMatterValue {
+  param(
+    [string]$Text,
+    [string]$Key
+  )
+
+  $pattern = '(?m)^{0}:\s*"?([^"\r\n]*)"?\s*$' -f [regex]::Escape($Key)
+  $match = [regex]::Match($Text, $pattern)
+  if ($match.Success) { return $match.Groups[1].Value.Trim() }
+  return ""
+}
+
+function Write-AutoRunOverview {
+  param(
+    [string]$Root,
+    [string]$OutputDirectoryName = ""
+  )
+
+  $rootPath = Resolve-MemoryOsRoot -Root $Root
+  $logParent = Join-Path $rootPath "logs\auto-runs"
+  if (-not (Test-Path -LiteralPath $logParent)) { return $null }
+
+  $folderName = $OutputDirectoryName
+  $logDir = $null
+  if ([string]::IsNullOrWhiteSpace($folderName)) {
+    $folderName = $env:AI_MEMORYOS_AUTO_RUN_OUTPUT_DIR
+  }
+  if ([string]::IsNullOrWhiteSpace($folderName)) {
+    $latestDir = Get-ChildItem -LiteralPath $logParent -Directory |
+      Where-Object { $_.Name -notin @("approval-sheets", ".locks") } |
+      Sort-Object LastWriteTime -Descending |
+      Select-Object -First 1
+    if ($null -eq $latestDir) { return $null }
+    $folderName = $latestDir.Name
+    $logDir = $latestDir.FullName
+  } elseif ([System.IO.Path]::IsPathRooted($folderName)) {
+    $logDir = [System.IO.Path]::GetFullPath($folderName)
+    if (-not (Test-MemoryOsPathInside -ChildPath $logDir -ParentPath $logParent)) {
+      throw "Overview output directory escapes logs/auto-runs: $OutputDirectoryName"
+    }
+    $folderName = Split-Path -Leaf $logDir
+  } else {
+    $folderName = Split-Path -Leaf $folderName
+    $logDir = Join-Path $logParent $folderName
+  }
+
+  if (-not (Test-Path -LiteralPath $logDir)) { return $null }
+
+  $logs = @(Get-ChildItem -LiteralPath $logDir -Filter "*.md" -File |
+    Where-Object { $_.Name -ne "000-overview.md" } |
+    Sort-Object Name)
+  if ($logs.Count -eq 0) { return $null }
+
+  $rows = New-Object System.Collections.Generic.List[string]
+  $totalFindings = 0
+  $totalActions = 0
+  $failedCount = 0
+  $warningLikeCount = 0
+  foreach ($log in $logs) {
+    $text = Get-Content -LiteralPath $log.FullName -Raw -Encoding UTF8
+    $script = Get-AutoFrontMatterValue -Text $text -Key "script"
+    if ([string]::IsNullOrWhiteSpace($script)) { $script = $log.BaseName }
+    $status = Get-AutoFrontMatterValue -Text $text -Key "status"
+    $exitCode = Get-AutoFrontMatterValue -Text $text -Key "exit_code"
+    $findingsCountText = Get-AutoFrontMatterValue -Text $text -Key "findings_count"
+    $actionsCountText = Get-AutoFrontMatterValue -Text $text -Key "actions_count"
+    $maxSeverity = Get-AutoFrontMatterValue -Text $text -Key "max_severity"
+    $duration = Get-AutoFrontMatterValue -Text $text -Key "duration_seconds"
+    $findingsCount = 0
+    $actionsCount = 0
+    [int]::TryParse($findingsCountText, [ref]$findingsCount) | Out-Null
+    [int]::TryParse($actionsCountText, [ref]$actionsCount) | Out-Null
+    $totalFindings += $findingsCount
+    $totalActions += $actionsCount
+    $hasExitCode = -not [string]::IsNullOrWhiteSpace($exitCode)
+    if ($status -eq "failed" -or ($hasExitCode -and $exitCode -ne "0")) { $failedCount++ }
+    if ($maxSeverity -in @("critical", "warning")) { $warningLikeCount++ }
+    $relative = Get-MemoryOsRelativePath -Root $rootPath -Path $log.FullName
+    $rows.Add("| $(ConvertTo-MarkdownTableCell $script) | $(ConvertTo-MarkdownTableCell $status) | $(ConvertTo-MarkdownTableCell $exitCode) | $findingsCount | $actionsCount | $(ConvertTo-MarkdownTableCell $maxSeverity) | $(ConvertTo-MarkdownTableCell $duration) | $(ConvertTo-MarkdownTableCell $relative) |")
+  }
+
+  $pendingDir = Join-Path $rootPath "proposals\pending\$folderName"
+  $approvalDir = Join-Path $rootPath "logs\auto-runs\approval-sheets\$folderName"
+  $pendingCount = if (Test-Path -LiteralPath $pendingDir) { @(Get-ChildItem -LiteralPath $pendingDir -Filter "*.md" -File -Recurse).Count } else { 0 }
+  $approvalCount = if (Test-Path -LiteralPath $approvalDir) { @(Get-ChildItem -LiteralPath $approvalDir -Filter "*.md" -File -Recurse).Count } else { 0 }
+  $generatedAt = (Get-Date).ToString("o")
+  $logDirRelative = Get-MemoryOsRelativePath -Root $rootPath -Path $logDir
+  $pendingRelative = if (Test-Path -LiteralPath $pendingDir) { Get-MemoryOsRelativePath -Root $rootPath -Path $pendingDir } else { "proposals\pending\$folderName" }
+  $approvalRelative = if (Test-Path -LiteralPath $approvalDir) { Get-MemoryOsRelativePath -Root $rootPath -Path $approvalDir } else { "logs\auto-runs\approval-sheets\$folderName" }
+  $nextStep = if ($failedCount -gt 0) {
+    "Check logs with status=failed or non-zero exit_code first."
+  } elseif ($warningLikeCount -gt 0) {
+    "Check logs with max_severity=critical/warning, then review pending proposals or approval sheets."
+  } elseif ($pendingCount -gt 0 -or $approvalCount -gt 0) {
+    "This run has pending proposals or approval sheets that need human review."
+  } else {
+    "No failed logs or review outputs were detected."
+  }
+
+  $frontMatter = @"
+---
+type: auto-run-overview
+run_output_dir: "$folderName"
+generated_at: "$generatedAt"
+log_count: $($logs.Count)
+pending_count: $pendingCount
+approval_sheet_count: $approvalCount
+total_findings_count: $totalFindings
+total_actions_count: $totalActions
+failed_log_count: $failedCount
+warning_or_critical_log_count: $warningLikeCount
+---
+"@
+$content = @"
+$frontMatter
+# Auto Run Overview
+
+- Run directory: $logDirRelative
+- Generated at: $generatedAt
+- Log count: $($logs.Count)
+- Total findings: $totalFindings
+- Total actions: $totalActions
+- Pending proposals: $pendingCount ($pendingRelative)
+- Approval sheets: $approvalCount ($approvalRelative)
+
+## First Look
+
+$nextStep
+
+## Log Summary
+
+| Script | Status | ExitCode | Findings | Actions | MaxSeverity | Seconds | Path |
+| --- | --- | --- | ---: | ---: | --- | ---: | --- |
+$($rows -join "`r`n")
+"@
+
+  Assert-NoSensitiveContent -Text $content
+  $path = Join-Path $logDir "000-overview.md"
+  $utf8 = New-Object System.Text.UTF8Encoding($false)
+  [System.IO.File]::WriteAllText($path, $content, $utf8)
+  return $path
+}
+
 function Write-AutoRunLog {
   param(
     [string]$Root,
@@ -527,10 +739,7 @@ function Write-AutoRunLog {
     return $null
   }
 
-  $logDir = Join-Path $rootPath "logs\auto-runs"
-  if (-not (Test-Path -LiteralPath $logDir)) {
-    New-Item -ItemType Directory -Path $logDir | Out-Null
-  }
+  $logDir = Get-AutoRunOutputDirectory -Root $rootPath -RelativeDirectory "logs\auto-runs" -ScriptName $ScriptName
 
   $runId = [guid]::NewGuid().ToString("N").Substring(0, 12)
   $duration = [int]((Get-Date) - $StartedAt).TotalSeconds
@@ -626,6 +835,7 @@ repair_attempts: $RepairAttempts
   Assert-NoSensitiveContent -Text $content
   $utf8 = New-Object System.Text.UTF8Encoding($false)
   [System.IO.File]::WriteAllText($path, $content, $utf8)
+  Write-AutoRunOverview -Root $rootPath | Out-Null
   Write-Host "Wrote run log: $(Get-MemoryOsRelativePath -Root $rootPath -Path $path)"
   return $path
 }
@@ -640,7 +850,8 @@ function Get-LatestAutoRunFindings {
   $logDir = Join-Path $rootPath "logs\auto-runs"
   if (-not (Test-Path -LiteralPath $logDir)) { return @() }
 
-  $latest = Get-ChildItem -LiteralPath $logDir -Filter "*-$ScriptName-*.md" -File |
+  $latest = Get-ChildItem -LiteralPath $logDir -Filter "*-$ScriptName-*.md" -File -Recurse |
+    Where-Object { $_.FullName -notmatch '\\approval-sheets\\' -and $_.FullName -notmatch '\\\.locks\\' } |
     Sort-Object LastWriteTime -Descending |
     Select-Object -First 1
   if ($null -eq $latest) { return @() }
@@ -673,7 +884,7 @@ function Test-DuplicateProposal {
   foreach ($dir in $proposalDirs) {
     $fullDir = Join-Path $rootPath $dir
     if (-not (Test-Path -LiteralPath $fullDir)) { continue }
-    foreach ($file in Get-ChildItem -LiteralPath $fullDir -Filter "*.md" -File) {
+    foreach ($file in Get-ChildItem -LiteralPath $fullDir -Filter "*.md" -File -Recurse) {
       if ($file.BaseName -like "*$slug*") { return $true }
       $text = Get-Content -LiteralPath $file.FullName -Raw -Encoding UTF8
       if ($text -match "(?m)^#\s+Proposal:\s*$([regex]::Escape($Title))\s*$") { return $true }
@@ -711,7 +922,7 @@ function New-BTierProposal {
 
   $date = Get-Date -Format "yyyy-MM-dd"
   $slug = ConvertTo-AutoSlug -Text $Title
-  $pendingDir = Join-Path $rootPath "proposals\pending"
+  $pendingDir = Get-AutoRunOutputDirectory -Root $rootPath -RelativeDirectory "proposals\pending" -ScriptName (Get-AutoCurrentScriptName -DefaultName $Trigger)
   $path = Join-Path $pendingDir "$date-$slug.md"
   $titleYaml = $Title.Replace('"', "'")
 
@@ -753,7 +964,7 @@ function New-CTierApprovalSheet {
   )
 
   $rootPath = Resolve-MemoryOsRoot -Root $Root
-  $sheetDir = Join-Path $rootPath "logs\auto-runs\approval-sheets"
+  $sheetDir = Get-AutoRunOutputDirectory -Root $rootPath -RelativeDirectory "logs\auto-runs\approval-sheets" -ScriptName (Get-AutoCurrentScriptName -DefaultName "approval-sheet")
   $date = Get-Date -Format "yyyy-MM-dd-HHmmss"
   $slug = ConvertTo-AutoSlug -Text $Title
   $path = Join-Path $sheetDir "$date-$slug.md"
@@ -1015,8 +1226,7 @@ function New-AutoCycleSummary {
     Write-Host "WhatIf: would write cycle summary for $Scope"
     return $null
   }
-  $dir = Join-Path $rootPath "logs\auto-runs"
-  if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir | Out-Null }
+  $dir = Get-AutoRunOutputDirectory -Root $rootPath -RelativeDirectory "logs\auto-runs" -ScriptName "cycle-summary"
   $path = Join-Path $dir "$(Get-Date -Format 'yyyy-MM-dd-HHmmss')-cycle-summary-$(ConvertTo-AutoSlug -Text $Scope).md"
   Assert-NoSensitiveContent -Text $content
   $utf8 = New-Object System.Text.UTF8Encoding($false)

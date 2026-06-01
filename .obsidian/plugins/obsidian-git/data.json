@@ -3,7 +3,7 @@
   "autoCommitMessage": "memory: obsidian auto backup {{date}}",
   "commitMessageScript": "",
   "commitDateFormat": "YYYY-MM-DD HH:mm:ss",
-  "autoSaveInterval": 60000,
+  "autoSaveInterval": 60,
   "autoPushInterval": 10,
   "autoPullInterval": 0,
   "autoPullOnBoot": false,

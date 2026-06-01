@@ -14,6 +14,7 @@ $startedAt = Get-Date
 Test-MemoryOsRepo -Root $Root | Out-Null
 $rootPath = Resolve-MemoryOsRoot -Root $Root
 $modelProfileObj = Get-ModelProfile -Root $rootPath -Name $ModelProfile
+$outputContext = Enter-AutoRunOutputContext -ScriptName "start-cycle" -Detail $Scope
 $actions = New-Object System.Collections.Generic.List[object]
 $scripts = Get-AutoScopeScripts -Scope $Scope
 $branchName = "auto/$(Get-Date -Format 'yyyyMMdd-HHmmss')-$Scope"
@@ -32,6 +33,7 @@ if ($WhatIfPreference) {
   Write-Host "WhatIf: would start cycle scope=$Scope model=$($modelProfileObj.name) branch=$branchName audit_only=$($AuditOnly.IsPresent) max_repair_attempts=$MaxRepairAttempts push=$($Push.IsPresent)"
   Write-AutoRunLog -Root $rootPath -ScriptName "start-cycle" -Actions $actions -Parameters @{ phase = "cycle"; root = $rootPath; scope = $Scope; model_profile = $modelProfileObj.name; audit_only = $AuditOnly.IsPresent; max_repair_attempts = $MaxRepairAttempts; push = $Push.IsPresent; branch = $branchName } -StartedAt $startedAt -ModelProfile $modelProfileObj.name -Branch $branchName -WhatIf:$true | Out-Null
   New-AutoCycleSummary -Root $rootPath -Scope $Scope -Branch $branchName -Status "whatif" -PhaseSummary "WhatIf cycle plan only." -ManualItems "Review planned scripts before running without -WhatIf." -ReviewNotes "No branch, commit, push, or model call was executed." -StartedAt $startedAt -WhatIf | Out-Null
+  Exit-AutoRunOutputContext -Context $outputContext
   return
 }
 
@@ -53,4 +55,5 @@ try {
   throw
 } finally {
   Remove-AutoCycleLock -Lock $lock
+  Exit-AutoRunOutputContext -Context $outputContext
 }

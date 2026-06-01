@@ -15,7 +15,7 @@ $pendingDir = Join-Path $rootPath "proposals\pending"
 $titleMap = @{}
 
 if (Test-Path -LiteralPath $pendingDir) {
-  foreach ($file in Get-ChildItem -LiteralPath $pendingDir -Filter "*.md" -File) {
+  foreach ($file in Get-ChildItem -LiteralPath $pendingDir -Filter "*.md" -File -Recurse) {
     $relative = Get-MemoryOsRelativePath -Root $rootPath -Path $file.FullName
     $text = Get-Content -LiteralPath $file.FullName -Raw -Encoding UTF8
     if (-not $text.StartsWith("---")) {
