@@ -1,5 +1,9 @@
 # Memory Changelog 记忆变更日志
 
+## 2026-06-01
+
+- 放宽 `tools/auto/` 脚本分支的模型修复边界：`model-repair-plan.ps1` 可在 `auto/*` 分支上自动应用 A/B-tier 安全路径的 exact-match 模型编辑，并在写入后运行 `tools/validate-memory-os.ps1`；formal rules、router、skills、adapter gate、automation scripts 和核心治理文件仍走 C-tier 审批单。同步更新 `rules/auto-run-operations.md`、`docs/auto-run-usage.md` 和 `tools/auto/schemas/model-action.schema.json`。
+
 ## 2026-05-27
 
 - 接受 proposal：`2026-05-26-infrastructure-integration-should-leave-trace`。在 `core/memory-rules.md` 增加基础设施/工具集成事件 P0/P1/P2 留痕规则，并在 `GOVERNANCE.md` 的审计节奏中加入集成事件 changelog 检查；留痕默认写入 `logs/memory-changelog.md`，当条目增多时可拆分为 `logs/integration-events.md`。

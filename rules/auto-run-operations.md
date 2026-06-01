@@ -13,8 +13,10 @@ This rule defines the operating boundary for `tools/auto/` scripts.
 ## Tiers
 
 - A-tier: formatting, dashboard synchronization, and fully reversible non-semantic updates. Round 2 only.
-- B-tier: semantic suggestions that are not urgent. Write proposal drafts under `proposals/pending/`.
-- C-tier: changes to formal rules, router, skills, core memory, or adapter gates. Generate approval sheets by default. Applying approved changes is Round 2 only.
+- B-tier: semantic suggestions and safe-path content repairs. On `auto/*` script branches, Round 2 may apply exact-match model edits to non-protected paths after schema, sensitive-content, path-boundary, and repository validation checks. When a direct fix is not reliable, write proposal drafts under `proposals/pending/`.
+- C-tier: changes to formal rules, router, skills, core memory, adapter gates, automation scripts, release/security policy, or protected paths. Generate approval sheets by default. Applying approved changes remains explicit and must not be merged to `main` automatically.
+
+Protected paths for model auto-repair include `adapters/`, `core/`, `router/`, `rules/`, `skills/`, `tools/`, `logs/auto-runs/`, `private/`, `raw/`, `proposals/accepted/`, `proposals/rejected/`, `_index.md`, `GOVERNANCE.md`, `INSTALL.md`, `README.md`, `ROADMAP.md`, and `STATUS.md`.
 
 ## Safety
 
