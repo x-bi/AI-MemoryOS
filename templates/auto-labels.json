@@ -1,0 +1,64 @@
+{
+  "severity": {
+    "critical": "严重",
+    "warning": "警告",
+    "info": "信息"
+  },
+  "tier": {
+    "A": "A 自动级",
+    "B": "B 提案级",
+    "C": "C 审批级"
+  },
+  "category": {
+    "hollow-content": "内容疑似空洞",
+    "duplicate-content": "内容重复",
+    "broken-wiki-link": "Wiki 链接失效",
+    "broken-markdown-link": "Markdown 链接失效",
+    "skill-missing-positive-eval": "skill 缺少正向 eval",
+    "skill-missing-negative-eval": "skill 缺少反向 eval",
+    "active-skill-missing-from-skill-map": "active skill 未写入 skill-map",
+    "skill-map-non-active-skill": "skill-map 引用了非 active skill",
+    "domain-map-missing-read-target": "domain-map 读取目标缺失",
+    "proposal-missing-frontmatter": "proposal 缺少 frontmatter",
+    "proposal-missing-frontmatter-field": "proposal frontmatter 字段缺失",
+    "proposal-status-mismatch": "proposal 状态不一致",
+    "stale-pending-proposal": "pending proposal 停留过久",
+    "promotion-candidate": "晋升候选",
+    "duplicate-proposal-topic": "proposal 主题疑似重复",
+    "proposal-missing-decision-reason": "proposal 缺少决策原因"
+  },
+  "message": {
+    "hollow-content": "Markdown 正文疑似过短或只包含占位内容，需要人工复核。",
+    "duplicate-content": "多个文件的正文归一化后完全一致，需要人工判断是否合并。",
+    "broken-wiki-link": "Wiki 链接目标不存在。",
+    "broken-markdown-link": "Markdown 链接目标不存在。",
+    "skill-missing-positive-eval": "active skill 缺少正向触发 eval。",
+    "skill-missing-negative-eval": "active skill 缺少明确的反向触发 eval。",
+    "active-skill-missing-from-skill-map": "active skill 未出现在 router/skill-map.md 中。",
+    "skill-map-non-active-skill": "router/skill-map.md 引用了非 active skill。",
+    "domain-map-missing-read-target": "domain-map 中声明的读取目标不存在。",
+    "proposal-missing-frontmatter": "pending proposal 缺少 frontmatter。",
+    "proposal-missing-frontmatter-field": "pending proposal 缺少必要 frontmatter 字段。",
+    "proposal-status-mismatch": "pending proposal 未声明 status: pending。",
+    "stale-pending-proposal": "pending proposal 已超过设定天数，建议人工复核。",
+    "promotion-candidate": "pending proposal 已达到人工晋升复核条件。",
+    "duplicate-proposal-topic": "多个 pending proposal 主题疑似重复。",
+    "proposal-missing-decision-reason": "accepted/rejected proposal 缺少 decision reason。"
+  },
+  "action": {
+    "proposal": "创建或检查 proposal",
+    "mark-promotion-candidate": "标记晋升候选"
+  },
+  "status": {
+    "created": "已创建",
+    "whatif": "演练：未写入",
+    "updated": "已更新",
+    "skipped duplicate": "已跳过：重复",
+    "skipped global quota": "已跳过：达到全局上限",
+    "skipped max proposals": "已跳过：达到脚本上限",
+    "skipped no audit findings": "已跳过：没有审计发现",
+    "skipped no candidates": "已跳过：没有候选项",
+    "skipped duplicate marker": "已跳过：已有标记",
+    "skipped missing file": "已跳过：目标文件不存在"
+  }
+}

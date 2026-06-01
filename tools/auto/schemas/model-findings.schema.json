@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Memory OS model findings",
+  "type": "object",
+  "required": ["findings"],
+  "properties": {
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "category", "message", "tier"],
+        "properties": {
+          "severity": { "type": "string", "enum": ["critical", "warning", "info"] },
+          "category": { "type": "string" },
+          "message": { "type": "string" },
+          "path": { "type": "string" },
+          "tier": { "type": "string", "enum": ["A", "B", "C"] },
+          "evidence": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

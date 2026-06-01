@@ -1,0 +1,47 @@
+{
+  "default": "codex",
+  "profiles": {
+    "codex": {
+      "provider": "codex",
+      "command": "codex",
+      "arguments": [],
+      "model": "default",
+      "allowed_tasks": [
+        "semantic-audit",
+        "draft-proposal",
+        "draft-approval-sheet",
+        "draft-a-patch",
+        "explain-failure",
+        "suggest-repair"
+      ],
+      "timeout_seconds": 120,
+      "max_findings": 20
+    },
+    "claude": {
+      "provider": "claude",
+      "command": "claude",
+      "arguments": [],
+      "model": "default",
+      "allowed_tasks": [
+        "semantic-audit",
+        "draft-proposal",
+        "draft-approval-sheet",
+        "explain-failure",
+        "suggest-repair"
+      ],
+      "timeout_seconds": 120,
+      "max_findings": 20
+    },
+    "custom": {
+      "provider": "openai-compatible",
+      "model": "",
+      "endpoint_env": "AI_MEMORYOS_AUTO_ENDPOINT",
+      "api_key_env": "AI_MEMORYOS_AUTO_API_KEY",
+      "allowed_tasks": [
+        "semantic-audit"
+      ],
+      "timeout_seconds": 120,
+      "max_findings": 20
+    }
+  }
+}
