@@ -1,7 +1,9 @@
 ---
 title: "Archive stale content: anti-patterns\memory-pollution.md"
 type: proposal
-status: pending
+status: rejected
+rejected_at: "2026-06-01"
+decision_reason: "Auto-cycle audit-content-quality marked these pages as hollow-content, but human review confirms they are intentionally concise, durable entries (one-line distilled rules, checklists, or root indices). Archiving would lose value. Suggest tuning the hollow-content threshold or excluding these page types in a future audit-script update."
 source: auto-iterate
 created_at: "2026-06-01"
 scope: "Memory OS"
@@ -9,11 +11,17 @@ destination: "memory-cleanup"
 generated_by: auto-iterate
 tier: B
 tags:
-  - memory/pending
+  - memory/rejected
   - auto/round-1
 ---
 
 # Proposal: Archive stale content: anti-patterns\memory-pollution.md
+
+## Review Decision
+
+Rejected on 2026-06-01.
+
+Reason: Auto-cycle audit-content-quality marked these pages as hollow-content, but human review confirms they are intentionally concise, durable entries (one-line distilled rules, checklists, or root indices). Archiving would lose value. Suggest tuning the hollow-content threshold or excluding these page types in a future audit-script update.
 
 ## 来源
 

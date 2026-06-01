@@ -1,7 +1,9 @@
 ---
-title: "Archive stale content: domains\backend\api-debugging.md"
+title: "Archive stale content: domains\backend\README.md"
 type: proposal
-status: pending
+status: rejected
+rejected_at: "2026-06-01"
+decision_reason: "Auto-cycle audit-content-quality marked these pages as hollow-content, but human review confirms they are intentionally concise, durable entries (one-line distilled rules, checklists, or root indices). Archiving would lose value. Suggest tuning the hollow-content threshold or excluding these page types in a future audit-script update."
 source: auto-iterate
 created_at: "2026-06-01"
 scope: "Memory OS"
@@ -9,17 +11,23 @@ destination: "memory-cleanup"
 generated_by: auto-iterate
 tier: B
 tags:
-  - memory/pending
+  - memory/rejected
   - auto/round-1
 ---
 
-# Proposal: Archive stale content: domains\backend\api-debugging.md
+# Proposal: Archive stale content: domains\backend\README.md
+
+## Review Decision
+
+Rejected on 2026-06-01.
+
+Reason: Auto-cycle audit-content-quality marked these pages as hollow-content, but human review confirms they are intentionally concise, durable entries (one-line distilled rules, checklists, or root indices). Archiving would lose value. Suggest tuning the hollow-content threshold or excluding these page types in a future audit-script update.
 
 ## 来源
 
 - 日期：2026-06-01
 - 触发来源：audit-content-quality
-- 关联对象：domains\backend\api-debugging.md
+- 关联对象：domains\backend\README.md
 
 ## 摘要
 
@@ -49,5 +57,5 @@ Audit found content that appears hollow or placeholder-only and needs human revi
 Review whether this page still has durable value.
 
 - Finding category: hollow-content
-- Evidence path: domains\backend\api-debugging.md
+- Evidence path: domains\backend\README.md
 - Suggested action: If the content is confirmed as placeholder, stale, or not reusable, archive it or complete the body.

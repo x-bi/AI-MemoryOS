@@ -8,6 +8,7 @@
 | bugfix-with-regression-test | 修 bug 且需要防回归 | 只解释报错 |
 | frontend-component-review | 审查前端组件、交互、表单流程 | 非前端任务 |
 | vue-change-self-check | Vue / uni-app / frontend 改动需要提交前自检、diff 风险扫描、编号风险清单；用户要求检查当前改动、未提交改动、staged changes、commit、diff、提交前检查，且当前仓库或轻量 diff 文件列表命中 `.vue`、`pages.json`、`manifest.json`、前端路由/页面/导航配置、uni-app 分包页面等信号时，也应触发 | 普通 bug 修复、非前端任务、只审查单个组件交互、纯解释任务、用户要求直接实现或修 bug 而不是先做自检 |
+| git-ops-guide | 用户询问该用什么 Git 命令、命令顺序、想要某个 Git 结果但不确定步骤、或就 reset / revert / rebase / restore / branch / commit / pull / push / merge / stash / clean 等危险操作请求安全指导 | 用户要求 Claude 直接执行 Git 命令（应直接执行而不是讲解） |
 
 原则：当前阶段优先扩大真实任务输入；L1 轻量 workflow / review skill 默认倾向触发，用于收集真实案例；读取 Memory OS 正文和写入 proposal 仍保持保守。
 

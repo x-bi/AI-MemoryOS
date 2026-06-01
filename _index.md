@@ -33,10 +33,19 @@
 - `core/codex-operating-rules.md`：Codex 使用边界。
 - `core/memory-rules.md`：记忆写入边界。
 - `core/safety-rules.md`：敏感信息和安全规则。
+- `core/prompting-rules.md`：回答风格和输出格式规则。
+- `core/review-rules.md`：代码审查优先级和输出格式。
 - `rules/auto-run-operations.md`：`tools/auto/` 自动运行治理和 A/B/C 分级边界。
+- `rules/code-review.md`：review 最高优先级准则（bug > 风格）。
+- `rules/engineering.md`：工程改动优先级（正确性 > 重构）。
+- `rules/documentation.md`：文档记录决策而非代码解释。
+- `rules/naming.md`：命名表达业务含义。
 - `router/intent-map.md`：任务类型路由。
 - `router/domain-map.md`：领域路由。
-- `router/skill-map.md`：Codex skill 触发边界。
+- `router/skill-map.md`：skill 触发边界。
+- `router/clarification-rules.md`：反问触发条件和规则。
+- `router/fallback-rules.md`：路由失败时的降级策略。
+- `router/routing-rules.md`：Gate 判定、读取边界和路由顺序。
 - `workflows/`：可复用执行流程。
 - `tools/auto/`：Memory OS 自审计、自迭代和自优化脚本入口。
 - `domains/frontend/`：前端优先领域包。
