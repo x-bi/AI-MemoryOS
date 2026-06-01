@@ -178,6 +178,34 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\auto\model-semantic-au
 
 ## 5. 最推荐的调试顺序
 
+### 5.0 根目录快捷入口
+
+项目根目录提供了 `auto.ps1`，用于避免每次手敲完整 `powershell -NoProfile -ExecutionPolicy Bypass -File tools\auto\start-cycle.ps1 ...` 命令。
+
+默认是 dry run：
+
+```powershell
+.\auto.ps1
+```
+
+真实运行但不 push：
+
+```powershell
+.\auto.ps1 -Run
+```
+
+真实运行并 push `auto/*` 分支：
+
+```powershell
+.\auto.ps1 -Run -Push
+```
+
+切换范围或模型：
+
+```powershell
+.\auto.ps1 -Scope proposal-review -ModelProfile claude
+```
+
 ### 5.1 只验证配置解析
 
 ```powershell

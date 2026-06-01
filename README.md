@@ -71,6 +71,7 @@ AI-MemoryOS/
 
 | 脚本 | 用途 |
 |------|------|
+| `auto.ps1` | 根目录自动化快捷入口；命令速查见 `tools/auto/COMMANDS.md` |
 | `sync-skills.ps1` | 按 `skills/registry.json` 同步 SKILL_SPEC 到各 adapter 外壳 |
 | `validate-memory-os.ps1` | 仓库完整性校验 |
 | `validate-obsidian.ps1` | Obsidian 配置校验 |
