@@ -1,7 +1,7 @@
 [CmdletBinding(SupportsShouldProcess=$true)]
 param(
   [string]$Root = "C:\Users\btf\AI-MemoryOS",
-  [ValidateSet("audit", "iterate", "semantic-audit", "optimize", "all")][string]$Phase = "audit",
+  [ValidateSet("audit", "iterate", "semantic-audit", "optimize", "opportunity", "all")][string]$Phase = "audit",
   [string]$ModelProfile = "",
   [int]$CycleTimeoutMinutes = 30,
   [int]$SingleScriptTimeoutMinutes = 5,
@@ -33,6 +33,8 @@ function Invoke-AutoScript {
     & $path -Root $rootPath -MaxProposals $MaxProposals -WhatIf:$WhatIfPreference
   } elseif ($Script -eq "model-semantic-audit.ps1") {
     & $path -Root $rootPath -ModelProfile $modelProfileObj.name -WhatIf:$WhatIfPreference
+  } elseif ($Script -eq "model-opportunity-radar.ps1") {
+    & $path -Root $rootPath -ModelProfile $modelProfileObj.name -WhatIf:$WhatIfPreference
   } else {
     & $path -Root $rootPath -WhatIf:$WhatIfPreference
   }
@@ -61,12 +63,14 @@ $optimizeScripts = @(
   "optimize-adapter-gate-sync.ps1",
   "optimize-core-rules.ps1"
 )
+$opportunityScripts = @("model-opportunity-radar.ps1")
 
 $phaseMap = @{
   audit = $auditScripts
   "semantic-audit" = $semanticScripts
   iterate = $iterateScripts
   optimize = $optimizeScripts
+  opportunity = $opportunityScripts
 }
 $scripts = if ($Phase -eq "all") { @($auditScripts + $semanticScripts + $iterateScripts + $optimizeScripts) } else { $phaseMap[$Phase] }
 

@@ -26,6 +26,7 @@ scope: memory-os-auto
 | `tools/auto/run-all.ps1` | 编排单个 phase 或多个 phase。 |
 | `tools/auto/model-semantic-audit.ps1` | 单独执行模型语义审计。 |
 | `tools/auto/model-repair-plan.ps1` | 读取本轮 run log findings，再调用模型自动应用安全路径修复，或生成下一步 proposal / C-tier 审批单。 |
+| `tools/auto/model-opportunity-radar.ps1` | 发现发散型优化机会；小机会可在安全路径自动落地，大机会只报告、生成 proposal 或 C-tier 审批单。 |
 | `tools/auto/start-cycle.ps1` | 创建 auto 分支并执行完整 cycle 的入口。 |
 | `tools/auto/review-cycle.ps1` | 生成审核摘要。 |
 | `tools/auto/repair-failed-cycle.ps1` | 对 failed/partial cycle 做有限确定性修复。 |
@@ -312,13 +313,39 @@ logs/auto-runs/<本轮目录>/*-cycle-summary-*.md
 | `semantic-audit` | 是，除非 `-WhatIf` | 是，写 run log | 模型语义审计。 |
 | `iterate` | 否 | 是，可能写 pending proposal | 根据 audit findings 生成 B-tier proposal。 |
 | `optimize` | 否 | 是，A-tier 或 C-tier 审批单 | dashboard、frontmatter、C-tier 审批单等。 |
-| `all` | 是，除非 `-WhatIf` | 是 | 全编排；完整 cycle 成功后还会运行 `model-repair-plan.ps1`，用模型消费本轮日志 findings，自动应用安全路径 A/B-tier 修复并生成下一步 action。不建议初次直接运行。 |
+| `opportunity` | 是，除非 `-WhatIf` | 是 | 发散发现优化机会；遵循 discover broadly, apply narrowly：micro/small A/B-tier 可安全落地，medium/large 或 C-tier 只报告、生成 proposal 或审批单。 |
+| `all` | 是，除非 `-WhatIf` | 是 | 全编排；完整 cycle 成功后还会运行 `model-repair-plan.ps1` 和 `model-opportunity-radar.ps1`，分别处理已有 findings 和发散型升级机会。不建议初次直接运行。 |
 
 完整 cycle 在 `auto/*` 分支上允许 `model-repair-plan.ps1` 自动应用模型返回的 `apply-edits`，但只限非保护路径，例如 `docs/`、`dashboard/`、`proposals/pending/` 和普通 Markdown 内容。`adapters/`、`core/`、`router/`、`rules/`、`skills/`、`tools/`、正式索引和治理文件仍需要 C-tier 审批单。若只想生成计划、不自动改文件，可单独运行：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\auto\model-repair-plan.ps1 -ModelProfile claude -Scope content-quality -PlanOnly
 ```
+
+`model-opportunity-radar.ps1` 不是重复自检，而是让模型结合本轮日志、文档和常见 AI agent / memory / automation 产品体验提出新机会。它可以发现大方向，但只会窄范围落地：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\auto\run-all.ps1 -Phase opportunity -ModelProfile claude -WhatIf
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\auto\model-opportunity-radar.ps1 -ModelProfile claude -Scope content-quality -PlanOnly
+```
+
+处理边界：
+
+| 机会粒度 | 脚本行为 |
+|---|---|
+| `micro` / `small` A/B-tier | 可在 `docs/`、`dashboard/`、`proposals/pending/` 等非保护路径 exact-match 落地，并运行 `tools/validate-memory-os.ps1`。 |
+| `medium` | 默认生成 B-tier proposal 或只报告，不直接重构核心结构。 |
+| `large` | 只报告价值、适配性、建议路线和人工决策点，不直接落地。 |
+| C-tier / protected paths | 生成 C-tier approval sheet 或只报告，不直接修改正式规则、router、skills、adapter gate、automation scripts 或治理文件。 |
+
+运行日志会说明：
+
+- 发现了什么机会。
+- 为什么适合或不适合 AI-MemoryOS。
+- 提了什么方案。
+- 哪些已经自动落地，哪些只报告或进入 proposal / approval sheet。
+- 修改了哪些文件。
+- 落地后是否经过 `tools/validate-memory-os.ps1` 验证。
 
 ## 8. 无人值守运行
 

@@ -12,7 +12,8 @@
         "draft-approval-sheet",
         "draft-a-patch",
         "explain-failure",
-        "suggest-repair"
+        "suggest-repair",
+        "discover-opportunities"
       ],
       "timeout_seconds": 120,
       "max_findings": 20
@@ -27,7 +28,8 @@
         "draft-proposal",
         "draft-approval-sheet",
         "explain-failure",
-        "suggest-repair"
+        "suggest-repair",
+        "discover-opportunities"
       ],
       "timeout_seconds": 120,
       "max_findings": 20
@@ -38,7 +40,8 @@
       "endpoint_env": "AI_MEMORYOS_AUTO_ENDPOINT",
       "api_key_env": "AI_MEMORYOS_AUTO_API_KEY",
       "allowed_tasks": [
-        "semantic-audit"
+        "semantic-audit",
+        "discover-opportunities"
       ],
       "timeout_seconds": 120,
       "max_findings": 20

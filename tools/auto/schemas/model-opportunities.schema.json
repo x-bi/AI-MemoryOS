@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Memory OS model opportunities",
+  "type": "object",
+  "required": ["opportunities"],
+  "properties": {
+    "opportunities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "scale", "tier", "category", "summary", "project_fit", "handling", "target"],
+        "properties": {
+          "title": { "type": "string" },
+          "scale": { "type": "string", "enum": ["micro", "small", "medium", "large"] },
+          "tier": { "type": "string", "enum": ["A", "B", "C"] },
+          "category": { "type": "string" },
+          "summary": { "type": "string" },
+          "project_fit": { "type": "string" },
+          "handling": { "type": "string", "enum": ["apply-edits", "draft-proposal", "approval-sheet", "report-only"] },
+          "target": { "type": "string" },
+          "implementation_plan": { "type": "string" },
+          "validation_plan": { "type": "string" },
+          "proposal_title": { "type": "string" },
+          "approval_sheet_title": { "type": "string" },
+          "patch": { "type": "string" },
+          "edits": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["path", "old_text", "new_text"],
+              "properties": {
+                "path": { "type": "string" },
+                "old_text": { "type": "string" },
+                "new_text": { "type": "string" },
+                "reason": { "type": "string" }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
