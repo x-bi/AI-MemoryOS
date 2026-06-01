@@ -1059,6 +1059,35 @@ function New-AutoCycleLock {
     New-Item -ItemType Directory -Path $lockRoot | Out-Null
   }
   if (Test-Path -LiteralPath $lockDir) {
+    # If the owning process is dead, treat the lock as stale regardless of age
+    $lockJsonPath = Join-Path $lockDir "lock.json"
+    if (Test-Path -LiteralPath $lockJsonPath) {
+      try {
+        $lockMeta = Get-Content -LiteralPath $lockJsonPath -Raw | ConvertFrom-Json
+        if ($lockMeta.pid -and $lockMeta.pid -ne $PID) {
+          $ownerProcess = Get-Process -Id ([int]$lockMeta.pid) -ErrorAction SilentlyContinue
+          if ($null -eq $ownerProcess) {
+            Write-Host "Auto: removing stale lock for scope '$Scope' — owning process $($lockMeta.pid) is no longer running"
+            Remove-Item -LiteralPath $lockDir -Recurse -Force
+            # Skip to creating a fresh lock below
+            New-Item -ItemType Directory -Path $lockDir | Out-Null
+            $lockMeta2 = [pscustomobject]@{
+              id       = $lockId
+              scope    = $Scope
+              branch   = $Branch
+              started_at = (Get-Date).ToString("o")
+              triggered_by = "manual"
+              pid      = $PID
+            } | ConvertTo-Json -Depth 4
+            $utf8 = New-Object System.Text.UTF8Encoding($false)
+            [System.IO.File]::WriteAllText((Join-Path $lockDir "lock.json"), $lockMeta2, $utf8)
+            return [pscustomobject]@{ id = $lockId; path = $lockDir; scope = $Scope; branch = $Branch; whatif = $false }
+          }
+        }
+      } catch {
+        # Malformed lock.json — fall through to age-based stale check
+      }
+    }
     $age = ((Get-Date) - (Get-Item -LiteralPath $lockDir -Force).LastWriteTime).TotalMinutes
     if ($age -lt $StaleMinutes) {
       throw "Cycle lock already exists for scope '$Scope': $(Get-MemoryOsRelativePath -Root $rootPath -Path $lockDir)"
