@@ -25,6 +25,7 @@ scope: memory-os-auto
 | `tools/auto/config.json` | 禁用脚本配置。 |
 | `tools/auto/run-all.ps1` | 编排单个 phase 或多个 phase。 |
 | `tools/auto/model-semantic-audit.ps1` | 单独执行模型语义审计。 |
+| `tools/auto/model-repair-plan.ps1` | 读取本轮 run log findings，再调用模型自动应用安全路径修复，或生成下一步 proposal / C-tier 审批单。 |
 | `tools/auto/start-cycle.ps1` | 创建 auto 分支并执行完整 cycle 的入口。 |
 | `tools/auto/review-cycle.ps1` | 生成审核摘要。 |
 | `tools/auto/repair-failed-cycle.ps1` | 对 failed/partial cycle 做有限确定性修复。 |
@@ -292,7 +293,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\auto\start-cycle.ps1 -
 | `semantic-audit` | 是，除非 `-WhatIf` | 是，写 run log | 模型语义审计。 |
 | `iterate` | 否 | 是，可能写 pending proposal | 根据 audit findings 生成 B-tier proposal。 |
 | `optimize` | 否 | 是，A-tier 或 C-tier 审批单 | dashboard、frontmatter、C-tier 审批单等。 |
-| `all` | 是，除非 `-WhatIf` | 是 | 全编排，不建议初次直接运行。 |
+| `all` | 是，除非 `-WhatIf` | 是 | 全编排；完整 cycle 成功后还会运行 `model-repair-plan.ps1`，用模型消费本轮日志 findings，自动应用安全路径 A/B-tier 修复并生成下一步 action。不建议初次直接运行。 |
+
+完整 cycle 在 `auto/*` 分支上允许 `model-repair-plan.ps1` 自动应用模型返回的 `apply-edits`，但只限非保护路径，例如 `docs/`、`dashboard/`、`proposals/pending/` 和普通 Markdown 内容。`adapters/`、`core/`、`router/`、`rules/`、`skills/`、`tools/`、正式索引和治理文件仍需要 C-tier 审批单。若只想生成计划、不自动改文件，可单独运行：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\auto\model-repair-plan.ps1 -ModelProfile claude -Scope content-quality -PlanOnly
+```
 
 ## 8. 无人值守运行
 
