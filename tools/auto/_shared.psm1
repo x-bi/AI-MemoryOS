@@ -1109,6 +1109,47 @@ function Assert-AutoBranch {
   return $branchName
 }
 
+function Assert-MainReadyForAutoBranch {
+  param([string]$Root)
+
+  $rootPath = Resolve-MemoryOsRoot -Root $Root
+  $branchName = Get-CurrentGitBranch -Root $rootPath
+  if ($branchName -ne "main") {
+    throw "Auto branch creation must start from main. Current branch: $branchName"
+  }
+
+  $status = & git -C $rootPath status --porcelain
+  if (-not [string]::IsNullOrWhiteSpace(($status | Out-String))) {
+    throw "Refusing to create auto branch because main has uncommitted or untracked changes. Commit and push main first, or move these changes out before running automation."
+  }
+
+  $upstream = (& git -C $rootPath rev-parse --abbrev-ref "main@{upstream}" 2>$null | Out-String).Trim()
+  if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($upstream)) {
+    throw "Refusing to create auto branch because main has no upstream tracking branch."
+  }
+
+  $sync = (& git -C $rootPath rev-list --left-right --count "$upstream...main" 2>$null | Out-String).Trim()
+  if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($sync)) {
+    throw "Unable to compare main with upstream tracking branch: $upstream"
+  }
+  $parts = @($sync -split "\s+")
+  $behind = [int]$parts[0]
+  $ahead = [int]$parts[1]
+  if ($ahead -gt 0) {
+    throw "Refusing to create auto branch because main has $ahead unpushed commit(s). Push main before running automation."
+  }
+  if ($behind -gt 0) {
+    throw "Refusing to create auto branch because main is $behind commit(s) behind $upstream. Update main before running automation."
+  }
+
+  return [pscustomobject]@{
+    branch = $branchName
+    upstream = $upstream
+    ahead = $ahead
+    behind = $behind
+  }
+}
+
 function New-AutoBranch {
   param(
     [string]$Root,
@@ -1124,6 +1165,7 @@ function New-AutoBranch {
   }
   $current = Get-CurrentGitBranch -Root $Root
   if ($current -eq $Branch) { return $Branch }
+  Assert-MainReadyForAutoBranch -Root $Root | Out-Null
   $existing = & git -C $Root branch --list $Branch
   if ([string]::IsNullOrWhiteSpace([string]$existing)) {
     & git -C $Root checkout -b $Branch | Out-Null
@@ -1155,7 +1197,12 @@ function Invoke-AutoCommit {
     & git -C $rootPath add -- logs/auto-runs proposals/pending dashboard templates tools/auto rules
   }
   $status = & git -C $rootPath status --porcelain
-  if ([string]::IsNullOrWhiteSpace(($status | Out-String))) { return "" }
+  if ([string]::IsNullOrWhiteSpace(($status | Out-String))) {
+    if ($Push) {
+      & git -C $rootPath push -u origin $branch | Out-Null
+    }
+    return ""
+  }
   & git -C $rootPath commit -m $Message | Out-Null
   $commit = (& git -C $rootPath rev-parse HEAD).Trim()
   if ($Push) {

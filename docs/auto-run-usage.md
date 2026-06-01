@@ -240,6 +240,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\auto\start-cycle.ps1 -
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\auto\start-cycle.ps1 -Scope content-quality -ModelProfile claude -Push
 ```
 
+真实创建 `auto/*` 分支前，脚本会验证当前必须在 `main`，工作区必须干净，且 `main` 相对 upstream 没有未推送或未同步的 commit。否则脚本会停止，避免把 `main` 上未提交的文件改动带到自动化功能分支。
+
 ## 6. Scope 怎么选
 
 | Scope | 适用场景 | 主要脚本 |

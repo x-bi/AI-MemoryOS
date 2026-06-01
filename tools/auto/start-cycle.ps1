@@ -46,9 +46,9 @@ try {
     New-AutoBranch -Root $rootPath -Branch $branchName | Out-Null
     & (Join-Path $PSScriptRoot "run-all.ps1") -Root $rootPath -Phase all -ModelProfile $modelProfileObj.name -AutoCommit -Push:$Push
     New-AutoCycleSummary -Root $rootPath -Scope $Scope -Branch $branchName -Status "ready" -PhaseSummary "run-all phase=all completed." -ManualItems "Review B-tier proposals and C-tier approval sheets before merging." -ReviewNotes "Use review-cycle.ps1 for a summary. Main merge remains manual." -StartedAt $startedAt | Out-Null
+    Write-AutoRunLog -Root $rootPath -ScriptName "start-cycle" -Actions $actions -Parameters @{ phase = "cycle"; root = $rootPath; scope = $Scope; model_profile = $modelProfileObj.name; audit_only = $AuditOnly.IsPresent; max_repair_attempts = $MaxRepairAttempts; push = $Push.IsPresent; branch = $branchName; lock_id = $lock.id } -StartedAt $startedAt -ModelProfile $modelProfileObj.name -Branch $branchName -LockId $lock.id | Out-Null
     Invoke-AutoCommit -Root $rootPath -Message "auto: start-cycle - $Scope" -Push:$Push | Out-Null
   }
-  Write-AutoRunLog -Root $rootPath -ScriptName "start-cycle" -Actions $actions -Parameters @{ phase = "cycle"; root = $rootPath; scope = $Scope; model_profile = $modelProfileObj.name; audit_only = $AuditOnly.IsPresent; max_repair_attempts = $MaxRepairAttempts; push = $Push.IsPresent; branch = $branchName; lock_id = $lock.id } -StartedAt $startedAt -ModelProfile $modelProfileObj.name -Branch $branchName -LockId $lock.id | Out-Null
   Write-Host "start-cycle completed: scope=$Scope audit_only=$($AuditOnly.IsPresent)"
 } catch {
   Write-AutoRunLog -Root $rootPath -ScriptName "start-cycle" -Actions $actions -Parameters @{ phase = "cycle"; root = $rootPath; scope = $Scope; model_profile = $modelProfileObj.name; audit_only = $AuditOnly.IsPresent; max_repair_attempts = $MaxRepairAttempts; push = $Push.IsPresent; branch = $branchName; lock_id = $(if ($null -ne $lock) { $lock.id } else { "" }) } -StartedAt $startedAt -ModelProfile $modelProfileObj.name -Branch $branchName -LockId $(if ($null -ne $lock) { $lock.id } else { "" }) -Status "failed" -ExitCode 1 | Out-Null
