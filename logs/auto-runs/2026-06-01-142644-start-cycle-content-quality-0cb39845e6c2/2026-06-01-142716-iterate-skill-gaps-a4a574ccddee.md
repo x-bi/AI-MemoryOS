@@ -1,0 +1,157 @@
+---
+run_id: "a4a574ccddee"
+script: "iterate-skill-gaps"
+triggered_by: "manual"
+model_profile: ""
+model_invocations_count: 0
+model_tokens_estimate: 0
+started_at: "2026-06-01T14:27:16.6950174+08:00"
+duration_seconds: 0
+exit_code: 0
+findings_count: 7
+actions_count: 1
+pending_decisions_count: 7
+max_severity: "warning"
+status: "ready"
+branch: ""
+lock_id: ""
+repair_attempts: 0
+---
+
+# 自动运行日志：iterate-skill-gaps
+
+## 运行上下文
+
+- **仓库根目录**：C:\Users\btf\AI-MemoryOS
+- **脚本阶段**：iterate
+- **运行参数**：
+- phase: iterate
+- root: C:\Users\btf\AI-MemoryOS
+- max_proposals: 10
+
+## 发现
+
+| # | 严重度 | 类别 | 说明 | 路径 | 等级 |
+|---|---|---|---|---|---|
+| 1 | 警告 | skill 缺少反向 eval | active skill 缺少明确的反向触发 eval。 | evals/skill-trigger-test-cases.md | B 提案级 |
+| 2 | 警告 | skill 缺少反向 eval | active skill 缺少明确的反向触发 eval。 | evals/skill-trigger-test-cases.md | B 提案级 |
+| 3 | 警告 | skill 缺少反向 eval | active skill 缺少明确的反向触发 eval。 | evals/skill-trigger-test-cases.md | B 提案级 |
+| 4 | 警告 | skill 缺少反向 eval | active skill 缺少明确的反向触发 eval。 | evals/skill-trigger-test-cases.md | B 提案级 |
+| 5 | 警告 | skill 缺少反向 eval | active skill 缺少明确的反向触发 eval。 | evals/skill-trigger-test-cases.md | B 提案级 |
+| 6 | 警告 | skill 缺少反向 eval | active skill 缺少明确的反向触发 eval。 | evals/skill-trigger-test-cases.md | B 提案级 |
+| 7 | 警告 | skill 缺少反向 eval | active skill 缺少明确的反向触发 eval。 | evals/skill-trigger-test-cases.md | B 提案级 |
+
+## 已执行操作
+
+| # | 等级 | 操作 | 目标 | 状态 |
+|---|---|---|---|---|
+| 1 | B 提案级 | 创建或检查 proposal | Add eval coverage: memory-curator | 已跳过：达到全局上限 |
+
+## 待人工决策
+
+| # | 事项 | 等级 | 路径 | 状态 |
+|---|---|---|---|---|
+| 1 | active skill 缺少明确的反向触发 eval。 | B 提案级 | evals/skill-trigger-test-cases.md | pending |
+| 2 | active skill 缺少明确的反向触发 eval。 | B 提案级 | evals/skill-trigger-test-cases.md | pending |
+| 3 | active skill 缺少明确的反向触发 eval。 | B 提案级 | evals/skill-trigger-test-cases.md | pending |
+| 4 | active skill 缺少明确的反向触发 eval。 | B 提案级 | evals/skill-trigger-test-cases.md | pending |
+| 5 | active skill 缺少明确的反向触发 eval。 | B 提案级 | evals/skill-trigger-test-cases.md | pending |
+| 6 | active skill 缺少明确的反向触发 eval。 | B 提案级 | evals/skill-trigger-test-cases.md | pending |
+| 7 | active skill 缺少明确的反向触发 eval。 | B 提案级 | evals/skill-trigger-test-cases.md | pending |
+
+## 结构化数据
+
+~~~json
+{
+    "findings":  [
+                     {
+                         "severity":  "warning",
+                         "category":  "skill-missing-negative-eval",
+                         "message":  "Active skill has no explicit negative trigger eval case: memory-curator",
+                         "path":  "evals/skill-trigger-test-cases.md",
+                         "tier":  "B",
+                         "data":  {
+                                      "skill":  "memory-curator"
+                                  }
+                     },
+                     {
+                         "severity":  "warning",
+                         "category":  "skill-missing-negative-eval",
+                         "message":  "Active skill has no explicit negative trigger eval case: routing-auditor",
+                         "path":  "evals/skill-trigger-test-cases.md",
+                         "tier":  "B",
+                         "data":  {
+                                      "skill":  "routing-auditor"
+                                  }
+                     },
+                     {
+                         "severity":  "warning",
+                         "category":  "skill-missing-negative-eval",
+                         "message":  "Active skill has no explicit negative trigger eval case: bugfix-with-regression-test",
+                         "path":  "evals/skill-trigger-test-cases.md",
+                         "tier":  "B",
+                         "data":  {
+                                      "skill":  "bugfix-with-regression-test"
+                                  }
+                     },
+                     {
+                         "severity":  "warning",
+                         "category":  "skill-missing-negative-eval",
+                         "message":  "Active skill has no explicit negative trigger eval case: frontend-component-review",
+                         "path":  "evals/skill-trigger-test-cases.md",
+                         "tier":  "B",
+                         "data":  {
+                                      "skill":  "frontend-component-review"
+                                  }
+                     },
+                     {
+                         "severity":  "warning",
+                         "category":  "skill-missing-negative-eval",
+                         "message":  "Active skill has no explicit negative trigger eval case: pr-review",
+                         "path":  "evals/skill-trigger-test-cases.md",
+                         "tier":  "B",
+                         "data":  {
+                                      "skill":  "pr-review"
+                                  }
+                     },
+                     {
+                         "severity":  "warning",
+                         "category":  "skill-missing-negative-eval",
+                         "message":  "Active skill has no explicit negative trigger eval case: vue-change-self-check",
+                         "path":  "evals/skill-trigger-test-cases.md",
+                         "tier":  "B",
+                         "data":  {
+                                      "skill":  "vue-change-self-check"
+                                  }
+                     },
+                     {
+                         "severity":  "warning",
+                         "category":  "skill-missing-negative-eval",
+                         "message":  "Active skill has no explicit negative trigger eval case: git-ops-guide",
+                         "path":  "evals/skill-trigger-test-cases.md",
+                         "tier":  "B",
+                         "data":  {
+                                      "skill":  "git-ops-guide"
+                                  }
+                     }
+                 ],
+    "actions":  [
+                    {
+                        "tier":  "B",
+                        "action":  "proposal",
+                        "target":  "Add eval coverage: memory-curator",
+                        "status":  "skipped global quota"
+                    }
+                ],
+    "parameters":  {
+                       "phase":  "iterate",
+                       "root":  "C:\\Users\\btf\\AI-MemoryOS",
+                       "max_proposals":  10
+                   }
+}
+~~~
+
+## 验证
+
+- `validate-memory-os.ps1`：not run by this script
+- 内容质量复查：not run by this script
