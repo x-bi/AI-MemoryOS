@@ -1,25 +1,143 @@
 ---
 title: Model-led Memory OS self-iteration automation plan
-status: archived-draft
+status: active-plan
 created_at: 2026-05-29
-source_path: C:\Users\btf\.claude\plans\effervescent-chasing-thunder.md
-saved_by: codex
-document_type: backup-plan
+related_source_path: C:\Users\btf\.claude\plans\effervescent-chasing-thunder.md
+maintained_in: C:\Users\btf\AI-MemoryOS
+document_type: implementation-plan
+landing_strategy: two-round
+round_1_status: implemented
+round_2_status: implemented-non-model-verified
 ---
 
 # Model-led Memory OS self-iteration automation plan
 
-## Context
+## Plan status
 
-This file is a plain backup copy of the current implementation plan from the Claude plans directory, saved inside AI-MemoryOS to prevent loss. It is not a skill, not a pending proposal, and not queued for promotion. The source plan remains at C:\Users\btf\.claude\plans\effervescent-chasing-thunder.md.
+This file is the current implementation plan for model-led Memory OS self-audit, self-iteration, and self-optimization automation. The Claude plans path is a related draft/source path, but this repository copy is the maintained plan body used for execution.
+
+This plan is not a skill and not a pending proposal. It is an implementation plan for building the `tools/auto/` automation framework under the normal repository maintenance process.
+
+Implementation note on 2026-05-29: Round 1 is implemented and has produced Chinese-friendly run logs plus B-tier pending proposals. Round 2 implementation gaps are closed in code: model profile resolution, model invocation boundary, schema checks, ignored findings, locks, auto branch/commit helpers, cycle summary, repair/review support, dashboard integration, index registration, and validation checks are in place. Full model execution and full automation validation were intentionally not run, so the next step is user-led model-profile debugging before any real model-backed full cycle.
 
 ## Safety and sensitivity check
 
 - No secrets, tokens, API keys, cookies, or production logs are intentionally added.
-- This is a normal documentation backup; it does not directly modify formal rules, router, skills, evals, or accepted/rejected proposals.
+- This is a normal implementation plan; it does not by itself modify formal rules, router, skills, evals, or accepted/rejected proposals.
 - The plan keeps model execution governed by scripts, A/B/C tiers, validation, sensitive-content checks, and auto/* branch boundaries.
 
-## Preserved Plan
+## Two-round landing strategy
+
+The detailed design below still lists the full target system, but implementation should land in two larger rounds instead of five small batches. The goal is to reduce coordination overhead while keeping each round independently reviewable and reversible.
+
+### Round 1 - Foundation and proposal-capable audit loop
+
+Round 1 proves that Memory OS can inspect itself, produce durable run records, and turn low-risk findings into B-tier proposal drafts without enabling unattended branching, automatic commits, pushes, or C-tier writes.
+
+Scope:
+
+1. Core infrastructure:
+   - `templates/auto-run-log.md`
+   - `templates/approval-sheet.md`
+   - `rules/auto-run-operations.md`
+   - `logs/auto-runs/.gitkeep`
+   - `tools/auto/_shared.psm1`
+   - `tools/auto/model-profiles.example.json`
+   - `tools/auto/schemas/model-findings.schema.json`
+   - `tools/auto/schemas/model-action.schema.json`
+2. Deterministic audit scripts:
+   - `audit-content-quality.ps1`
+   - `audit-link-integrity.ps1`
+   - `audit-skill-coverage.ps1`
+   - `audit-router-consistency.ps1`
+   - `audit-proposal-health.ps1`
+3. B-tier iteration scripts:
+   - `iterate-stale-content.ps1`
+   - `iterate-duplicate-merge.ps1`
+   - `iterate-skill-gaps.ps1`
+   - `iterate-router-refinement.ps1`
+   - `iterate-promotion-candidates.ps1`
+4. Minimal orchestration:
+   - `run-all.ps1 -Phase audit`
+   - `run-all.ps1 -Phase iterate`
+   - `-WhatIf` support
+   - run-log writing
+   - proposal dedupe and `-MaxProposals`
+   - sensitive-content precheck
+
+Round 1 explicit non-goals:
+
+- No `auto/*` branch creation.
+- No automatic commit or push.
+- No unattended scheduled execution.
+- No C-tier `--ApplyApproved`.
+- No automatic changes to `core/`, `router/`, `rules/`, `skills/`, or adapter gates.
+- Model semantic audit may be stubbed or schema-only until Round 2.
+
+Round 1 acceptance:
+
+1. `tools/auto/run-all.ps1 -Phase audit -WhatIf` reports intended checks and writes nothing.
+2. `tools/auto/run-all.ps1 -Phase audit` writes structured logs under `logs/auto-runs/`.
+3. `tools/auto/run-all.ps1 -Phase iterate -WhatIf` reports proposal candidates without writing proposals.
+4. `tools/auto/run-all.ps1 -Phase iterate -MaxProposals 3` can create at most 3 B-tier pending proposals when findings exist.
+5. Re-running the same inputs does not duplicate same-title proposals.
+6. `tools/validate-memory-os.ps1` passes after Round 1 integration.
+
+### Round 2 - Model-led automation and auto-branch review loop
+
+Round 2 enables the full model-led cycle, including semantic audit, controlled A/C-tier handling, auto branches, repair, and human review assistance. It should start only after Round 1 has produced clean audit logs and proposal behavior.
+
+Scope:
+
+1. Model semantic audit:
+   - `model-semantic-audit.ps1`
+   - model profile resolution
+   - schema validation
+   - forbidden-action filtering
+   - sensitive-content filtering
+2. A-tier and C-tier optimization:
+   - `optimize-frontmatter.ps1`
+   - `optimize-dashboard-sync.ps1`
+   - `optimize-skill-consistency.ps1`
+   - `optimize-unused-pages.ps1`
+   - `optimize-adapter-gate-sync.ps1`
+   - `optimize-core-rules.ps1`
+3. Full cycle entry and review:
+   - `start-cycle.ps1`
+   - full `run-all.ps1`
+   - `repair-failed-cycle.ps1`
+   - `review-cycle.ps1`
+   - lock handling
+   - `auto/*` branch handling
+   - optional push only when explicitly enabled by script policy
+4. Integration surfaces:
+   - `dashboard/auto-runs.md`
+   - `dashboard/home.md` link
+   - `tools/validate-memory-os.ps1` required-file checks
+   - `_index.md` reference to the new automation rule
+
+Round 2 acceptance:
+
+1. `tools/auto/start-cycle.ps1 -Scope content-quality -ModelProfile codex -WhatIf` completes a dry run with no file changes, no branch creation, no commit, and no push.
+2. A real `start-cycle.ps1` run can create an `auto/*` branch, generate logs and summaries, and stop before any main merge.
+3. C-tier changes generate approval sheets by default and execute only with explicit approved input.
+4. `review-cycle.ps1` produces an audit summary and suggested human commands without merging, cherry-picking, switching main, or deleting branches.
+5. Failure and repair paths leave enough logs to review what happened and never default to `git reset --hard` or force-push.
+6. `tools/validate-memory-os.ps1` passes after Round 2 integration.
+
+### Round 1 preparation checklist
+
+Before implementing Round 1, confirm:
+
+- `tools/auto/` is the only new script namespace for this automation.
+- Round 1 writes only `logs/auto-runs/` and B-tier files under `proposals/pending/`.
+- `-WhatIf` is implemented before any write path.
+- Sensitive-content checks are available before any log or proposal write.
+- Proposal creation reuses the existing `tools/new-proposal.ps1` behavior or matches its filename, encoding, and safety rules.
+- The initial `run-all.ps1` supports only `audit` and `iterate` phases; `semantic-audit`, `optimize`, and `all` may return a clear "Round 2 not implemented" message.
+- Any formal rule/index/dashboard updates required for Round 1 are kept small and are validated with `tools/validate-memory-os.ps1`.
+
+## Detailed plan
 # Memory OS Self-Audit / Self-Iterate / Self-Optimize 实施方案
 
 ## Context
@@ -347,7 +465,7 @@ dashboard/auto-runs.md                      # 自动运行结果仪表盘
 
 需要修改的现有文件：
 
-- `dashboard/home.md` — 添加 `[[dashboard/auto-runs]]` 链接
+- `dashboard/home.md` — 添加指向 `dashboard/auto-runs.md` 的链接
 - `tools/validate-memory-os.ps1` — 添加新文件到 `$required` 检查列表
 - `_index.md` — 引用 `rules/auto-run-operations.md`
 
@@ -627,7 +745,7 @@ Phase 1 分为两层：
 
 逻辑：
 
-1. **Wiki link**：提取 `[[target]]`，验证 target 路径 + `.md` 存在
+1. **Wiki link**：提取 wiki-link target，验证 target 路径 + `.md` 存在
 2. **Markdown link**：提取 `[text](path)`，验证相对路径存在，跳过 http/https
 3. **交叉引用一致性**：`_index.md`、router maps、`dashboard/`、`skills/registry.json` 引用的文件是否存在
 4. **孤儿文件**：零入链且不在显式索引中
@@ -869,11 +987,16 @@ Phase 1 分为两层：
 
 - 最近 20 次运行（脚本名, 退出码, 耗时, 开始时间）
 - 待审批的审批单（status=pending）
-- `dashboard/home.md` 的 Daily Entry 部分添加 `[[dashboard/auto-runs]]` 链接
+- `dashboard/home.md` 的 Daily Entry 部分添加指向 `dashboard/auto-runs.md` 的链接
 
 ---
 
 ## 11. 实施顺序
+
+Implementation uses the two-round landing strategy above. The Batch list below is retained as a detailed dependency map and file checklist, not as five separate delivery rounds.
+
+- Round 1 includes Batch 1, the deterministic audit subset of Batch 2, Batch 3, and the minimal `run-all.ps1` orchestration needed for `audit` and `iterate`.
+- Round 2 includes `model-semantic-audit.ps1`, Batch 4, the rest of Batch 5, dashboard/index integration, and full `start-cycle` / repair / review behavior.
 
 ### Batch 1 — 基础设施（无依赖）
 

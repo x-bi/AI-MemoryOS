@@ -177,6 +177,7 @@ CodeGraph 是 OS 管理的代码图谱加速层（基于 `@colbymchenry/codegrap
 | [REMOTE.md](REMOTE.md) | 远程仓库与推送策略 |
 | [_index.md](_index.md) | 记忆索引（L2 入口） |
 | [docs/usage-manual.md](docs/usage-manual.md) | 使用手册 |
+| [docs/auto-run-usage.md](docs/auto-run-usage.md) | 自动化脚本使用说明 |
 | [dashboard/home.md](dashboard/home.md) | Obsidian 首页 |
 | [adapters/codex/external-config.md](adapters/codex/external-config.md) | Codex 接入恢复说明 |
 | [adapters/claude/external-config.md](adapters/claude/external-config.md) | Claude 接入恢复说明 |

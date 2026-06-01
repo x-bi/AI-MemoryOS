@@ -27,14 +27,18 @@
 - `ROADMAP.md`：7 / 30 / 90 天推进路线。
 - `GOVERNANCE.md`：proposal 晋升、拒绝和审计规则。
 - `INSTALL.md`：Codex 接入和日常使用方式。
+- `docs/auto-run-usage.md`：`tools/auto/` 自动化脚本使用说明。
 - `dashboard/home.md`：Obsidian 首页入口。
+- `dashboard/auto-runs.md`：自动审计、自迭代和优化运行记录入口。
 - `core/codex-operating-rules.md`：Codex 使用边界。
 - `core/memory-rules.md`：记忆写入边界。
 - `core/safety-rules.md`：敏感信息和安全规则。
+- `rules/auto-run-operations.md`：`tools/auto/` 自动运行治理和 A/B/C 分级边界。
 - `router/intent-map.md`：任务类型路由。
 - `router/domain-map.md`：领域路由。
 - `router/skill-map.md`：Codex skill 触发边界。
 - `workflows/`：可复用执行流程。
+- `tools/auto/`：Memory OS 自审计、自迭代和自优化脚本入口。
 - `domains/frontend/`：前端优先领域包。
 - `proposals/pending/`：唯一默认写入入口。
 - `proposals/future-directions/`：重大方向说明和长期架构意图，不作为可直接晋升的 pending proposal。

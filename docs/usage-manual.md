@@ -291,7 +291,15 @@ git -C C:\Users\btf\AI-MemoryOS status -sb
 git -C C:\Users\btf\AI-MemoryOS push
 ```
 
-## 15. 推荐日常节奏
+## 15. 自动化脚本怎么用
+
+详细说明见：
+
+- [Memory OS 自动化脚本使用说明](auto-run-usage.md)
+
+它覆盖 `tools/auto/` 的无人值守、AI 辅助、Codex / Claude / custom profile 切换、`-WhatIf` 调试、auto 分支审核、C-tier 审批单和失败修复。
+
+## 16. 推荐日常节奏
 
 每次任务：
 
