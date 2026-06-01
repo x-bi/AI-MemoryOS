@@ -240,6 +240,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\auto\start-cycle.ps1 -
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\auto\start-cycle.ps1 -Scope content-quality -ModelProfile claude -Push
 ```
 
+`start-cycle.ps1` 会等 `run-all` 的全部脚本成功完成、写入 cycle summary 和 `start-cycle` run log 后，再统一创建一个提交。这样 `auto/*` 分支合并到 `main` 时默认只包含一个自动化提交。若 cycle 中途失败，脚本不会提交 partial work；失败日志和已产生的文件会留在当前 `auto/*` 分支的未提交工作区里，供人工检查、修复或直接丢弃分支后重跑。
+
 真实创建 `auto/*` 分支前，脚本会验证当前必须在 `main`，工作区必须干净，且 `main` 相对 upstream 没有未推送或未同步的 commit。否则脚本会停止，避免把 `main` 上未提交的文件改动带到自动化功能分支。
 
 ## 6. Scope 怎么选
@@ -464,6 +466,8 @@ git log --oneline --grep="^auto:"
 
 合并 main 不是脚本自动做的。你需要人工决定整块 merge、cherry-pick，或直接删除 auto 分支。
 
+成功的 `start-cycle.ps1` 默认只生成一个自动化提交。如果分支上没有提交但有未提交改动，通常表示 cycle 中途失败；先看 `logs/auto-runs/` 的 failed log，再决定修复、手动提交诊断结果，或删除该 `auto/*` 分支重跑。
+
 ## 15. 修复失败 cycle
 
 先查看失败日志：
@@ -485,6 +489,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\auto\repair-failed-cyc
 ```
 
 修复范围只应是结构性问题，例如 run log frontmatter、字段缺失、格式问题。语义规则不自动修。
+
+失败 cycle 的现场默认不会自动提交。`repair-failed-cycle.ps1` 修复后仍需要人工检查工作区；只有确认要保留这次失败/修复结果时，才手动提交，否则可以丢弃分支并从 `main` 重新启动新的 cycle。
 
 ## 16. 常用命令速查
 

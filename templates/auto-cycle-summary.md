@@ -7,7 +7,7 @@ completed_at: ""
 status: ""
 ---
 
-# 自动闭环摘要：{{scope}}
+# 自动化运行摘要：{{scope}}
 
 ## 运行结果
 

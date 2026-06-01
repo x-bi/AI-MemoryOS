@@ -644,6 +644,33 @@ function Write-AutoRunOverview {
     Sort-Object Name)
   if ($logs.Count -eq 0) { return $null }
 
+  $zh = @{
+    passed = [regex]::Unescape('\u901a\u8fc7')
+    failed = [regex]::Unescape('\u5931\u8d25')
+    partial = [regex]::Unescape('\u90e8\u5206\u5b8c\u6210')
+    whatif = [regex]::Unescape('\u6f14\u7ec3')
+    unknown = [regex]::Unescape('\u672a\u77e5')
+    none = [regex]::Unescape('\u65e0')
+    critical = [regex]::Unescape('\u4e25\u91cd')
+    warning = [regex]::Unescape('\u8b66\u544a')
+    info = [regex]::Unescape('\u63d0\u793a')
+    overviewTitle = [regex]::Unescape('\u81ea\u52a8\u5316\u8fd0\u884c\u603b\u89c8')
+    runDirectory = [regex]::Unescape('\u65e5\u5fd7\u76ee\u5f55')
+    generatedAt = [regex]::Unescape('\u751f\u6210\u65f6\u95f4')
+    logCount = [regex]::Unescape('\u65e5\u5fd7\u6570\u91cf')
+    findingsCount = [regex]::Unescape('\u53d1\u73b0\u6570\u91cf')
+    actionsCount = [regex]::Unescape('\u52a8\u4f5c\u6570\u91cf')
+    pendingProposals = [regex]::Unescape('\u5f85\u5ba1\u6838 proposal')
+    approvalSheets = [regex]::Unescape('\u5ba1\u6279\u5355')
+    firstLook = [regex]::Unescape('\u5148\u770b\u8fd9\u91cc')
+    logDetails = [regex]::Unescape('\u65e5\u5fd7\u660e\u7ec6')
+    tableHeader = [regex]::Unescape('| \u811a\u672c | \u72b6\u6001 | \u9000\u51fa\u7801 | \u53d1\u73b0 | \u52a8\u4f5c | \u6700\u9ad8\u7ea7\u522b | \u8017\u65f6\u79d2 | \u65e5\u5fd7\u8def\u5f84 |')
+    failedNext = [regex]::Unescape('\u672c\u6b21\u8fd0\u884c\u5b58\u5728\u5931\u8d25\u65e5\u5fd7\u3002\u8bf7\u5148\u67e5\u770b\u4e0b\u65b9\u8868\u683c\u4e2d\u72b6\u6001\u4e3a\u201c\u5931\u8d25\u201d\u6216\u9000\u51fa\u7801\u975e 0 \u7684\u811a\u672c\uff0c\u518d\u51b3\u5b9a\u4fee\u590d\u3001\u4fdd\u7559\u73b0\u573a\uff0c\u6216\u4e22\u5f03 auto \u5206\u652f\u540e\u91cd\u8dd1\u3002')
+    warningNext = [regex]::Unescape('\u672c\u6b21\u8fd0\u884c\u6ca1\u6709\u5931\u8d25\u811a\u672c\uff0c\u4f46\u5b58\u5728\u4e25\u91cd\u6216\u8b66\u544a\u7ea7\u522b\u53d1\u73b0\u3002\u8bf7\u4f18\u5148\u67e5\u770b\u8fd9\u4e9b\u65e5\u5fd7\uff0c\u518d\u5ba1\u6838\u5f85\u5904\u7406 proposal \u6216\u5ba1\u6279\u5355\u3002')
+    reviewNext = [regex]::Unescape('\u672c\u6b21\u8fd0\u884c\u751f\u6210\u4e86\u5f85\u5ba1\u6838 proposal \u6216\u5ba1\u6279\u5355\u3002\u8bf7\u4eba\u5de5\u786e\u8ba4\u540e\u518d\u51b3\u5b9a\u662f\u5426\u5408\u5e76 auto \u5206\u652f\u3002')
+    cleanNext = [regex]::Unescape('\u672a\u53d1\u73b0\u5931\u8d25\u65e5\u5fd7\uff0c\u4e5f\u6ca1\u6709\u9700\u8981\u7acb\u5373\u5904\u7406\u7684\u5ba1\u6838\u4ea7\u7269\u3002\u4ecd\u5efa\u8bae\u5feb\u901f\u67e5\u770b\u65e5\u5fd7\u8868\u683c\u540e\u518d\u5408\u5e76\u3002')
+  }
+
   $rows = New-Object System.Collections.Generic.List[string]
   $totalFindings = 0
   $totalActions = 0
@@ -668,8 +695,23 @@ function Write-AutoRunOverview {
     $hasExitCode = -not [string]::IsNullOrWhiteSpace($exitCode)
     if ($status -eq "failed" -or ($hasExitCode -and $exitCode -ne "0")) { $failedCount++ }
     if ($maxSeverity -in @("critical", "warning")) { $warningLikeCount++ }
+    $statusLabel = switch ($status) {
+      "passed" { $zh.passed }
+      "failed" { $zh.failed }
+      "partial" { $zh.partial }
+      "whatif" { $zh.whatif }
+      default { if ([string]::IsNullOrWhiteSpace($status)) { $zh.unknown } else { $status } }
+    }
+    $severityLabel = switch ($maxSeverity) {
+      "critical" { $zh.critical }
+      "warning" { $zh.warning }
+      "info" { $zh.info }
+      default { if ([string]::IsNullOrWhiteSpace($maxSeverity)) { $zh.none } else { $maxSeverity } }
+    }
+    $exitCodeLabel = if ([string]::IsNullOrWhiteSpace($exitCode)) { $zh.none } else { $exitCode }
+    $durationLabel = if ([string]::IsNullOrWhiteSpace($duration)) { $zh.none } else { $duration }
     $relative = Get-MemoryOsRelativePath -Root $rootPath -Path $log.FullName
-    $rows.Add("| $(ConvertTo-MarkdownTableCell $script) | $(ConvertTo-MarkdownTableCell $status) | $(ConvertTo-MarkdownTableCell $exitCode) | $findingsCount | $actionsCount | $(ConvertTo-MarkdownTableCell $maxSeverity) | $(ConvertTo-MarkdownTableCell $duration) | $(ConvertTo-MarkdownTableCell $relative) |")
+    $rows.Add("| $(ConvertTo-MarkdownTableCell $script) | $(ConvertTo-MarkdownTableCell $statusLabel) | $(ConvertTo-MarkdownTableCell $exitCodeLabel) | $findingsCount | $actionsCount | $(ConvertTo-MarkdownTableCell $severityLabel) | $(ConvertTo-MarkdownTableCell $durationLabel) | $(ConvertTo-MarkdownTableCell $relative) |")
   }
 
   $pendingDir = Join-Path $rootPath "proposals\pending\$folderName"
@@ -681,13 +723,13 @@ function Write-AutoRunOverview {
   $pendingRelative = if (Test-Path -LiteralPath $pendingDir) { Get-MemoryOsRelativePath -Root $rootPath -Path $pendingDir } else { "proposals\pending\$folderName" }
   $approvalRelative = if (Test-Path -LiteralPath $approvalDir) { Get-MemoryOsRelativePath -Root $rootPath -Path $approvalDir } else { "logs\auto-runs\approval-sheets\$folderName" }
   $nextStep = if ($failedCount -gt 0) {
-    "Check logs with status=failed or non-zero exit_code first."
+    $zh.failedNext
   } elseif ($warningLikeCount -gt 0) {
-    "Check logs with max_severity=critical/warning, then review pending proposals or approval sheets."
+    $zh.warningNext
   } elseif ($pendingCount -gt 0 -or $approvalCount -gt 0) {
-    "This run has pending proposals or approval sheets that need human review."
+    $zh.reviewNext
   } else {
-    "No failed logs or review outputs were detected."
+    $zh.cleanNext
   }
 
   $frontMatter = @"
@@ -706,23 +748,23 @@ warning_or_critical_log_count: $warningLikeCount
 "@
 $content = @"
 $frontMatter
-# Auto Run Overview
+# $($zh.overviewTitle)
 
-- Run directory: $logDirRelative
-- Generated at: $generatedAt
-- Log count: $($logs.Count)
-- Total findings: $totalFindings
-- Total actions: $totalActions
-- Pending proposals: $pendingCount ($pendingRelative)
-- Approval sheets: $approvalCount ($approvalRelative)
+- $($zh.runDirectory): $logDirRelative
+- $($zh.generatedAt): $generatedAt
+- $($zh.logCount): $($logs.Count)
+- $($zh.findingsCount): $totalFindings
+- $($zh.actionsCount): $totalActions
+- $($zh.pendingProposals): $pendingCount ($pendingRelative)
+- $($zh.approvalSheets): $approvalCount ($approvalRelative)
 
-## First Look
+## $($zh.firstLook)
 
 $nextStep
 
-## Log Summary
+## $($zh.logDetails)
 
-| Script | Status | ExitCode | Findings | Actions | MaxSeverity | Seconds | Path |
+$($zh.tableHeader)
 | --- | --- | --- | ---: | ---: | --- | ---: | --- |
 $($rows -join "`r`n")
 "@
