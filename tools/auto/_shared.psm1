@@ -775,6 +775,242 @@ $($rows -join "`r`n")
   return $path
 }
 
+function ConvertFrom-AutoUnicode {
+  param([string]$Text)
+  return [regex]::Unescape($Text)
+}
+
+function Get-AutoScriptPurpose {
+  param([string]$ScriptName, [hashtable]$Parameters = @{})
+
+  $scope = if ($Parameters.ContainsKey("scope")) { [string]$Parameters["scope"] } else { "" }
+  switch ($ScriptName) {
+    "audit-content-quality" { return ConvertFrom-AutoUnicode "\u68c0\u67e5 Memory OS \u5185\u5bb9\u8d28\u91cf\uff0c\u91cd\u70b9\u770b\u7a7a\u6d1e\u5185\u5bb9\u3001\u8fc7\u671f\u5185\u5bb9\u548c\u53ef\u6e05\u7406\u9879\u3002" }
+    "audit-link-integrity" { return ConvertFrom-AutoUnicode "\u68c0\u67e5\u6587\u6863\u94fe\u63a5\u3001wiki-link \u548c\u5f15\u7528\u76ee\u6807\u662f\u5426\u6709\u6548\u3002" }
+    "audit-skill-coverage" { return ConvertFrom-AutoUnicode "\u68c0\u67e5 active skills \u7684\u8986\u76d6\u3001\u5165\u53e3\u548c\u6ce8\u518c\u4e00\u81f4\u6027\u3002" }
+    "audit-router-consistency" { return ConvertFrom-AutoUnicode "\u68c0\u67e5 gate\u3001router\u3001domain\u3001skill \u8def\u7531\u89c4\u5219\u662f\u5426\u4e00\u81f4\u3002" }
+    "audit-proposal-health" { return ConvertFrom-AutoUnicode "\u68c0\u67e5 pending proposals \u7684\u5065\u5eb7\u5ea6\u3001\u91cd\u590d\u9879\u548c\u53ef\u664b\u5347\u5019\u9009\u3002" }
+    "model-semantic-audit" { return ConvertFrom-AutoUnicode "\u628a\u786e\u5b9a\u6027\u5ba1\u8ba1\u53d1\u73b0\u4ea4\u7ed9\u6a21\u578b\u505a\u8bed\u4e49\u590d\u6838\uff0c\u7b5b\u51fa\u9700\u8981\u8fdb\u4e00\u6b65\u5904\u7406\u7684\u95ee\u9898\u3002" }
+    "model-repair-plan" { return ConvertFrom-AutoUnicode "\u8bfb\u53d6\u672c\u8f6e\u8fd0\u884c\u65e5\u5fd7\uff0c\u8c03\u7528\u6a21\u578b\u751f\u6210\u6216\u5e94\u7528\u540e\u7eed\u4fee\u590d\u52a8\u4f5c\u3002" }
+    "run-all" { return ConvertFrom-AutoUnicode "\u6309 phase \u7f16\u6392\u591a\u4e2a\u81ea\u52a8\u5316\u811a\u672c\u5e76\u6c47\u603b\u6267\u884c\u7ed3\u679c\u3002" }
+    "start-cycle" { return ConvertFrom-AutoUnicode "\u521b\u5efa auto \u5206\u652f\uff0c\u8fd0\u884c\u5b8c\u6574\u81ea\u52a8\u5316 cycle\uff0c\u5e76\u5728\u901a\u8fc7\u540e\u63d0\u4ea4\u53ef\u5ba1\u6838\u7ed3\u679c\u3002" }
+    "review-cycle" { return ConvertFrom-AutoUnicode "\u6c47\u603b\u81ea\u52a8\u5316\u5206\u652f\u3001\u65e5\u5fd7\u3001proposal \u548c\u5ba1\u6279\u5355\uff0c\u8f85\u52a9\u4eba\u5de5\u5ba1\u6838\u3002" }
+    "repair-failed-cycle" { return ConvertFrom-AutoUnicode "\u4fee\u590d\u5931\u8d25\u6216\u90e8\u5206\u5b8c\u6210 cycle \u7684\u65e5\u5fd7/frontmatter \u7b49\u673a\u68b0\u95ee\u9898\u3002" }
+    default {
+      if (-not [string]::IsNullOrWhiteSpace($scope)) { return "$(ConvertFrom-AutoUnicode '\u6267\u884c ')$ScriptName$(ConvertFrom-AutoUnicode '\uff0c\u8303\u56f4\u662f ')$scope$(ConvertFrom-AutoUnicode '\u3002')" }
+      return "$(ConvertFrom-AutoUnicode '\u6267\u884c ')$ScriptName$(ConvertFrom-AutoUnicode '\u3002')"
+    }
+  }
+}
+
+function Get-AutoReadableFindingMessage {
+  param(
+    [object]$Labels,
+    [object]$Finding
+  )
+
+  $message = [string]$Finding.message
+  if (-not [string]::IsNullOrWhiteSpace($message)) { return $message }
+  $categoryLabel = Get-AutoLabel -Labels $Labels -Group "message" -Key $Finding.category
+  if (-not [string]::IsNullOrWhiteSpace($categoryLabel)) { return $categoryLabel }
+  return [string]$Finding.category
+}
+
+function ConvertTo-AutoReadableFindingLine {
+  param(
+    [object]$Labels,
+    [object]$Finding
+  )
+
+  $severityText = Get-AutoLabel -Labels $Labels -Group "severity" -Key $Finding.severity
+  $tierText = Get-AutoLabel -Labels $Labels -Group "tier" -Key $Finding.tier
+  $messageText = Get-AutoReadableFindingMessage -Labels $Labels -Finding $Finding
+  $pathText = [string]$Finding.path
+  if ([string]::IsNullOrWhiteSpace($pathText)) { $pathText = ConvertFrom-AutoUnicode "\u672a\u7ed1\u5b9a\u5230\u5355\u4e2a\u6587\u4ef6" }
+  return "- [$severityText / $tierText] ${pathText}: $messageText"
+}
+
+function ConvertTo-AutoReadableActionLine {
+  param(
+    [object]$Labels,
+    [object]$Action
+  )
+
+  $tierText = Get-AutoLabel -Labels $Labels -Group "tier" -Key $Action.tier
+  $actionText = Get-AutoLabel -Labels $Labels -Group "action" -Key $Action.action
+  if ([string]::IsNullOrWhiteSpace($actionText)) { $actionText = [string]$Action.action }
+  $statusText = Get-AutoLabel -Labels $Labels -Group "status" -Key $Action.status
+  if ([string]::IsNullOrWhiteSpace($statusText)) { $statusText = [string]$Action.status }
+  $targetText = [string]$Action.target
+  if ([string]::IsNullOrWhiteSpace($targetText)) { $targetText = ConvertFrom-AutoUnicode "\u672a\u6307\u5b9a\u76ee\u6807" }
+  return "- [$tierText] ${actionText}: $targetText ($statusText)"
+}
+
+function New-AutoReadableRunSummary {
+  param(
+    [string]$ScriptName,
+    [object[]]$Findings = @(),
+    [object[]]$Actions = @(),
+    [hashtable]$Parameters = @{},
+    [string]$Status = "ready",
+    [int]$ModelInvocationsCount = 0,
+    [object]$Labels
+  )
+
+  $checked = Get-AutoScriptPurpose -ScriptName $ScriptName -Parameters $Parameters
+  $modelLine = if ($ModelInvocationsCount -gt 0) { "$(ConvertFrom-AutoUnicode '\u672c\u811a\u672c\u8c03\u7528\u4e86\u6a21\u578b ')$ModelInvocationsCount$(ConvertFrom-AutoUnicode ' \u6b21\u3002')" } else { ConvertFrom-AutoUnicode "\u672c\u811a\u672c\u6ca1\u6709\u771f\u5b9e\u8c03\u7528\u6a21\u578b\uff0c\u6216\u672c\u6b21\u53ea\u4f7f\u7528\u672c\u5730/\u786e\u5b9a\u6027\u903b\u8f91\u3002" }
+
+  $findingLines = New-Object System.Collections.Generic.List[string]
+  foreach ($finding in @($Findings | Select-Object -First 8)) {
+    $findingLines.Add((ConvertTo-AutoReadableFindingLine -Labels $Labels -Finding $finding))
+  }
+  if ($findingLines.Count -eq 0) { $findingLines.Add("- $(ConvertFrom-AutoUnicode '\u672a\u53d1\u73b0\u9700\u8981\u5904\u7406\u7684\u95ee\u9898\u3002')") }
+  if (@($Findings).Count -gt 8) { $findingLines.Add("- $(ConvertFrom-AutoUnicode '\u53e6\u6709 ')$(@($Findings).Count - 8)$(ConvertFrom-AutoUnicode ' \u6761\u53d1\u73b0\uff0c\u89c1\u4e0b\u65b9\u660e\u7ec6\u8868\u3002')") }
+
+  $actionLines = New-Object System.Collections.Generic.List[string]
+  foreach ($action in @($Actions | Select-Object -First 8)) {
+    $actionLines.Add((ConvertTo-AutoReadableActionLine -Labels $Labels -Action $action))
+  }
+  if ($actionLines.Count -eq 0) { $actionLines.Add("- $(ConvertFrom-AutoUnicode '\u672c\u811a\u672c\u6ca1\u6709\u6267\u884c\u4fee\u590d\u3001\u751f\u6210 proposal \u6216\u751f\u6210\u5ba1\u6279\u5355\u3002')") }
+  if (@($Actions).Count -gt 8) { $actionLines.Add("- $(@($Actions).Count - 8)$(ConvertFrom-AutoUnicode ' \u4e2a\u52a8\u4f5c\uff0c\u89c1\u4e0b\u65b9\u660e\u7ec6\u8868\u3002')") }
+
+  $remainingLines = New-Object System.Collections.Generic.List[string]
+  foreach ($finding in @($Findings | Where-Object { $_.tier -ne "A" } | Select-Object -First 6)) {
+    $remainingLines.Add((ConvertTo-AutoReadableFindingLine -Labels $Labels -Finding $finding))
+  }
+  if ($remainingLines.Count -eq 0) {
+    $remainingLines.Add("- $(ConvertFrom-AutoUnicode '\u6682\u65e0\u5fc5\u987b\u4eba\u5de5\u5904\u7406\u7684 B/C-tier \u5269\u4f59\u4e8b\u9879\u3002')")
+  } elseif (@($Findings | Where-Object { $_.tier -ne "A" }).Count -gt 6) {
+    $remainingLines.Add("- $(ConvertFrom-AutoUnicode '\u8fd8\u6709\u66f4\u591a B/C-tier \u4e8b\u9879\uff0c\u89c1\u5f85\u4eba\u5de5\u51b3\u7b56\u8868\u3002')")
+  }
+
+  $hStatus = ConvertFrom-AutoUnicode "\u8fd0\u884c\u72b6\u6001"
+  $hChecked = ConvertFrom-AutoUnicode "\u68c0\u67e5\u4e86\u4ec0\u4e48"
+  $hModel = ConvertFrom-AutoUnicode "\u6a21\u578b\u53c2\u4e0e"
+  $hFindings = ConvertFrom-AutoUnicode "\u53d1\u73b0\u4e86\u4ec0\u4e48"
+  $hActions = ConvertFrom-AutoUnicode "\u5df2\u7ecf\u5904\u7406\u4e86\u4ec0\u4e48"
+  $hRemaining = ConvertFrom-AutoUnicode "\u5269\u4f59\u9700\u8981\u770b\u4ec0\u4e48"
+  return @"
+- **$hStatus**: $Status
+- **$hChecked**: $checked
+- **$hModel**: $modelLine
+
+### $hFindings
+$($findingLines -join "`n")
+
+### $hActions
+$($actionLines -join "`n")
+
+### $hRemaining
+$($remainingLines -join "`n")
+"@
+}
+
+function New-AutoOperatorSummaryFromLogs {
+  param(
+    [string]$Root,
+    [string]$OutputDirectoryName = ""
+  )
+
+  $noLogs = ConvertFrom-AutoUnicode "\u8fd8\u6ca1\u6709\u53ef\u6c47\u603b\u7684\u81ea\u52a8\u5316\u65e5\u5fd7\u3002"
+  $rootPath = Resolve-MemoryOsRoot -Root $Root
+  $logParent = Join-Path $rootPath "logs\auto-runs"
+  if (-not (Test-Path -LiteralPath $logParent)) { return $noLogs }
+
+  $folderName = $OutputDirectoryName
+  if ([string]::IsNullOrWhiteSpace($folderName)) { $folderName = $env:AI_MEMORYOS_AUTO_RUN_OUTPUT_DIR }
+  if ([string]::IsNullOrWhiteSpace($folderName)) {
+    $latestDir = Get-ChildItem -LiteralPath $logParent -Directory |
+      Where-Object { $_.Name -notin @("approval-sheets", ".locks") } |
+      Sort-Object LastWriteTime -Descending |
+      Select-Object -First 1
+    if ($null -eq $latestDir) { return $noLogs }
+    $logDir = $latestDir.FullName
+  } else {
+    $folderName = Split-Path -Leaf $folderName
+    $logDir = Join-Path $logParent $folderName
+  }
+  if (-not (Test-Path -LiteralPath $logDir)) { return $noLogs }
+
+  $labels = Get-AutoLabels -Root $rootPath
+  $logs = @(Get-ChildItem -LiteralPath $logDir -Filter "*.md" -File |
+    Where-Object { $_.Name -ne "000-overview.md" } |
+    Sort-Object Name)
+  if ($logs.Count -eq 0) { return $noLogs }
+
+  $checked = New-Object System.Collections.Generic.List[string]
+  $problemLines = New-Object System.Collections.Generic.List[string]
+  $fixedLines = New-Object System.Collections.Generic.List[string]
+  $remainingLines = New-Object System.Collections.Generic.List[string]
+  $failedScripts = New-Object System.Collections.Generic.List[string]
+  $modelInvocations = 0
+
+  foreach ($log in $logs) {
+    $text = Get-Content -LiteralPath $log.FullName -Raw -Encoding UTF8
+    $script = Get-AutoFrontMatterValue -Text $text -Key "script"
+    if ([string]::IsNullOrWhiteSpace($script)) { $script = $log.BaseName }
+    $status = Get-AutoFrontMatterValue -Text $text -Key "status"
+    $exitCode = Get-AutoFrontMatterValue -Text $text -Key "exit_code"
+    $modelText = Get-AutoFrontMatterValue -Text $text -Key "model_invocations_count"
+    $modelCount = 0
+    [int]::TryParse($modelText, [ref]$modelCount) | Out-Null
+    $modelInvocations += $modelCount
+    $checked.Add("- ${script}: $(Get-AutoScriptPurpose -ScriptName $script)")
+    if ($status -eq "failed" -or ((-not [string]::IsNullOrWhiteSpace($exitCode)) -and $exitCode -ne "0")) {
+      $failedScripts.Add("- ${script}: $(ConvertFrom-AutoUnicode '\u72b6\u6001 ')$status$(ConvertFrom-AutoUnicode '\uff0cexit_code=')$exitCode")
+    }
+
+    $match = [regex]::Match($text, '(?s)(?:```|~~~)json\s*(\{.*?\})\s*(?:```|~~~)')
+    if (-not $match.Success) { continue }
+    $payload = $match.Groups[1].Value | ConvertFrom-Json
+    foreach ($finding in @($payload.findings | Select-Object -First 3)) {
+      if (@($problemLines).Count -lt 12) {
+        $problemLines.Add((ConvertTo-AutoReadableFindingLine -Labels $labels -Finding $finding))
+      }
+      if ($finding.tier -ne "A" -and @($remainingLines).Count -lt 10) {
+        $remainingLines.Add((ConvertTo-AutoReadableFindingLine -Labels $labels -Finding $finding))
+      }
+    }
+    foreach ($action in @($payload.actions | Select-Object -First 3)) {
+      if (@($fixedLines).Count -lt 12) {
+        $fixedLines.Add((ConvertTo-AutoReadableActionLine -Labels $labels -Action $action))
+      }
+    }
+  }
+
+  if ($problemLines.Count -eq 0) { $problemLines.Add("- $(ConvertFrom-AutoUnicode '\u6ca1\u6709\u53d1\u73b0\u9700\u8981\u91cd\u70b9\u5904\u7406\u7684\u95ee\u9898\u3002')") }
+  if ($fixedLines.Count -eq 0) { $fixedLines.Add("- $(ConvertFrom-AutoUnicode '\u672c\u8f6e\u6ca1\u6709\u81ea\u52a8\u5e94\u7528\u4fee\u590d\uff0c\u4e5f\u6ca1\u6709\u751f\u6210\u65b0\u7684\u5904\u7406\u4ea7\u7269\u3002')") }
+  if ($remainingLines.Count -eq 0) { $remainingLines.Add("- $(ConvertFrom-AutoUnicode '\u6682\u65e0\u5fc5\u987b\u4eba\u5de5\u5904\u7406\u7684 B/C-tier \u5269\u4f59\u4e8b\u9879\u3002')") }
+  if ($failedScripts.Count -eq 0) { $failedScripts.Add("- $(ConvertFrom-AutoUnicode '\u6ca1\u6709\u811a\u672c\u5931\u8d25\u3002')") }
+
+  $hChecked = ConvertFrom-AutoUnicode "\u68c0\u67e5\u4e86\u4ec0\u4e48"
+  $hFindings = ConvertFrom-AutoUnicode "\u53d1\u73b0\u4e86\u4ec0\u4e48"
+  $hFixed = ConvertFrom-AutoUnicode "\u5df2\u7ecf\u81ea\u52a8\u5904\u7406\u4e86\u4ec0\u4e48"
+  $hRemaining = ConvertFrom-AutoUnicode "\u5269\u4f59\u9700\u8981\u4eba\u5de5\u770b\u7684\u4e8b\u9879"
+  $hFailures = ConvertFrom-AutoUnicode "\u8fd0\u884c\u5f02\u5e38"
+  $hModel = ConvertFrom-AutoUnicode "\u6a21\u578b\u53c2\u4e0e"
+  $modelCountLabel = ConvertFrom-AutoUnicode "\u672c\u8f6e\u6a21\u578b\u8c03\u7528\u6b21\u6570\uff1a"
+  return @"
+### $hChecked
+$($checked -join "`n")
+
+### $hFindings
+$($problemLines -join "`n")
+
+### $hFixed
+$($fixedLines -join "`n")
+
+### $hRemaining
+$($remainingLines -join "`n")
+
+### $hFailures
+$($failedScripts -join "`n")
+
+### $hModel
+- $modelCountLabel$modelInvocations
+"@
+}
+
 function Write-AutoRunLog {
   param(
     [string]$Root,
@@ -823,7 +1059,7 @@ function Write-AutoRunLog {
   foreach ($finding in @($Findings)) {
     $severityText = Get-AutoLabel -Labels $labels -Group "severity" -Key $finding.severity
     $categoryText = Get-AutoLabel -Labels $labels -Group "category" -Key $finding.category
-    $messageText = Get-AutoLabel -Labels $labels -Group "message" -Key $finding.category
+    $messageText = Get-AutoReadableFindingMessage -Labels $labels -Finding $finding
     $tierText = Get-AutoLabel -Labels $labels -Group "tier" -Key $finding.tier
     $findingRows.Add("| $i | $(ConvertTo-MarkdownTableCell $severityText) | $(ConvertTo-MarkdownTableCell $categoryText) | $(ConvertTo-MarkdownTableCell $messageText) | $(ConvertTo-MarkdownTableCell $finding.path) | $(ConvertTo-MarkdownTableCell $tierText) |")
     $i++
@@ -871,7 +1107,7 @@ repair_attempts: $RepairAttempts
   $decisionRows = New-Object System.Collections.Generic.List[string]
   $i = 1
   foreach ($finding in @($Findings | Where-Object { $_.tier -ne "A" })) {
-    $messageText = Get-AutoLabel -Labels $labels -Group "message" -Key $finding.category
+    $messageText = Get-AutoReadableFindingMessage -Labels $labels -Finding $finding
     $tierText = Get-AutoLabel -Labels $labels -Group "tier" -Key $finding.tier
     $decisionRows.Add("| $i | $(ConvertTo-MarkdownTableCell $messageText) | $(ConvertTo-MarkdownTableCell $tierText) | $(ConvertTo-MarkdownTableCell $finding.path) | pending |")
     $i++
@@ -880,6 +1116,7 @@ repair_attempts: $RepairAttempts
 
   $body = Expand-AutoTemplate -Root $rootPath -RelativePath "templates\auto-run-log.md" -Tokens @{
     script = $ScriptName
+    readable_summary = (New-AutoReadableRunSummary -ScriptName $ScriptName -Findings $Findings -Actions $Actions -Parameters $Parameters -Status $Status -ModelInvocationsCount $ModelInvocationsCount -Labels $labels)
     root = $rootPath
     phase = $Parameters["phase"]
     parameters = ($parameterLines -join "`r`n")
@@ -1345,6 +1582,7 @@ function New-AutoCycleSummary {
   )
 
   $rootPath = Resolve-MemoryOsRoot -Root $Root
+  $operatorSummary = New-AutoOperatorSummaryFromLogs -Root $rootPath
   $content = Expand-AutoTemplate -Root $rootPath -RelativePath "templates\auto-cycle-summary.md" -Tokens @{
     scope = $Scope
     branch = $Branch
@@ -1353,6 +1591,7 @@ function New-AutoCycleSummary {
     started_at = $StartedAt.ToString("o")
     completed_at = (Get-Date).ToString("o")
     phase_summary = $PhaseSummary
+    operator_summary = $operatorSummary
     manual_items = $ManualItems
     review_notes = $ReviewNotes
   }

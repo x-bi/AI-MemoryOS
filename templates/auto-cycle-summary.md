@@ -21,6 +21,10 @@ status: ""
 
 {{phase_summary}}
 
+## 本轮语义摘要
+
+{{operator_summary}}
+
 ## 需要人工处理
 
 {{manual_items}}

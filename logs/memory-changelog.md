@@ -3,6 +3,7 @@
 ## 2026-06-01
 
 - 放宽 `tools/auto/` 脚本分支的模型修复边界：`model-repair-plan.ps1` 可在 `auto/*` 分支上自动应用 A/B-tier 安全路径的 exact-match 模型编辑，并在写入后运行 `tools/validate-memory-os.ps1`；formal rules、router、skills、adapter gate、automation scripts 和核心治理文件仍走 C-tier 审批单。同步更新 `rules/auto-run-operations.md`、`docs/auto-run-usage.md` 和 `tools/auto/schemas/model-action.schema.json`。
+- 改善 auto-run 可读产物：`Write-AutoRunLog` 现在在每个脚本日志顶部生成中文语义摘要，优先显示真实 finding message；`New-AutoCycleSummary` 会从本轮日志聚合“检查了什么、发现了什么、已经自动处理了什么、剩余人工事项、运行异常和模型参与次数”，减少用户逐个阅读底层日志和 JSON 的负担。
 
 ## 2026-05-27
 

@@ -20,6 +20,10 @@ repair_attempts: 0
 
 # 自动运行日志：{{script}}
 
+## 先看这里
+
+{{readable_summary}}
+
 ## 运行上下文
 
 - **仓库根目录**：{{root}}
@@ -45,7 +49,7 @@ repair_attempts: 0
 |---|---|---|---|---|
 {{decision_rows}}
 
-## 结构化数据
+## 结构化数据（排查用）
 
 ~~~json
 {{structured_json}}

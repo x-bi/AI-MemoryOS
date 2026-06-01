@@ -273,6 +273,25 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\auto\start-cycle.ps1 -
 
 真实创建 `auto/*` 分支前，脚本会验证当前必须在 `main`，工作区必须干净，且 `main` 相对 upstream 没有未推送或未同步的 commit。否则脚本会停止，避免把 `main` 上未提交的文件改动带到自动化功能分支。
 
+### 5.8 运行完先看什么
+
+完整 cycle 的首要阅读入口不是逐个原始日志，而是本轮输出目录里的语义摘要：
+
+```text
+logs/auto-runs/<本轮目录>/000-overview.md
+logs/auto-runs/<本轮目录>/*-cycle-summary-*.md
+```
+
+这些文件会优先用中文说明：
+
+- 检查了什么。
+- 发现了哪些问题。
+- 已经自动解决或生成了哪些处理产物。
+- 还剩哪些需要人工看。
+- 哪些脚本失败或需要优先排查。
+
+单个脚本日志顶部的 `先看这里` 是给人读的摘要；后面的结构化 JSON 只作为排查证据。
+
 ## 6. Scope 怎么选
 
 | Scope | 适用场景 | 主要脚本 |
