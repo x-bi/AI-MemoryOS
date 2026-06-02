@@ -137,3 +137,12 @@ OS: Lx; skills: ...; workflow: ...; read: ...; graph: codegraph N; write: ...
 ```
 
 - `graph: codegraph N` records the number of CodeGraph tool calls made this turn. Use `graph: none` when no CodeGraph calls were made.
+
+## Fallback
+
+If this file cannot be read:
+
+- Use concise, direct, engineering-oriented Chinese responses.
+- Handle simple explain / single-point debug / small implement tasks directly.
+- For architecture, cross-module, security/permissions, release, Memory OS maintenance, or long-term conventions, ask the user whether to read Memory OS first.
+- Do not auto-write to Memory OS; only write to `proposals/pending/` after explicit user request or confirmation.

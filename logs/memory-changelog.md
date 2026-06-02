@@ -40,7 +40,7 @@
 - 补充外部配置审计结果：Git local config 需要记录；Obsidian 配置已由仓库内 `.obsidian/` 跟踪，不需要单独外部副本；本机 `.codex` 中的 Lanhu MCP、其他 trusted projects、marketplace cache、未跟踪 `git-ops-guide` skill 不纳入 Memory OS 必需恢复项。
 - 更新 `tools/validate-memory-os.ps1`，将 `gate.md`、`external-config.md` 和 `pr-review` active skill 纳入验证。
 - 同步说明文件以匹配 Codex gate 入口和 L0-L3 触发机制。
-- 更新 `adapters/codex/AGENTS.md`、`adapters/codex/prompts/global-agents-snippet.md`、`README.md`、`docs/usage-manual.md`、`router/routing-rules.md`、`core/codex-operating-rules.md`。
+- 更新 `adapters/codex/AGENTS.md`、`adapters/codex/prompts/global-agents-snippet.md`、`README.md`、`docs/usage-manual.md`、`router/routing-rules.md`、`core/codex-operating-rules.md`。（历史记录；其中部分文件后来已合并或删除。）
 - 明确 Codex 每个输入先读取 `adapters/codex/gate.md`，L0/L1 不读取 Memory OS 正文，L1 默认倾向触发轻量 workflow / skill。
 - 明确 L2 才读取 `_index.md` + 最多 3 个相关页面，L3 仍需用户明确要求或确认后写入 `proposals/pending/`。
 - 更新 `core/memory-rules.md` 的读取与写入边界、读取预算表述，将旧的“普通/复杂任务”二分收敛为 L0/L1/L2/L3，并明确 2k 是普通 L2 的 Memory OS 正文软预算。

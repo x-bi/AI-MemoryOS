@@ -21,7 +21,6 @@ L0-L3 定义和 L1/L2 策略偏好由各适配器 gate 文件管理，本文件�
 - `STATUS.md`：当前完成度和剩余工作。
 - `ROADMAP.md`：7 / 30 / 90 天推进路线。
 - `GOVERNANCE.md`：proposal 晋升、拒绝和审计规则。
-- `INSTALL.md`：Codex 接入和日常使用方式。
 - `dashboard/home.md`：Obsidian 首页入口。
 - `core/memory-rules.md`：记忆写入边界。
 - `core/safety-rules.md`：敏感信息和安全规则。
@@ -53,6 +52,7 @@ L0-L3 定义和 L1/L2 策略偏好由各适配器 gate 文件管理，本文件�
 - `adapters/codex/config/recommended-config.toml`：全局 config 合并建议。
 - `adapters/generic/SYSTEM.md`：通用模型接入说明。
 - `adapters/mcp/`：受限 MCP 自动化入口，只允许读库和写 pending proposal。
+- `integrations/obsidian.md`：Obsidian 前台和 dashboard 集成说明。
 
 ## Claude Adapter Current Entry
 

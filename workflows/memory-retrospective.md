@@ -13,6 +13,8 @@
 5. 只生成 pending proposal。
 6. 不直接晋升正式内容。
 
+如果目标类型是 skill，proposal 应指向 `skills/<skill>/SKILL_SPEC.md` 或 `skills/registry.json`；adapter `SKILL.md` 由 `tools/sync-skills.ps1` 生成，不作为手工晋升目标。
+
 ## Output
 
 写入 `proposals/pending/YYYY-MM-DD-short-title.md`。

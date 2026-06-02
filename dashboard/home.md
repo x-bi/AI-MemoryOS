@@ -12,13 +12,10 @@
 
 ## Core 核心文档
 
-- [[docs/usage-manual]]：使用手册。
 - [[STATUS]]：当前完成度。
 - [[ROADMAP]]：路线图。
 - [[GOVERNANCE]]：治理规则。
-- [[INSTALL]]：安装和接入说明。
-- [[REMOTE]]：远程仓库说明。
-- [[OBSIDIAN_SETUP]]：Obsidian 配置说明。
+- [[integrations/obsidian]]：Obsidian 集成说明。
 
 ## Workflows 工作流
 

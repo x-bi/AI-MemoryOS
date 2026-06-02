@@ -24,13 +24,12 @@
 - Codex 外部配置副本：已新增 `adapters/codex/external-config.md`，记录全局 bootstrap、config snippet、skill junction 和验证步骤。
 - 新开 Codex 会话后验证 7 个 active skills 是否出现在技能列表。
 
-## 剩余工作
+## 后续关注
 
-- 扩展 skills：feature-planning、refactor-with-safety、test-strategy-review、prompt-improver、memory-auditor、skill-updater、backend-api-review、script-automation、playwright-e2e-review、ci-pipeline-review。
-- 补 router/evals 的真实样例，避免靠想象扩写。
-- 建立 proposal 晋升流程和 accepted/rejected 记录规范。
-- 为 Claude / Cursor / generic adapter 补更完整接入说明。
-- 用真实任务生成第一批 pending proposals。
+- 基于真实任务继续补 router/evals 样例，避免靠想象扩写。
+- 按真实需求从候选 skills 中晋升更多 active skills，晋升时走 `skills/registry.json` + `SKILL_SPEC.md` + `tools/sync-skills.ps1`。
+- 持续维护 proposal 晋升、accepted/rejected 记录和 changelog 质量。
+- Cursor / generic adapter 仍可补更完整接入说明。
 
 ## 当前策略
 
@@ -44,7 +43,7 @@
 
 ## Claude Code Adapter Status
 
-- Claude Code user gate is configured at `C:\Users\btf\.claude\CLAUDE.md` and synchronized from `adapters/claude/CLAUDE.md`.
+- Claude Code user gate is configured at `C:\Users\btf\.claude\CLAUDE.md` as a bootstrap redirect to `adapters/claude/CLAUDE.md`.
 - Temporary Claude L2 Bias is enabled in the Claude gate: borderline L1/L2 tasks prefer L2 while Claude has more available usage budget; Codex gate and L3 write boundaries are unchanged.
 - Claude `ai_memoryos` MCP is configured in user scope and verified connected; it uses the shared MCP server, which can search `proposals/future-directions/` read-only while writes remain limited to `proposals/pending/`.
 - Claude skill source directory is `adapters/claude/skills`.

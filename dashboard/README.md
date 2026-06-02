@@ -13,4 +13,4 @@
 - [[dashboard/router-evals]]：路由测试样例。
 - [[dashboard/weekly-audit]]：每周审计入口。
 
-配置说明：[[OBSIDIAN_SETUP]]
+配置说明：[[integrations/obsidian]]

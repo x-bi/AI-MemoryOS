@@ -1,6 +1,6 @@
 # Roadmap 路线图
 
-## 7 天 MVP
+## 7 天 MVP（已完成基线）
 
 - Day 1：建立独立仓库、全局 AGENTS 接入、Codex skills junction 映射。
 - Day 2：补齐 core / router / workflows / frontend / proposals / evals。
@@ -29,9 +29,9 @@
 
 ## 30 天
 
-- 纳入 testing 域和 Playwright / Vitest stack 页面。
-- 建立第一次 accepted proposal 流程。
-- 每周一次 memory audit。
+- 按真实需求扩展 testing / Playwright / Vitest 相关 stack 页面。
+- 持续完善 accepted / rejected proposal 流程和记录质量。
+- 保持每周一次 memory audit。
 - 路由纠正案例累计到 10~20 条。
 - 让 prompts 与 skills 开始互相引用。
 
@@ -45,7 +45,7 @@
 
 ## Claude Code Baseline
 
-- Claude Code user gate is restored from `adapters/claude/CLAUDE.md`.
+- Claude Code user gate is a bootstrap redirect to `adapters/claude/CLAUDE.md`.
 - Claude Code `ai_memoryos` MCP is connected through the shared restricted MCP server.
 - Seven active Claude skills are adapted and mapped through junctions from `C:\Users\btf\.claude\skills` to `adapters/claude/skills`.
 - Claude Code migration and reinstall steps are recorded in `adapters/claude/external-config.md`.

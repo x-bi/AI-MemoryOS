@@ -1,25 +1,17 @@
-# AI Memory OS Repository Rules
+# AI Memory OS Codex Fallback
 
-本仓库是跨模型工程记忆事实源，不是某个项目的临时上下文。
+本文件只是 Codex 项目级兜底入口，不是完整运行策略事实源。
 
-## Codex 入口
+Codex 的主要运行规则由以下文件维护：
 
-- Codex 运行策略由 `adapters/codex/gate.md` 维护。
-- 全局 `C:\Users\btf\.codex\AGENTS.md` 只作为 bootstrap，引导每个输入先读取 gate。
-- 回答风格、Memory OS Gate、验证与回归自检策略都以 `adapters/codex/gate.md` 为准。
-- 如果 gate 与本文件冲突，本仓库维护规则优先；如果项目代码事实与 Memory OS 冲突，项目事实优先。
+```text
+C:\Users\btf\AI-MemoryOS\adapters\codex\gate.md
+```
 
-## 工作规则
+每个 Codex 输入先读取 `adapters/codex/gate.md`，并按其中规则处理回答风格、Memory OS Gate、任务量级、验证策略、写入边界和 Final Trace。
 
-- 普通任务只读取 `adapters/codex/gate.md` 作为运行策略入口，不读取 Memory OS 正文。
-- 新经验默认只写入 `proposals/pending/`。
-- 不直接修改正式 rules / router / skills，除非用户明确进入维护或晋升模式。
-- 不保存 token、密码、密钥、PII、生产日志原文、客户私有代码或未脱敏业务信息。
-- 项目局部规则优先于本仓库通用规则。
-- 修改正式内容时同步更新 `logs/`。
+如果本文件与 `adapters/codex/gate.md` 冲突，以 `gate.md` 为准；如果项目代码事实与 Memory OS 通用规则冲突，以项目事实优先。
 
-## 低消耗约束
+Claude Code 不使用本文件作为入口。Claude 运行策略由 `adapters/claude/CLAUDE.md` 维护，用户级 `C:\Users\btf\.claude\CLAUDE.md` 只是指向该文件的 bootstrap redirect。
 
-- 复杂任务最多读取 `_index.md` + 3 个相关页面。
-- 需要扩大读取范围时，先说明原因。
-- 不自动扫描 `raw/`、`proposals/accepted/`、`proposals/rejected/`。
+除非用户明确要求或确认，不自动写入 Memory OS；新经验默认只能写入 `proposals/pending/`。

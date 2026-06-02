@@ -32,7 +32,7 @@ AI-MemoryOS/
 │   ├── mcp/             #   受限 MCP server，只允许读库 + 写 pending proposal
 │   ├── generic/         #   通用模型适配
 │   └── cursor/          #   Cursor 适配（待完善）
-├── core/                # 核心规则（codex-operating / memory / safety）
+├── core/                # 核心规则（memory / safety）
 ├── router/              # 路由策略（intent-map / domain-map / skill-map）
 ├── skills/              # 共享 skill 定义
 │   ├── registry.json    #   skill 注册表（adapter 外壳的生成源）
@@ -52,19 +52,15 @@ AI-MemoryOS/
 ├── logs/                # 审计与变更记录
 ├── wiki/                # 长期知识沉淀
 ├── dashboard/           # Obsidian dashboard（home.md）
-├── docs/                # 文档（usage-manual）
 ├── tools/               # 维护脚本
 ├── private/             # 本地私有内容（CodeGraph 工作树等，不进 Git）
 ├── private.example/     # private 示例骨架
-├── integrations/        # 第三方集成
+├── integrations/        # 第三方集成（含 Obsidian）
 ├── _index.md            # 记忆索引（L2 入口）
 ├── AGENTS.md            # 仓库级 Codex 规则
 ├── GOVERNANCE.md        # 治理与晋升规则
-├── INSTALL.md           # 安装与接入说明
 ├── STATUS.md            # 当前状态
-├── ROADMAP.md           # 路线图
-├── REMOTE.md            # 远程仓库与推送策略
-└── OBSIDIAN_SETUP.md    # Obsidian 配置说明
+└── ROADMAP.md           # 路线图
 ```
 
 ## 维护脚本 (tools/)
@@ -144,7 +140,7 @@ CodeGraph 是 OS 管理的代码图谱加速层（基于 `@colbymchenry/codegrap
 - Dashboard 首页：`dashboard/home.md`
 - 已配置插件：Obsidian Git、QuickAdd、Templater、Dataview、Advanced URI
 - Obsidian Git 启用自动推送，同步已确认的本地 vault 变更
-- 详细配置见 `OBSIDIAN_SETUP.md`
+- 详细配置见 `integrations/obsidian.md`
 
 ## 远程仓库
 
@@ -173,10 +169,8 @@ CodeGraph 是 OS 管理的代码图谱加速层（基于 `@colbymchenry/codegrap
 | [STATUS.md](STATUS.md) | 当前完成度和剩余工作 |
 | [ROADMAP.md](ROADMAP.md) | 7 / 30 / 90 天推进路线 |
 | [GOVERNANCE.md](GOVERNANCE.md) | 治理、晋升和审计规则 |
-| [INSTALL.md](INSTALL.md) | 安装与接入说明 |
-| [REMOTE.md](REMOTE.md) | 远程仓库与推送策略 |
 | [_index.md](_index.md) | 记忆索引（L2 入口） |
-| [docs/usage-manual.md](docs/usage-manual.md) | 使用手册 |
 | [dashboard/home.md](dashboard/home.md) | Obsidian 首页 |
+| [integrations/obsidian.md](integrations/obsidian.md) | Obsidian 集成说明 |
 | [adapters/codex/external-config.md](adapters/codex/external-config.md) | Codex 接入恢复说明 |
 | [adapters/claude/external-config.md](adapters/claude/external-config.md) | Claude 接入恢复说明 |

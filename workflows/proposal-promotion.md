@@ -4,6 +4,7 @@
 
 - `proposals/pending/` 中的 proposal。
 - 相关 rules / workflow / domain / router / skill / eval 文件。
+- 如果 proposal 涉及 skill，`skills/registry.json` 和 `skills/<skill>/SKILL_SPEC.md` 是事实源；adapter `SKILL.md` 文件由 `tools/sync-skills.ps1` 生成。
 
 ## Review Checklist
 
@@ -33,6 +34,15 @@
 - accept：移动到 `proposals/accepted/`，保留 `source_episode`，并修改目标文件（目标文件也保留 `source_episode`）。
 - reject：移动到 `proposals/rejected/`，写明原因。
 - defer：保留 pending，补充需要验证的信息。
+
+## Skill Promotion
+
+晋升 skill 相关 proposal 时：
+
+1. 修改 `skills/<skill>/SKILL_SPEC.md` 或 `skills/registry.json`。
+2. 运行 `tools/sync-skills.ps1` 同步 Codex / Claude adapter 外壳。
+3. 运行 `tools/validate-memory-os.ps1` 验证 source hash 和注册表一致性。
+4. 不直接手写 `adapters/*/skills/*/SKILL.md`；这些文件会被同步脚本覆盖。
 
 ## Required Logs
 
