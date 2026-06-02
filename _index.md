@@ -2,23 +2,18 @@
 
 ## Read Budget 读取预算
 
-每个用户输入先读取 `adapters/codex/gate.md` 做轻量 Memory OS Gate 判定；读取 gate 只用于加载运行策略，不等于读取 Memory OS 正文。
+L0-L3 定义和 L1/L2 策略偏好由各适配器 gate 文件管理，本文件不重复。通用规则：
 
-- L0：纯解释、纯问答、无文件改动、无决策影响的任务，读 gate 后直接执行，不读 Memory OS 正文。
-- L1：轻量 workflow / skill 默认倾向触发，读 gate 后不再读 Memory OS 正文。
-- L2：复杂工程任务，可自动读本文件，最多再读 3 个直接相关页面。
-- L3：仅用户明确要求或确认后写入 `proposals/pending/`；重大长期方向说明仅在用户明确要求记录方向或架构意图时写入 `proposals/future-directions/`。
 - 记忆复盘：读本文件和少量相关 rules / workflows / domains / router 页面。
 - 维护模式：可以审计、整理、晋升 proposal，但仍需保留变更记录。
-
-普通复杂任务的 MemoryOS 读取预算默认不超过 2k tokens；该预算只统计 MemoryOS 自身内容，不包含业务项目代码、diff、报错日志、接口文档、终端输出、当前对话或 Codex 系统上下文。维护、weekly audit、proposal 晋升、skill 晋升等任务可临时放宽到 5k-8k tokens，但必须说明读取范围。
+- 普通复杂任务的 MemoryOS 读取预算默认不超过 2k tokens；该预算只统计 MemoryOS 自身内容，不包含业务项目代码、diff、报错日志、接口文档、终端输出、当前对话或系统上下文。维护、weekly audit、proposal 晋升、skill 晋升等任务可临时放宽到 5k-8k tokens，但必须说明读取范围。
 
 ## Routing 路由
 
-1. 先读 `adapters/codex/gate.md` 做 Memory OS Gate：判断任务处于 L0/L1/L2/L3。
-2. 再判断 task_type：explain / debug / implement / review / architecture / retrospective / maintenance。
-3. 再判断 domain：frontend / testing / backend / scripting / devops / security。
-4. 再选择 workflow / skill / markdown。
+1. 各适配器先读自己的 gate 文件做 Memory OS Gate：判断任务处于 L0/L1/L2/L3。
+2. 再判断 task_type：分类边界见 `router/intent-map.md`。
+3. 再判断 domain：领域信号和入口页见 `router/domain-map.md`。
+4. 再选择 workflow / skill / markdown：skill 触发边界见 `router/skill-map.md`，workflow 和普通 markdown 按 task_type、domain 与核心文件入口选择。
 5. 低置信度时先问一个关键问题，不扩大读取。
 
 ## Core Files 核心文件
@@ -33,7 +28,7 @@
 - `core/safety-rules.md`：敏感信息和安全规则。
 - `router/intent-map.md`：任务类型路由。
 - `router/domain-map.md`：领域路由。
-- `router/skill-map.md`：Codex skill 触发边界。
+- `router/skill-map.md`：skill 触发边界（模型无关）。
 - `workflows/`：可复用执行流程。
 - `domains/frontend/`：前端优先领域包。
 - `proposals/pending/`：唯一默认写入入口。

@@ -10,8 +10,12 @@
 | vue-change-self-check | Vue / uni-app / frontend 改动需要提交前自检、diff 风险扫描、编号风险清单；用户要求检查当前改动、未提交改动、staged changes、commit、diff、提交前检查，且当前仓库或轻量 diff 文件列表命中 `.vue`、`pages.json`、`manifest.json`、前端路由/页面/导航配置、uni-app 分包页面等信号时，也应触发 | 普通 bug 修复、非前端任务、只审查单个组件交互、纯解释任务、用户要求直接实现或修 bug 而不是先做自检 |
 | git-ops-guide | 用户询问 Git 命令、操作顺序、步骤指引，或描述了 Git 目标但不确定怎么做；用中文给出命令建议 | 用户明确要求直接执行 git 操作（commit/push/merge/rebase/reset 等），或与 Git 无关的任务 |
 
-原则：当前阶段优先扩大真实任务输入；L1 轻量 workflow / review skill 默认倾向触发，用于收集真实案例；读取 Memory OS 正文和写入 proposal 仍保持保守。
+## Notes
 
-当 `pr-review` 与 `vue-change-self-check` 同时命中时，二者不是互斥关系。最终输出优先使用 `vue-change-self-check` 的四段式结构：变更影响扫描、风险清单、建议验证路径、本次未覆盖盲区；通用 review 发现并入稳定编号风险清单。
+- L1/L2 策略偏好由各适配器 gate 文件自行管理，本文件不重复。
 
-对“检查改动 / diff / commit / staged changes”类请求，允许先读取轻量变更范围（如 `git diff --name-only`、`git diff --stat`、`git show --name-only --stat <commit>`、`git status --short`）再补判是否触发前端 self-check。该预读只用于识别文件类型和范围，不默认打开大量源码，也不读取私有 overlay。
+- 当 `pr-review` 与 `vue-change-self-check` 同时命中时，二者不是互斥关系。最终输出优先使用 `vue-change-self-check` 的四段式结构：变更影响扫描、风险清单、建议验证路径、本次未覆盖盲区；通用 review 发现并入稳定编号风险清单。
+
+- 对"检查改动 / diff / commit / staged changes"类请求，允许先读取轻量变更范围（如 `git diff --name-only`、`git diff --stat`、`git show --name-only --stat <commit>`、`git status --short`）再补判是否触发前端 self-check。该预读只用于识别文件类型和范围，不默认打开大量源码，也不读取私有 overlay。
+
+- 找不到明确 skill 时，直接按项目上下文、相关 workflow 或普通 markdown 完成任务，不强行触发 skill。

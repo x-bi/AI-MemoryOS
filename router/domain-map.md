@@ -9,4 +9,6 @@
 | CI、部署、流水线、环境 | devops | `domains/devops/README.md` |
 | 密钥、权限、漏洞、依赖风险 | security | `domains/security/README.md` |
 
+找不到明确领域时，按通用工程任务处理，不强行扩大读取。
+
 低置信度时不要扩大读取，先问一个关键问题。
