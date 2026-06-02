@@ -35,6 +35,9 @@ pwsh -NoProfile -File "C:\Users\btf\AI-MemoryOS\tools\self-optimize-scan.ps1" -V
 # 改小每批大小（候选多/输出易截断时把每批降到 2，更稳但慢）
 pwsh -NoProfile -File "C:\Users\btf\AI-MemoryOS\tools\self-optimize-scan.ps1" -TopN 10 -BatchSize 2
 
+# 最完整跑法：对抗验证 + 小分批（推荐日常使用）
+pwsh -NoProfile -File "C:\Users\btf\AI-MemoryOS\tools\self-optimize-scan.ps1" -Verify -BatchSize 2
+
 # 只组装 prompt 不调 Claude（调试用，零 token）
 pwsh -NoProfile -File "C:\Users\btf\AI-MemoryOS\tools\self-optimize-scan.ps1" -DryRun
 
@@ -47,17 +50,17 @@ pwsh -NoProfile -File "C:\Users\btf\AI-MemoryOS\tools\self-optimize-scan.ps1" -M
 
 ### 参数速查
 
-| 参数 | 默认 | 说明 |
-|------|------|------|
-| `-Root` | `C:\Users\btf\AI-MemoryOS` | 项目根路径 |
-| `-Keywords` | 空 → 自动推导 | CSV 关键词，覆盖自动推导 |
-| `-TopN` | 10 | 去重后保留的 GitHub 候选数 |
-| `-BatchSize` | 3 | 每批送给 Claude 的候选数（避免单次输出过长被截断） |
-| `-ReadmeBytes` | 5120 | 每份 README 截断上限 |
-| `-MaxPromptBytes` | 204800 | 发给 claude 的 prompt 硬上限 |
-| `-Verify` | 关 | 启用 pass-2 对抗验证 |
-| `-DryRun` | 关 | 只组装 prompt 不调 claude |
-| `-Model` | 空 → claude CLI 默认 | 转发给 `claude --model` |
+| 参数              | 默认                       | 说明                                               |
+| ----------------- | -------------------------- | -------------------------------------------------- |
+| `-Root`           | `C:\Users\btf\AI-MemoryOS` | 项目根路径                                         |
+| `-Keywords`       | 空 → 自动推导              | CSV 关键词，覆盖自动推导                           |
+| `-TopN`           | 10                         | 去重后保留的 GitHub 候选数                         |
+| `-BatchSize`      | 3                          | 每批送给 Claude 的候选数（避免单次输出过长被截断） |
+| `-ReadmeBytes`    | 5120                       | 每份 README 截断上限                               |
+| `-MaxPromptBytes` | 204800                     | 发给 claude 的 prompt 硬上限                       |
+| `-Verify`         | 关                         | 启用 pass-2 对抗验证                               |
+| `-DryRun`         | 关                         | 只组装 prompt 不调 claude                          |
+| `-Model`          | 空 → claude CLI 默认       | 转发给 `claude --model`                            |
 
 ### 输出
 
@@ -81,13 +84,13 @@ pwsh -NoProfile -File "C:\Users\btf\AI-MemoryOS\tools\self-optimize-scan.ps1" -M
 
 ## 其他脚本（一句话索引）
 
-| 脚本 | 用途 |
-|------|------|
-| `new-proposal.ps1` | 从模板创建新的 `proposals/pending/<date>-<title>.md` |
-| `sync-skills.ps1` | 同步 `skills/registry.json` 到各 adapter 的 SKILL.md 副本 |
-| `validate-memory-os.ps1` | 校验 Memory OS 文件结构与 frontmatter 完整性 |
-| `validate-obsidian.ps1` | 校验 Obsidian wikilink 与文件引用 |
-| `codegraph-project.ps1` | 注册/启用/准备项目的 codegraph 索引 |
-| `codegraph-wrapper.ps1` | codegraph MCP server 启动包装 |
+| 脚本                     | 用途                                                      |
+| ------------------------ | --------------------------------------------------------- |
+| `new-proposal.ps1`       | 从模板创建新的 `proposals/pending/<date>-<title>.md`      |
+| `sync-skills.ps1`        | 同步 `skills/registry.json` 到各 adapter 的 SKILL.md 副本 |
+| `validate-memory-os.ps1` | 校验 Memory OS 文件结构与 frontmatter 完整性              |
+| `validate-obsidian.ps1`  | 校验 Obsidian wikilink 与文件引用                         |
+| `codegraph-project.ps1`  | 注册/启用/准备项目的 codegraph 索引                       |
+| `codegraph-wrapper.ps1`  | codegraph MCP server 启动包装                             |
 
 详细用法直接看脚本头部 `param()` 块或 `Get-Help <script>`。

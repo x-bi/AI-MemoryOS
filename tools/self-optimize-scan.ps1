@@ -42,6 +42,36 @@ function Get-Utf8NoBom() {
   return New-Object System.Text.UTF8Encoding($false)
 }
 
+function Repair-JsonString([string]$json) {
+  # 1. Replace JS undefined with "unclear"
+  $json = $json -replace '\bundefined\b', '"unclear"'
+  # 2. Fix unescaped newlines inside JSON string values.
+  #    Claude often outputs multi-line text inside "..." without \n escapes.
+  #    Strategy: walk char-by-char; when inside a string, replace bare CR/LF with \n.
+  $sb = New-Object System.Text.StringBuilder
+  $inString = $false
+  $prevWasBackslash = $false
+  $bsChar = [char]0x5C   # backslash
+  $dqChar = [char]0x22   # double-quote
+  $crChar = [char]0x0D
+  $lfChar = [char]0x0A
+  foreach ($c in $json.ToCharArray()) {
+    if ($prevWasBackslash) {
+      [void]$sb.Append($c)
+      $prevWasBackslash = $false
+      continue
+    }
+    if ($c -eq $bsChar) { $prevWasBackslash = $true; [void]$sb.Append($c); continue }
+    if ($c -eq $dqChar) { $inString = -not $inString; [void]$sb.Append($c); continue }
+    if ($inString -and ($c -eq $lfChar -or $c -eq $crChar)) {
+      [void]$sb.Append('\n')
+      continue
+    }
+    [void]$sb.Append($c)
+  }
+  return $sb.ToString()
+}
+
 function Test-DirExists($path) {
   return (Test-Path -LiteralPath $path -PathType Container)
 }
@@ -85,6 +115,10 @@ if (-not (Test-DirExists $reportsDir)) {
   New-Item -ItemType Directory -Path $reportsDir -Force | Out-Null
 }
 
+# Clean up stale dry-run preview files from previous runs
+Get-ChildItem -LiteralPath $reportsDir -Filter "self-optimize-prompt-preview-*.md" -ErrorAction SilentlyContinue |
+  Remove-Item -Force -ErrorAction SilentlyContinue
+
 if (-not $DryRun) {
   $claudeCmd = Get-Command claude -ErrorAction SilentlyContinue
   if (-not $claudeCmd) {
@@ -101,6 +135,7 @@ if (-not $DryRun) {
 
 Write-Status "Step 1: Keyword derivation"
 
+# Fallback: deterministic signal-based keywords (used when Claude keyword generation fails)
 $autoKeywordMap = @(
   @{ Test = "adapters\claude";           Term = "claude code skill" },
   @{ Test = "adapters\codex";            Term = "codex agent skill" },
@@ -111,10 +146,9 @@ $autoKeywordMap = @(
   @{ Test = "adapters\mcp";              Term = "mcp server obsidian" },
   @{ Test = ".obsidian";                 Term = "obsidian agent memory" }
 )
-
 $anchorTerm = "personal AI memory OS"
 
-if ([string]::IsNullOrWhiteSpace($Keywords)) {
+function Get-FallbackKeywords() {
   $kwList = @()
   foreach ($entry in $autoKeywordMap) {
     $testPath = Join-Path $Root $entry.Test
@@ -123,9 +157,104 @@ if ([string]::IsNullOrWhiteSpace($Keywords)) {
     }
     if ($kwList.Length -ge 8) { break }
   }
-  # Always add anchor
   $kwList += $anchorTerm
-  $Keywords = $kwList -join ","
+  return $kwList
+}
+
+if ([string]::IsNullOrWhiteSpace($Keywords)) {
+  # Build a compact project summary for keyword generation
+  $kwSummary = @()
+  $dirNames = @("adapters", "skills", "tools", "router", "workflows", "proposals", "templates")
+  $kwSummary += "## 顶层目录"
+  foreach ($d in $dirNames) {
+    $dp = Join-Path $Root $d
+    if (Test-DirExists $dp) {
+      $children = (Get-ChildItem -LiteralPath $dp -Directory -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name) -join ", "
+      if ([string]::IsNullOrWhiteSpace($children)) {
+        $kwSummary += "- $d/ (empty or files only)"
+      } else {
+        $kwSummary += "- $d/: $children"
+      }
+    }
+  }
+  $kwSummary += ""
+  $kwSummary += "## README.md (前 30 行)"
+  $kwSummary += (Read-FirstN (Join-Path $Root "README.md") 30)
+  $kwSummaryText = $kwSummary -join "`n"
+
+  # Try Claude-generated keywords (two sets: github + web)
+  $claudeGenerated = $false
+  $webKeywords = ""
+  if (-not $DryRun) {
+    Write-Status "  Asking Claude to generate search keywords..."
+    $kwPromptSb = New-Object System.Text.StringBuilder
+    [void]$kwPromptSb.AppendLine("你是搜索专家。根据以下项目描述，生成两套搜索关键词。")
+    [void]$kwPromptSb.AppendLine()
+    [void]$kwPromptSb.AppendLine("要求：")
+    [void]$kwPromptSb.AppendLine("- github_keywords: 用于 GitHub Search 搜仓库，6-8 个短语，要具体能搜到项目/工具，避免过于宽泛（如 AI、LLM）")
+    [void]$kwPromptSb.AppendLine("- web_keywords: 用于 WebSearch 搜网页/文章，3-4 个短语，偏产品名/项目名，如 site:github.com xxx / Claude Code skills repository")
+    [void]$kwPromptSb.AppendLine("- 仅输出一个 ```json 块，schema: { ""github_keywords"": ""kw1, kw2, ..."", ""web_keywords"": ""kw1, kw2, ..."" }")
+    [void]$kwPromptSb.AppendLine()
+    [void]$kwPromptSb.AppendLine("# 项目描述")
+    [void]$kwPromptSb.AppendLine($kwSummaryText)
+
+    $kwPromptPath = Join-Path $env:TEMP "self-optimize-kw-$([guid]::NewGuid()).md"
+    [System.IO.File]::WriteAllText($kwPromptPath, $kwPromptSb.ToString(), (Get-Utf8NoBom))
+
+    try {
+      $kwClaudeArgs = @("-p", "--output-format", "json", "--effort", "low")
+      if (-not [string]::IsNullOrWhiteSpace($Model)) {
+        $kwClaudeArgs += @("--model", $Model)
+      }
+      $kwRaw = Get-Content -LiteralPath $kwPromptPath -Raw -Encoding UTF8 | claude @kwClaudeArgs 2>&1
+      if ($LASTEXITCODE -eq 0) {
+        try {
+          $kwEnvelope = $kwRaw | ConvertFrom-Json -ErrorAction Stop
+          $kwText = ""
+          if ($kwEnvelope.PSObject.Properties["result"]) { $kwText = $kwEnvelope.result }
+          else { $kwText = $kwRaw }
+          # Extract JSON block
+          $kwJsonMatch = [regex]::Match($kwText, '```json\s*([\s\S]*?)\s*```')
+          if ($kwJsonMatch.Success) {
+            $kwJsonText = Repair-JsonString $kwJsonMatch.Groups[1].Value
+            $kwObj = $kwJsonText | ConvertFrom-Json -ErrorAction Stop
+            if ($kwObj.PSObject.Properties["github_keywords"] -and -not [string]::IsNullOrWhiteSpace($kwObj.github_keywords)) {
+              $Keywords = $kwObj.github_keywords
+              $claudeGenerated = $true
+            }
+            if ($kwObj.PSObject.Properties["web_keywords"] -and -not [string]::IsNullOrWhiteSpace($kwObj.web_keywords)) {
+              $webKeywords = $kwObj.web_keywords
+            }
+            Write-Status "  Claude-generated keywords OK"
+          } else {
+            # Fallback: try to parse entire response as comma-separated
+            $kwText = $kwText -replace '```[\s\S]*?```', ''
+            $kwText = $kwText.Trim()
+            if (-not [string]::IsNullOrWhiteSpace($kwText)) {
+              $Keywords = $kwText
+              $claudeGenerated = $true
+              Write-Status "  Claude-generated keywords OK (plain text fallback)"
+            }
+          }
+        } catch {
+          Write-Warning "  Claude keyword output parse failed, falling back to signal table."
+        }
+      } else {
+        Write-Warning "  Claude keyword generation failed (exit $LASTEXITCODE), falling back to signal table."
+      }
+    } catch {
+      Write-Warning "  Claude keyword generation error: $($_.Exception.Message), falling back to signal table."
+    } finally {
+      if (Test-Path -LiteralPath $kwPromptPath -PathType Leaf) {
+        try { Remove-Item -LiteralPath $kwPromptPath -Force -ErrorAction Stop } catch { }
+      }
+    }
+  }
+
+  if (-not $claudeGenerated) {
+    $kwList = Get-FallbackKeywords
+    $Keywords = $kwList -join ","
+  }
 }
 
 $kwArray = $Keywords -split "," | ForEach-Object { $_.Trim() } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
@@ -222,6 +351,105 @@ foreach ($repo in $allRepos) {
 Write-Status "  Fetched READMEs: $readmeFetchCount / $($allRepos.Count)"
 
 # ---------------------------------------------------------------------------
+# Step 2.5: WebSearch independent batch
+# ---------------------------------------------------------------------------
+
+$webCandidates = @()
+$webQueriesUsed = @()
+
+if (-not [string]::IsNullOrWhiteSpace($webKeywords) -and -not $DryRun) {
+  Write-Status "Step 2.5: WebSearch independent batch"
+
+  $webKwArray = $webKeywords -split "," | ForEach-Object { $_.Trim() } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+  Write-Status "  Web keywords: $($webKwArray -join ', ')"
+
+  $webPromptSb = New-Object System.Text.StringBuilder
+  [void]$webPromptSb.AppendLine("# 角色")
+  [void]$webPromptSb.AppendLine("你是外部项目借鉴评估师。使用 WebSearch 搜索以下关键词，找到与本仓库类似的项目/工具/实践，输出中文。")
+  [void]$webPromptSb.AppendLine()
+  [void]$webPromptSb.AppendLine("# 本仓库描述")
+  # Reuse the self-summary (will be built in Step 4; use a minimal version here)
+  $webSummaryLines = @()
+  $webSummaryLines += "关键词: $($webKwArray -join ', ')"
+  $webSummaryLines += ""
+  $dirNames = @("adapters", "skills", "tools", "router", "workflows", "proposals", "templates")
+  foreach ($d in $dirNames) {
+    $dp = Join-Path $Root $d
+    if (Test-DirExists $dp) {
+      $children = (Get-ChildItem -LiteralPath $dp -Directory -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name) -join ", "
+      if (-not [string]::IsNullOrWhiteSpace($children)) {
+        $webSummaryLines += "- $d/: $children"
+      }
+    }
+  }
+  $webSummaryLines += ""
+  $webSummaryLines += (Read-FirstN (Join-Path $Root "README.md") 20)
+  [void]$webPromptSb.AppendLine(($webSummaryLines -join "`n"))
+  [void]$webPromptSb.AppendLine()
+  [void]$webPromptSb.AppendLine("# 搜索关键词")
+  foreach ($wk in $webKwArray) {
+    [void]$webPromptSb.AppendLine("- $wk")
+  }
+  [void]$webPromptSb.AppendLine()
+  [void]$webPromptSb.AppendLine("# 任务")
+  [void]$webPromptSb.AppendLine("1. 对每个关键词使用 WebSearch 搜索，合并去重结果。")
+  [void]$webPromptSb.AppendLine("2. 找到的项目如果有具体可借鉴的想法/模式/工作流，记录下来。")
+  [void]$webPromptSb.AppendLine('3. 仅输出一个 ```json 块，schema：')
+  [void]$webPromptSb.AppendLine('```json')
+  [void]$webPromptSb.AppendLine('{')
+  [void]$webPromptSb.AppendLine('  "borrow_candidates": [{')
+  [void]$webPromptSb.AppendLine('    "source_url": "",')
+  [void]$webPromptSb.AppendLine('    "source_name": "project name or site title",')
+  [void]$webPromptSb.AppendLine('    "channel": "web",')
+  [void]$webPromptSb.AppendLine('    "idea_title": "中文短句",')
+  [void]$webPromptSb.AppendLine('    "why_relevant": "1-2 句中文",')
+  [void]$webPromptSb.AppendLine('    "fit_with_this_repo": "指明可能目录/文件",')
+  [void]$webPromptSb.AppendLine('    "estimated_effort": "S" | "M" | "L",')
+  [void]$webPromptSb.AppendLine('    "estimated_value": "low" | "med" | "high",')
+  [void]$webPromptSb.AppendLine('    "risks": "1 句中文"')
+  [void]$webPromptSb.AppendLine('  }],')
+  [void]$webPromptSb.AppendLine('  "web_queries_used": ["..."],')
+  [void]$webPromptSb.AppendLine('  "overview": "2-3 句中文概览"')
+  [void]$webPromptSb.AppendLine('}')
+  [void]$webPromptSb.AppendLine('```')
+  [void]$webPromptSb.AppendLine()
+  [void]$webPromptSb.AppendLine("4. 硬约束：不提议修改 proposals/；只提想法不提代码；跳过仅「用了 LLM」的重叠。")
+
+  $webPromptPath = Join-Path $env:TEMP "self-optimize-web-$([guid]::NewGuid()).md"
+  [System.IO.File]::WriteAllText($webPromptPath, $webPromptSb.ToString(), (Get-Utf8NoBom))
+
+  try {
+    $webClaudeArgs = @("-p", "--output-format", "json", "--allowed-tools", "WebSearch,WebFetch", "--effort", "high")
+    if (-not [string]::IsNullOrWhiteSpace($Model)) {
+      $webClaudeArgs += @("--model", $Model)
+    }
+    $webResult = Invoke-ClaudeOnPrompt -promptPath $webPromptPath -claudeArgs $webClaudeArgs -reportsDir $reportsDir -batchLabel "web"
+    $webInner = $webResult.inner
+    if ($null -ne $webInner -and $webInner.borrow_candidates) {
+      $webCandidates = @($webInner.borrow_candidates)
+      if ($webInner.PSObject.Properties["web_queries_used"] -and $webInner.web_queries_used) {
+        $webQueriesUsed = @($webInner.web_queries_used)
+      }
+      Write-Status "  WebSearch: $($webCandidates.Count) candidate(s) found"
+    } else {
+      Write-Warning "  WebSearch batch: no structured candidates returned."
+    }
+  } catch {
+    Write-Warning "  WebSearch batch failed: $($_.Exception.Message)"
+  } finally {
+    if (Test-Path -LiteralPath $webPromptPath -PathType Leaf) {
+      try { Remove-Item -LiteralPath $webPromptPath -Force -ErrorAction Stop } catch { }
+    }
+  }
+} else {
+  if ([string]::IsNullOrWhiteSpace($webKeywords)) {
+    Write-Status "Step 2.5: WebSearch skipped (no web_keywords from Claude)"
+  } else {
+    Write-Status "Step 2.5: WebSearch skipped (DryRun mode)"
+  }
+}
+
+# ---------------------------------------------------------------------------
 # Step 4: Self-summary assembly
 # ---------------------------------------------------------------------------
 
@@ -302,6 +530,9 @@ function Build-Prompt($repos, $summary, $readmeCap, [bool]$IncludeWebSearch = $t
   $taskIdx = 1
   if ($IncludeWebSearch) {
     [void]$sb.AppendLine("$taskIdx. 也请使用 WebSearch 搜索 2-3 个补充查询，合并结果。")
+    [void]$sb.AppendLine("   查询要具体，优先搜 GitHub 仓库名/产品名而非抽象概念。示例：")
+    [void]$sb.AppendLine("   - 良好: ``site:github.com agent skill memory system`` / ``Claude Code skills repository``")
+    [void]$sb.AppendLine("   - 不良: ``AI agent memory architecture best practices``（太抽象，搜不到具体项目）")
     $taskIdx++
   }
   [void]$sb.AppendLine("$taskIdx. 对每个候选判断是否有具体可借鉴的想法/模式/工作流。")
@@ -377,17 +608,18 @@ function Invoke-ClaudeOnPrompt($promptPath, $claudeArgs, $reportsDir, $batchLabe
   elseif ($envelope.PSObject.Properties["content"]) { $assistantText = $envelope.content }
   else { $assistantText = $rawOutput }
 
-  # Extract inner JSON block with truncation repair + undefined sanitization
+  # Extract inner JSON block with repair pipeline: undefined→"unclear", unescaped newlines→\n
   $inner = $null
   $m = [regex]::Match($assistantText, '```json\s*([\s\S]*?)\s*```')
   if ($m.Success) {
     try {
-      $jt = $m.Groups[1].Value -replace '\bundefined\b', '"unclear"'
+      $jt = $m.Groups[1].Value
+      $jt = Repair-JsonString $jt
       $inner = $jt | ConvertFrom-Json -ErrorAction Stop
     } catch {
       Write-Warning "  Batch ${batchLabel}: inner JSON parse failed: $($_.Exception.Message). Attempting truncation-repair..."
       try {
-        $jt = $m.Groups[1].Value -replace '\bundefined\b', '"unclear"'
+        $jt = Repair-JsonString $m.Groups[1].Value
         $lastComplete = $jt.LastIndexOf("},")
         if ($lastComplete -gt 0) {
           $repaired = $jt.Substring(0, $lastComplete + 1) + "`n  ]`n}"
@@ -401,7 +633,7 @@ function Invoke-ClaudeOnPrompt($promptPath, $claudeArgs, $reportsDir, $batchLabe
   }
   if ($null -eq $inner) {
     try {
-      $fb = $assistantText -replace '\bundefined\b', '"unclear"'
+      $fb = Repair-JsonString $assistantText
       $inner = $fb | ConvertFrom-Json -ErrorAction Stop
     } catch {
       Write-Warning "  Batch ${batchLabel}: could not extract structured JSON. Skipping this batch."
@@ -423,8 +655,8 @@ for ($i = 0; $i -lt $allRepos.Count; $i += $BatchSize) {
 $batchTotal = $batches.Count
 Write-Status "  Splitting $($allRepos.Count) candidates into $batchTotal batch(es) of up to $BatchSize"
 
-# Build claude args once
-$claudeArgs = @("-p", "--output-format", "json", "--allowed-tools", "WebSearch,WebFetch", "--effort", "high")
+# Build claude args for GitHub candidate evaluation (no WebSearch — that's done in Step 2.5)
+$claudeArgs = @("-p", "--output-format", "json", "--effort", "high")
 if (-not [string]::IsNullOrWhiteSpace($Model)) {
   $claudeArgs += @("--model", $Model)
 }
@@ -451,7 +683,7 @@ $batchIdx = 0
 foreach ($batchRepos in $batches) {
   $batchIdx++
   $batchLabel = "$batchIdx/$batchTotal"
-  $includeWeb = ($batchIdx -eq 1)  # only first batch runs WebSearch to avoid redundant cost
+  $includeWeb = $false  # WebSearch done independently in Step 2.5; batches only evaluate GitHub candidates
   Write-Status "  Batch ${batchLabel}: $($batchRepos.Count) candidate(s), WebSearch=$includeWeb"
 
   $bpText = Build-BatchPrompt -batchRepos $batchRepos -summary $selfSummaryText -readmeCap $ReadmeBytes -maxBytes $MaxPromptBytes -batchIdx ($batchIdx - 1) -batchTotal $batchTotal -includeWeb $includeWeb
@@ -483,15 +715,28 @@ foreach ($batchRepos in $batches) {
   }
 }
 
-# Build the unified $innerJson the downstream code expects
+# Build the unified $innerJson: merge GitHub candidates + Web candidates
+$allMergedCandidates = @($mergedCandidates)
+if ($webCandidates.Count -gt 0) {
+  $allMergedCandidates += $webCandidates
+  Write-Status "  + $($webCandidates.Count) WebSearch candidate(s)"
+}
+$allMergedWebQueries = @($mergedWebQueries) + @($webQueriesUsed) | Select-Object -Unique
+
 $innerJson = $null
-if ($mergedCandidates.Count -gt 0) {
-  $innerJson = [pscustomobject]@{
-    borrow_candidates = $mergedCandidates
-    overview = ($mergedOverview -join "`n`n")
-    web_queries_used = ($mergedWebQueries | Select-Object -Unique)
+if ($allMergedCandidates.Count -gt 0) {
+  $ghCount = @($mergedCandidates).Count
+  $webCount = @($webCandidates).Count
+  $mergedOverviewText = ($mergedOverview -join "`n`n")
+  if ($webCandidates.Count -gt 0) {
+    $mergedOverviewText += "`n`n[WebSearch] 额外发现 $webCount 个候选（来自 Web 搜索）。"
   }
-  Write-Status "  Merged: $($mergedCandidates.Count) total candidates across $batchTotal batch(es)"
+  $innerJson = [pscustomobject]@{
+    borrow_candidates = $allMergedCandidates
+    overview = $mergedOverviewText
+    web_queries_used = $allMergedWebQueries
+  }
+  Write-Status "  Total: $($allMergedCandidates.Count) candidates (GitHub: $ghCount, Web: $webCount)"
 }
 
 # Dummy $promptPath so the outer finally{} below doesn't crash on undefined var
