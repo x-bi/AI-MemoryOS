@@ -10,13 +10,13 @@
 - 全局 Codex config：已把 `c:\users\btf\ai-memoryos` 标记为 trusted。
 - MVP skills：`memory-curator`、`routing-auditor`、`bugfix-with-regression-test`、`frontend-component-review`、`vue-change-self-check`。
 - 核心骨架：core / router / workflows / domains / stacks / prompts / anti-patterns / templates / evals / logs。
-- PR Review workflow：`workflows/pr-review.md` 已建立，并已去除 BOM，保持 UTF-8 no BOM。
+- PR Review skill：`skills/pr-review/SKILL_SPEC.md` 已承接原 `workflows/pr-review.md` 的输出顺序，并补齐审查步骤、Memory OS 边界和约束。
 - MCP adapter：已新增受限 MCP server，并已写入全局 Codex config；默认只允许读库和写 `proposals/pending/`。
 - Obsidian 自动化：QuickAdd、Templater、Dataview、Advanced URI、Obsidian Git 已配置并可验证。
 - Obsidian 首页：`dashboard/home.md` 已创建，模板 frontmatter 已补齐。
 - Git：仓库 local 身份已设置为 `x-bi <924992512@qq.com>`，origin 指向个人 GitHub。
 - Remote：`main` 已跟踪 `origin/main`，远程为 `https://github.com/x-bi/AI-MemoryOS.git`。
-- Active skill：已将 `workflows/pr-review.md` 封装为 Codex 可发现的 `pr-review` skill。
+- Active skill：`pr-review` 已由 shared skill spec 生成 Codex / Claude 可发现的 adapter skill。
 - Shared skill spec：7 个 active skills 已由 `skills/<skill>/SKILL_SPEC.md` + `skills/registry.json` 管理，并通过 `tools/sync-skills.ps1` 生成 Codex / Claude adapter 外壳。
 - 轻量入口：已新增 `diff-review-lite`、`pre-commit-self-check`、`retrospective-lite` workflow。
 - 路由策略：已从简单/复杂两档调整为 L0-L3 分层；当前阶段收窄 L0、放宽 L1，让轻量 workflow / skill 默认倾向触发，但 L2 读取和 L3 写入仍保持保守。

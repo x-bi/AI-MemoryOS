@@ -19,3 +19,5 @@
 - 对"检查改动 / diff / commit / staged changes"类请求，允许先读取轻量变更范围（如 `git diff --name-only`、`git diff --stat`、`git show --name-only --stat <commit>`、`git status --short`）再补判是否触发前端 self-check。该预读只用于识别文件类型和范围，不默认打开大量源码，也不读取私有 overlay。
 
 - 找不到明确 skill 时，直接按项目上下文、相关 workflow 或普通 markdown 完成任务，不强行触发 skill。
+
+- Memory OS 内容疑似过期、重复或低价值时，输出 cleanup proposal 或审计建议，不直接删除正式内容。
