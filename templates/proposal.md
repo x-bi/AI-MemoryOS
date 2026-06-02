@@ -3,6 +3,7 @@ title: "<title>"
 type: proposal
 status: pending
 source: quickadd
+source_episode: ""
 created_at: "{{DATE:YYYY-MM-DD}}"
 scope: ""
 destination: ""
@@ -17,6 +18,7 @@ tags:
 - Date: {{DATE:YYYY-MM-DD}}
 - Trigger 触发原因：
 - Related task 关联任务：
+- Source Episode 溯源：
 
 ## Summary 摘要
 

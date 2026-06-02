@@ -301,6 +301,12 @@ foreach ($proposalDir in $proposalDirs) {
       $text -notmatch "(?m)^##\s+(Reason|Decision Reason|Acceptance Reason|Rejection Reason|原因|接受原因|拒绝原因)\s*$") {
       $proposalStatusProblems += "$relative missing decision reason"
     }
+    # source_episode preservation check for accepted proposals
+    if ($proposalDir.Status -eq "accepted" -and
+      $text -notmatch "(?m)^source_episode:\s*\S" -and
+      $text -notmatch "(?m)^##\s+Source Episode 溯源\s*$") {
+      $proposalStatusProblems += "$relative missing source_episode (use 'exempt' if emergency)"
+    }
   }
 }
 

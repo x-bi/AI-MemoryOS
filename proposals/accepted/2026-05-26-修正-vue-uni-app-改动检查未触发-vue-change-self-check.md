@@ -3,6 +3,7 @@ title: "修正 Vue/uni-app 改动检查未触发 vue-change-self-check"
 status: accepted
 created_at: 2026-05-26T06:42:40.393Z
 source: mcp
+source_episode: "bug:vue-uni-app-self-check-not-triggered;conversation:2026-05-26"
 accepted_at: 2026-05-26T00:00:00+08:00
 decision: 用户确认通过；晋升到 router / skill registry / eval，并同步 Codex 与 Claude adapter。
 decision_reason: 降低明确的 Vue/uni-app 改动检查 skill 路由误判，改善前端 diff review 稳定性。

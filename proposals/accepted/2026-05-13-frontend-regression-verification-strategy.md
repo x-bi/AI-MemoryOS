@@ -4,6 +4,7 @@ status: accepted
 created_at: 2026-05-13T05:55:10.553Z
 accepted_at: 2026-05-13
 source: mcp
+source_episode: "conversation:2026-05-13"
 ---
 
 # Accepted Proposal: Frontend regression verification strategy

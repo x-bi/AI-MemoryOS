@@ -4,6 +4,7 @@ status: accepted
 created_at: 2026-05-12T03:44:56.443Z
 accepted_at: 2026-05-12
 source: mcp
+source_episode: "conversation:2026-05-12"
 ---
 
 # Accepted Proposal: Set default MemoryOS read budget for complex tasks

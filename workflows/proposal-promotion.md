@@ -14,9 +14,23 @@
 - 是否包含敏感信息。
 - 是否有明确目标落点。
 
+## Source Episode Preservation 溯源链保留
+
+晋升时必须保留 pending proposal 的溯源信息，确保知识从源头可追溯：
+
+1. **frontmatter `source_episode` 字段**：晋升到 `proposals/accepted/` 时原样保留。
+2. **晋升到 wiki/domain 页面**：在目标页面 frontmatter 中增加 `source_episode` 字段，值与原 proposal 一致。
+3. **source_episode 格式**：`<类型>:<标识>`，例如：
+   - `conversation:2026-06-02` — 源自某次对话
+   - `issue:#42` — 源自某个 issue
+   - `commit:8175367` — 源自某个 commit
+   - `bug:vue-uni-app-self-check-not-triggered` — 源自某个 bug
+   - 多个来源用分号分隔，如 `conversation:2026-06-02;commit:8175367`
+4. **晋升前检查**：如果 pending proposal 的 `source_episode` 为空，审核时应要求补充后再晋升（紧急修复可豁免，但需在 accepted 文件中注明 `source_episode: exempt`）。
+
 ## Outcomes
 
-- accept：移动到 `proposals/accepted/`，并修改目标文件。
+- accept：移动到 `proposals/accepted/`，保留 `source_episode`，并修改目标文件（目标文件也保留 `source_episode`）。
 - reject：移动到 `proposals/rejected/`，写明原因。
 - defer：保留 pending，补充需要验证的信息。
 

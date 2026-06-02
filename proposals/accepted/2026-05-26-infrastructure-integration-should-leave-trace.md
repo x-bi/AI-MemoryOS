@@ -3,6 +3,7 @@ title: "Infrastructure and tool integration should leave a trace"
 type: proposal
 status: accepted
 source: manual
+source_episode: "bug:codegraph-integration-missing-changelog;conversation:2026-05-26"
 created_at: "2026-05-26"
 updated_at: "2026-05-27"
 accepted_at: "2026-05-27"

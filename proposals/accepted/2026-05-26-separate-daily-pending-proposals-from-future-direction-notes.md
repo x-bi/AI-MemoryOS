@@ -4,6 +4,7 @@ status: accepted
 created_at: 2026-05-26
 accepted_at: 2026-05-26
 source: manual
+source_episode: "conversation:2026-05-26"
 scope: governance
 decision_reason: "The distinction has already been implemented in repository structure, model-facing search boundaries, dashboards, validation, and adapter docs; formal governance now needs to record the accepted content model."
 ---
