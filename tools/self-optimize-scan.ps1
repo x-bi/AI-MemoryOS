@@ -101,6 +101,63 @@ function Read-FirstN($path, $n) {
 }
 
 # ---------------------------------------------------------------------------
+# Helper: invoke claude on a single prompt file, return parsed inner JSON or $null
+# ---------------------------------------------------------------------------
+function Invoke-ClaudeOnPrompt($promptPath, $claudeArgs, $reportsDir, $batchLabel) {
+  $rawOutput = Get-Content -LiteralPath $promptPath -Raw -Encoding UTF8 | claude @claudeArgs 2>&1
+  $exit = $LASTEXITCODE
+
+  if ($exit -ne 0) {
+    $errorPath = Join-Path $reportsDir ".last-claude-error.txt"
+    [System.IO.File]::WriteAllText($errorPath, "[batch=$batchLabel]`n$rawOutput", (Get-Utf8NoBom))
+    throw "Claude CLI exited with code $exit on batch $batchLabel. Error output saved to $errorPath"
+  }
+
+  # Envelope parse
+  $envelope = $null
+  try { $envelope = $rawOutput | ConvertFrom-Json -ErrorAction Stop }
+  catch { throw "Failed to parse Claude envelope on batch ${batchLabel}: $($_.Exception.Message)" }
+
+  $assistantText = ""
+  if ($envelope.PSObject.Properties["result"]) { $assistantText = $envelope.result }
+  elseif ($envelope.PSObject.Properties["content"]) { $assistantText = $envelope.content }
+  else { $assistantText = $rawOutput }
+
+  # Extract inner JSON block with repair pipeline: undefined→"unclear", unescaped newlines→\n
+  $inner = $null
+  $m = [regex]::Match($assistantText, '```json\s*([\s\S]*?)\s*```')
+  if ($m.Success) {
+    try {
+      $jt = $m.Groups[1].Value
+      $jt = Repair-JsonString $jt
+      $inner = $jt | ConvertFrom-Json -ErrorAction Stop
+    } catch {
+      Write-Warning "  Batch ${batchLabel}: inner JSON parse failed: $($_.Exception.Message). Attempting truncation-repair..."
+      try {
+        $jt = Repair-JsonString $m.Groups[1].Value
+        $lastComplete = $jt.LastIndexOf("},")
+        if ($lastComplete -gt 0) {
+          $repaired = $jt.Substring(0, $lastComplete + 1) + "`n  ]`n}"
+          $inner = $repaired | ConvertFrom-Json -ErrorAction Stop
+          Write-Warning "    Repair succeeded (some trailing candidates may be missing)."
+        }
+      } catch {
+        Write-Warning "    Repair also failed: $($_.Exception.Message)."
+      }
+    }
+  }
+  if ($null -eq $inner) {
+    try {
+      $fb = Repair-JsonString $assistantText
+      $inner = $fb | ConvertFrom-Json -ErrorAction Stop
+    } catch {
+      Write-Warning "  Batch ${batchLabel}: could not extract structured JSON. Skipping this batch."
+    }
+  }
+  return ,@{ inner = $inner; rawText = $assistantText }
+}
+
+# ---------------------------------------------------------------------------
 # Step 0: Preflight
 # ---------------------------------------------------------------------------
 
@@ -583,63 +640,6 @@ function Build-BatchPrompt($batchRepos, $summary, $readmeCap, $maxBytes, $batchI
     $promptText = Build-Prompt -repos $batchRepos -summary $summary -readmeCap $currentCap -IncludeWebSearch $includeWeb -BatchIndex $batchIdx -BatchTotal $batchTotal
   }
   return $promptText
-}
-
-# ---------------------------------------------------------------------------
-# Helper: invoke claude on a single prompt file, return parsed inner JSON or $null
-# ---------------------------------------------------------------------------
-function Invoke-ClaudeOnPrompt($promptPath, $claudeArgs, $reportsDir, $batchLabel) {
-  $rawOutput = Get-Content -LiteralPath $promptPath -Raw -Encoding UTF8 | claude @claudeArgs 2>&1
-  $exit = $LASTEXITCODE
-
-  if ($exit -ne 0) {
-    $errorPath = Join-Path $reportsDir ".last-claude-error.txt"
-    [System.IO.File]::WriteAllText($errorPath, "[batch=$batchLabel]`n$rawOutput", (Get-Utf8NoBom))
-    throw "Claude CLI exited with code $exit on batch $batchLabel. Error output saved to $errorPath"
-  }
-
-  # Envelope parse
-  $envelope = $null
-  try { $envelope = $rawOutput | ConvertFrom-Json -ErrorAction Stop }
-  catch { throw "Failed to parse Claude envelope on batch ${batchLabel}: $($_.Exception.Message)" }
-
-  $assistantText = ""
-  if ($envelope.PSObject.Properties["result"]) { $assistantText = $envelope.result }
-  elseif ($envelope.PSObject.Properties["content"]) { $assistantText = $envelope.content }
-  else { $assistantText = $rawOutput }
-
-  # Extract inner JSON block with repair pipeline: undefined→"unclear", unescaped newlines→\n
-  $inner = $null
-  $m = [regex]::Match($assistantText, '```json\s*([\s\S]*?)\s*```')
-  if ($m.Success) {
-    try {
-      $jt = $m.Groups[1].Value
-      $jt = Repair-JsonString $jt
-      $inner = $jt | ConvertFrom-Json -ErrorAction Stop
-    } catch {
-      Write-Warning "  Batch ${batchLabel}: inner JSON parse failed: $($_.Exception.Message). Attempting truncation-repair..."
-      try {
-        $jt = Repair-JsonString $m.Groups[1].Value
-        $lastComplete = $jt.LastIndexOf("},")
-        if ($lastComplete -gt 0) {
-          $repaired = $jt.Substring(0, $lastComplete + 1) + "`n  ]`n}"
-          $inner = $repaired | ConvertFrom-Json -ErrorAction Stop
-          Write-Warning "    Repair succeeded (some trailing candidates may be missing)."
-        }
-      } catch {
-        Write-Warning "    Repair also failed: $($_.Exception.Message)."
-      }
-    }
-  }
-  if ($null -eq $inner) {
-    try {
-      $fb = Repair-JsonString $assistantText
-      $inner = $fb | ConvertFrom-Json -ErrorAction Stop
-    } catch {
-      Write-Warning "  Batch ${batchLabel}: could not extract structured JSON. Skipping this batch."
-    }
-  }
-  return ,@{ inner = $inner; rawText = $assistantText }
 }
 
 # ---------------------------------------------------------------------------
