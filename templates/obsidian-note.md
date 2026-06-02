@@ -1,12 +1,13 @@
 ---
-title: 
+title:
 type: wiki
 scope: engineering
 domains: []
 stacks: []
 status: active
-created_at: 
-last_validated: 
+source_episode: ""
+created_at:
+last_validated:
 tags: []
 ---
 

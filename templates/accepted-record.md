@@ -1,3 +1,7 @@
+---
+source_episode: ""
+---
+
 # Accepted Proposal Record
 
 ## Proposal
