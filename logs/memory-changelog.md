@@ -1,5 +1,9 @@
 # Memory Changelog 记忆变更日志
 
+## 2026-06-03
+
+- 收紧 Codex / Claude gate 中的 L1/L2 经验沉淀提示规则：把原先模糊的 "clearly reusable lesson" 改成单条类型化 capture trigger，要求用 `反模式：`、`路由纠正：`、`可复用模式：`、`重复失败模式：` 或 `边界险触：` 标注候选经验，并保持 `proposals/pending/` 确认后写入边界。
+
 ## 2026-05-27
 
 - 接受 proposal：`2026-05-26-infrastructure-integration-should-leave-trace`。在 `core/memory-rules.md` 增加基础设施/工具集成事件 P0/P1/P2 留痕规则，并在 `GOVERNANCE.md` 的审计节奏中加入集成事件 changelog 检查；留痕默认写入 `logs/memory-changelog.md`，当条目增多时可拆分为 `logs/integration-events.md`。
