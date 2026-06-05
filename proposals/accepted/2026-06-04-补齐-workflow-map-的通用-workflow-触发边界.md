@@ -1,8 +1,10 @@
 ---
 title: "补齐 workflow-map 的通用 workflow 触发边界"
-status: pending
+status: accepted
 created_at: 2026-06-04T10:36:22.831Z
 source: mcp
+decision_reason: "补齐 workflow-map 中缺失的通用 workflow 触发边界条目"
+source_episode: "workflow-map 缺少前端原型驱动 workflow 等条目的触发边界定义"
 ---
 
 # Proposal: 补齐 workflow-map 的通用 workflow 触发边界

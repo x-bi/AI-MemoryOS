@@ -32,3 +32,50 @@
 | 这个 bug 修法会不会影响其他页面 | review | frontend | L1：先做影响面 review，不默认读取 Memory OS；跨模块或长期规则再升 L2 |
 | 这个问题修完以后要不要沉淀成规则 | retrospective | memory | 先确认沉淀目标，再生成 pending proposal |
 | 帮我写个一次性重命名文件脚本 | implement | scripting | 不读取 Memory OS，确认输入输出和副作用后处理 |
+
+## Workflow / Skill Probe Cases
+
+| Input | Expected action |
+|---|---|
+| 读取 CoDesign 原型，准备开发这个页面 | 读 `router/workflow-map.md`，命中 `frontend-prototype-driven-development.md` |
+| 打开这个 CoDesign 链接看看能不能访问 | 不读 map；没有开发/还原目标时不强制命中原型开发 workflow |
+| 修这个 bug，并加一个防回归测试 | 读 `router/skill-map.md`，命中 `bugfix-with-regression-test` |
+| 为什么没有触发这个 workflow，修正路由 | 命中 `routing-auditor` |
+| 把这次经验写进 pending proposal | 命中 `memory-curator`，只写 `proposals/pending/` |
+| Git reset 和 revert 该用哪个 | 读 `router/skill-map.md`，命中 `git-ops-guide`；只给命令指导，不执行 git |
+| 帮我实现一个按钮颜色调整 | 不读 map，普通小实现 |
+| 解释这个接口字段是什么意思 | 不读 map，L0/L1 explain |
+
+## Signal Classification Reference
+
+> 评判"什么是明确 workflow/skill 候选信号"的参考，不放入 gate。
+
+"明确候选信号"不是单个关键词，而是用户目标、任务对象、期望输出形态或安全/写入边界的稳定组合。
+
+### 必须触发 router map 探针
+
+**A. 用户显式点名** workflow / skill / Memory OS 路由对象（最高置信度，直接按点名对象处理）
+
+**B. 用户目标动词对应稳定流程**：review / 审查 / 检查 diff / 提交前自检 / 修 bug 并防复发 / 读取原型并用于开发 / 复盘沉淀 / Git 操作步骤咨询
+
+**C. 任务对象是已知路由对象**：diff / PR / commit / .vue / pages.json / CoDesign / 原型 / 设计稿 / Memory OS / gate / router / CodeGraph
+
+→ 对象信号必须结合用户目标判断。"解释这个 diff"可能只是 explain；"review 这个 diff"应触发探针。
+
+**D. 期望输出形态是 workflow/skill 产物**：编号风险清单 / 提交前检查结论 / 回归验证路径 / pending proposal / router correction proposal
+
+**E. 任务包含安全、写入、权限或长期规则边界**：写入 Memory OS / 修改 gate / router / skill / workflow / 处理权限、沙箱、发布、CI/CD
+
+### 可选触发探针（中置信度）
+
+- "帮我看看这里有没有问题"但没有给 diff、组件或风险目标
+- 小功能实现，未出现稳定流程对象
+- "这个报错什么意思"但没有要求修复或防复发
+
+→ 先按普通任务处理；过程中发现需要稳定流程再补读 map。
+
+### 不应触发探针（反向排除）
+
+- 纯解释 / 单点 debug / 局部小实现，无修改、无流程要求、无长期沉淀
+- 用户明确跳过某流程
+- 任务对象只是背景

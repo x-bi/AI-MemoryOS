@@ -23,11 +23,19 @@ source_episode: "conversation:2026-06-04-admin-vue-product-blocking-prototype"
 
 四项都确认后再进入实现。若原型已经明确布局意图，不能用项目常见组件习惯替代；只有原型没有说明的部分，才按项目现有设计系统补齐。
 
+## Browser Surface Precedence
+
+命中本 workflow 时，原型读取的浏览器选择规则优先于通用 Browser 插件规则。读取 CoDesign / Lanhu / Figma / Axure 等原型并准备开发时，必须使用外置受控调试浏览器；不能因为普通网页抓取、Browser 插件可用、或 Codex in-app browser 更方便，就跳过 remote debugging 检查、启动和连接。
+
+如果没有可复用的调试窗口，必须先打开独立 browser profile 和 remote debugging port，再连接确认目标 tab。若外置调试浏览器启动失败、`http://127.0.0.1:<port>/json` 无法连接、无法确认目标 tab、或调试连接不可用，应告知用户失败原因并停止后续原型读取/开发准备流程；不要降级到 Codex in-app browser、普通网页抓取或非受控浏览器读取，因为这些入口无法可靠读取 iframe、blob iframe、滚动容器、登录态和交互状态。
+
+Codex in-app browser 仅可在用户明确要求只做只读预览、且不以开发或页面还原为目标时使用；这种情况不属于本 workflow 的原型驱动开发读取流程。
+
 ## Reading Flow
 
-1. 复用检查：读取 CoDesign / Lanhu / Figma / Axure 等原型时，优先使用受控可调试 Chrome + remote debugging。打开浏览器前，先检查是否已有符合本规则的独立 browser profile、remote debugging port 或目标 tab 可用；能连接并确认 title / url 匹配时复用已有窗口，避免重复打开浏览器或重复登录。Codex in-app browser 只能作为无法连接受控调试 Chrome 后的降级只读入口。
-2. 浏览器准备：没有可复用窗口时，再使用独立 browser profile 和 remote debugging port 打开原型，避免污染用户日常浏览器 profile；需要登录时让用户只在该独立窗口内登录。
-3. 调试连接：连接 `http://127.0.0.1:<port>/json`，确认当前 tab 的 title、url 和调试连接可用。
+1. 复用检查：读取 CoDesign / Lanhu / Figma / Axure 等原型时，先连接 `http://127.0.0.1:<port>/json` 等 remote debugging 端口，检查是否已有符合本规则的独立 browser profile 或目标 tab 可用；能连接并确认 title / url 匹配时必须复用该外置窗口，避免重复打开浏览器或重复登录。
+2. 浏览器准备：没有可复用窗口时，必须使用独立 browser profile 和 remote debugging port 打开原型，避免污染用户日常浏览器 profile；需要登录时让用户只在该独立窗口内登录。
+3. 调试连接：连接 `http://127.0.0.1:<port>/json`，确认当前 tab 的 title、url 和调试连接可用。若启动、连接、目标 tab 确认或调试协议连接失败，停止流程并向用户说明失败点；不要改走 Codex in-app browser、普通网页抓取或其他非受控读取方式。
 4. iframe 检查：先检查顶层页面是否包含 iframe；如果原型内容在 iframe 或 blob iframe 中，进入真实 iframe context 读取，不能只读父页面目录文字。
 5. 滚动范围：记录 iframe 或页面的可视尺寸和滚动范围；存在嵌套滚动容器时，滚动或截图到关键完整内容，不能只读首屏。
 6. 文本和交互：结构化记录页面标题、模块名、tab、搜索项、表格列、按钮、分页、弹窗/抽屉标题、表单 label、placeholder、选项、必填、禁用、联动、校验和确认行为。

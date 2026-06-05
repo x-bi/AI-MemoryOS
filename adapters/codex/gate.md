@@ -20,11 +20,15 @@ Reading this file only loads operating policy. It is not the same as reading Mem
 Before each task, classify the Memory OS level:
 
 - L0: Pure explanation, Q&A, single-point debugging, or simple local task. Do not read Memory OS content.
-- L1: Lightweight workflow such as review, self-check, bugfix regression risk, routing/config/permission/build-entry checks, or post-task lightweight reflection. Prefer local/project facts first. Do not read Memory OS content unless the user explicitly asks.
+- L1: Lightweight workflow such as review, self-check, bugfix regression risk, routing/config/permission/build-entry checks, or post-task lightweight reflection. Prefer local/project facts first. Do not read Memory OS content unless the user explicitly asks. 例外：当出现明确 workflow/skill 候选信号时，按 Workflow / Skill Probe 规则读取对应 map 做探针。
 - L2: Complex engineering tasks involving architecture, cross-module refactor, complex debugging, CI/CD, security/permissions, release flow, long-term conventions, broad review, or Memory OS maintenance. Read `C:\Users\btf\AI-MemoryOS\_index.md`, then read at most 3 directly relevant pages.
 - L3: Memory writing. Only create or update `C:\Users\btf\AI-MemoryOS\proposals\pending\` when the user explicitly asks to capture, reflect, update Memory OS, generate a proposal, or confirms a suggested capture. Long-term future direction notes may be written to `C:\Users\btf\AI-MemoryOS\proposals\future-directions\` only when the user explicitly asks to record a future direction or architecture intent; they are not directly promotable pending proposals.
 
 Multiple workflows/skills may collaborate when: the user explicitly requests it, the task naturally spans multiple check surfaces, one skill's output feeds another, or multiple skills cover different risk surfaces without redundant large reads. Heavy skill checklists and output contracts should be read on demand.
+
+## Workflow / Skill Probe
+
+L1/L2 任务中，如果用户输入出现明确 workflow 或 skill 候选信号，执行前先读取最小 router map：workflow 候选读 `router/workflow-map.md`，skill 候选读 `router/skill-map.md`。明确候选信号不是单个关键词，而是用户目标、任务对象、期望输出形态或安全/写入边界的稳定组合，且未被反向条件排除。例如："读取原型准备开发"（目标+对象）应触发 map 探针，而"打开链接看看能不能访问"（无开发目标）不需要。map 命中后只读取命中的 workflow/skill；map 未命中时按本地/项目上下文处理，并仅在真实误判出现时建议 router correction。
 
 ## Codex L1 Tendency
 

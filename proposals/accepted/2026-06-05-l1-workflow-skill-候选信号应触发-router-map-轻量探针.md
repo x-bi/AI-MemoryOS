@@ -1,9 +1,11 @@
 ---
 title: "L1 workflow/skill 候选信号应触发 router map 轻量探针"
-status: pending
+status: accepted
 created_at: 2026-06-05T02:21:16.081Z
 updated_at: 2026-06-05
 source: mcp
+decision_reason: "解决 gate 与 router map 之间的执行缝隙，通过精简 probe 规则让 L1/L2 任务在出现明确候选信号时读取 map 做探针"
+source_episode: "CoDesign 原型读取任务中前端原型驱动 workflow 未被触发"
 ---
 
 # Proposal: L1 workflow/skill 候选信号应触发 router map 轻量探针
