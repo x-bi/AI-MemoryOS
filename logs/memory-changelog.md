@@ -1,5 +1,9 @@
 # Memory Changelog 记忆变更日志
 
+## 2026-06-04
+
+- 接受 proposal：`2026-06-04-frontend-prototype-reading-must-include-visual-layout-constraints`。新增 `workflows/frontend-prototype-driven-development.md`，要求按 CoDesign / Lanhu / Figma / Axure 等原型开发前先提取字段/数据、交互/状态、API 边界和结构性视觉布局约束；同步在 `domains/frontend/README.md` 增加 workflow 引用。
+
 ## 2026-06-03
 
 - 收紧 Codex / Claude gate 中的 L1/L2 经验沉淀提示规则：把原先模糊的 "clearly reusable lesson" 改成单条类型化 capture trigger，要求用 `反模式：`、`路由纠正：`、`可复用模式：`、`重复失败模式：` 或 `边界险触：` 标注候选经验，并保持 `proposals/pending/` 确认后写入边界。
@@ -86,3 +90,4 @@
 验证方式：
 风险：
 ```
+

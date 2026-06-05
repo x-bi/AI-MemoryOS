@@ -13,7 +13,7 @@ L0-L3 定义和 L1/L2 策略偏好由各适配器 gate 文件管理，本文件�
 1. 各适配器先读自己的 gate 文件做 Memory OS Gate：判断任务处于 L0/L1/L2/L3。
 2. 再判断 task_type：分类边界见 `router/intent-map.md`。
 3. 再判断 domain：领域信号和入口页见 `router/domain-map.md`。
-4. 再选择 workflow / skill / markdown：skill 触发边界见 `router/skill-map.md`，workflow 和普通 markdown 按 task_type、domain 与核心文件入口选择。
+4. 再选择 workflow / skill / markdown：workflow 触发边界见 `router/workflow-map.md`，skill 触发边界见 `router/skill-map.md`；workflow 命中时优先读取对应 workflow，再按需读取 skill 或普通 markdown。
 5. 低置信度时先问一个关键问题，不扩大读取。
 
 ## Core Files 核心文件
@@ -27,6 +27,7 @@ L0-L3 定义和 L1/L2 策略偏好由各适配器 gate 文件管理，本文件�
 - `router/intent-map.md`：任务类型路由。
 - `router/domain-map.md`：领域路由。
 - `router/skill-map.md`：skill 触发边界（模型无关）。
+- `router/workflow-map.md`：workflow 触发边界。
 - `workflows/`：可复用执行流程。
 - `domains/frontend/`：前端优先领域包。
 - `proposals/pending/`：唯一默认写入入口。
@@ -62,3 +63,4 @@ L0-L3 定义和 L1/L2 策略偏好由各适配器 gate 文件管理，本文件�
 - `adapters/claude/skills/`: Claude-specific skill sources. These are separate from Codex skills.
 - `C:\Users\btf\.claude\skills`: Claude Code skill discovery root; active skills are junctions to `adapters/claude/skills`.
 - `ai_memoryos`: shared restricted MCP server, configured in Claude user scope and allowed only to read/search Memory OS and write pending proposals.
+

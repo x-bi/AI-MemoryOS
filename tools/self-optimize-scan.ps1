@@ -45,6 +45,7 @@ function Get-Utf8NoBom() {
 function Repair-JsonString([string]$json) {
   # 1. Replace JS undefined with "unclear"
   $json = $json -replace '\bundefined\b', '"unclear"'
+  $json = $json -replace ':\s*unclear(?=\s*[,}\]])', ': "unclear"'
   # 2. Fix unescaped newlines inside JSON string values.
   #    Claude often outputs multi-line text inside "..." without \n escapes.
   #    Strategy: walk char-by-char; when inside a string, replace bare CR/LF with \n.
@@ -100,6 +101,17 @@ function Read-FirstN($path, $n) {
   return ($lines -join "`n")
 }
 
+function Get-SafeLabel([string]$label) {
+  return ($label -replace '[^A-Za-z0-9_.-]', '-')
+}
+
+function Save-UnstructuredClaudeOutput($reportsDir, $batchLabel, $assistantText) {
+  $safeLabel = Get-SafeLabel $batchLabel
+  $path = Join-Path $reportsDir ".last-claude-unstructured-$safeLabel.txt"
+  [System.IO.File]::WriteAllText($path, "[batch=$batchLabel]`n$assistantText", (Get-Utf8NoBom))
+  return $path
+}
+
 # ---------------------------------------------------------------------------
 # Helper: invoke claude on a single prompt file, return parsed inner JSON or $null
 # ---------------------------------------------------------------------------
@@ -151,7 +163,8 @@ function Invoke-ClaudeOnPrompt($promptPath, $claudeArgs, $reportsDir, $batchLabe
       $fb = Repair-JsonString $assistantText
       $inner = $fb | ConvertFrom-Json -ErrorAction Stop
     } catch {
-      Write-Warning "  Batch ${batchLabel}: could not extract structured JSON. Skipping this batch."
+      $rawPath = Save-UnstructuredClaudeOutput $reportsDir $batchLabel $assistantText
+      Write-Warning "  Batch ${batchLabel}: could not extract structured JSON. Raw output saved to $rawPath. Skipping this batch."
     }
   }
   return ,@{ inner = $inner; rawText = $assistantText }
@@ -451,7 +464,8 @@ if (-not [string]::IsNullOrWhiteSpace($webKeywords) -and -not $DryRun) {
   [void]$webPromptSb.AppendLine("# 任务")
   [void]$webPromptSb.AppendLine("1. 对每个关键词使用 WebSearch 搜索，合并去重结果。")
   [void]$webPromptSb.AppendLine("2. 找到的项目如果有具体可借鉴的想法/模式/工作流，记录下来。")
-  [void]$webPromptSb.AppendLine('3. 仅输出一个 ```json 块，schema：')
+  [void]$webPromptSb.AppendLine('3. 仅输出一个 ```json 块；如果没有候选，也必须输出 borrow_candidates: []。')
+  [void]$webPromptSb.AppendLine('JSON 要求：所有枚举值都必须是普通字符串；不要输出联合类型写法。')
   [void]$webPromptSb.AppendLine('```json')
   [void]$webPromptSb.AppendLine('{')
   [void]$webPromptSb.AppendLine('  "borrow_candidates": [{')
@@ -461,8 +475,8 @@ if (-not [string]::IsNullOrWhiteSpace($webKeywords) -and -not $DryRun) {
   [void]$webPromptSb.AppendLine('    "idea_title": "中文短句",')
   [void]$webPromptSb.AppendLine('    "why_relevant": "1-2 句中文",')
   [void]$webPromptSb.AppendLine('    "fit_with_this_repo": "指明可能目录/文件",')
-  [void]$webPromptSb.AppendLine('    "estimated_effort": "S" | "M" | "L",')
-  [void]$webPromptSb.AppendLine('    "estimated_value": "low" | "med" | "high",')
+  [void]$webPromptSb.AppendLine('    "estimated_effort": "M",')
+  [void]$webPromptSb.AppendLine('    "estimated_value": "med",')
   [void]$webPromptSb.AppendLine('    "risks": "1 句中文"')
   [void]$webPromptSb.AppendLine('  }],')
   [void]$webPromptSb.AppendLine('  "web_queries_used": ["..."],')
@@ -482,14 +496,17 @@ if (-not [string]::IsNullOrWhiteSpace($webKeywords) -and -not $DryRun) {
     }
     $webResult = Invoke-ClaudeOnPrompt -promptPath $webPromptPath -claudeArgs $webClaudeArgs -reportsDir $reportsDir -batchLabel "web"
     $webInner = $webResult.inner
-    if ($null -ne $webInner -and $webInner.borrow_candidates) {
+    if ($null -ne $webInner -and $webInner.PSObject.Properties["borrow_candidates"]) {
       $webCandidates = @($webInner.borrow_candidates)
       if ($webInner.PSObject.Properties["web_queries_used"] -and $webInner.web_queries_used) {
         $webQueriesUsed = @($webInner.web_queries_used)
       }
       Write-Status "  WebSearch: $($webCandidates.Count) candidate(s) found"
+    } elseif ($null -ne $webInner) {
+      $rawPath = Save-UnstructuredClaudeOutput $reportsDir "web-missing-borrow-candidates" $webResult.rawText
+      Write-Warning "  WebSearch batch returned JSON without borrow_candidates. Raw output saved to $rawPath."
     } else {
-      Write-Warning "  WebSearch batch: no structured candidates returned."
+      Write-Warning "  WebSearch batch: no structured JSON returned."
     }
   } catch {
     Write-Warning "  WebSearch batch failed: $($_.Exception.Message)"
@@ -594,19 +611,20 @@ function Build-Prompt($repos, $summary, $readmeCap, [bool]$IncludeWebSearch = $t
   }
   [void]$sb.AppendLine("$taskIdx. 对每个候选判断是否有具体可借鉴的想法/模式/工作流。")
   $taskIdx++
-  [void]$sb.AppendLine("$taskIdx. 仅输出一个 ```json 块，schema 如下：")
+  [void]$sb.AppendLine("$taskIdx. 仅输出一个 ```json 块；如果本批没有具体可借鉴候选，也必须输出 borrow_candidates: []。")
+  [void]$sb.AppendLine("JSON 要求：所有枚举值都必须是字符串；不要输出 ``|`` 联合类型、undefined、注释或额外正文。")
   [void]$sb.AppendLine()
   [void]$sb.AppendLine('```json')
   [void]$sb.AppendLine('{')
   [void]$sb.AppendLine('  "borrow_candidates": [{')
   [void]$sb.AppendLine('    "source_url": "",')
   [void]$sb.AppendLine('    "source_name": "owner/repo or site title",')
-  [void]$sb.AppendLine('    "channel": "github" | "web",')
+  [void]$sb.AppendLine('    "channel": "github",')
   [void]$sb.AppendLine('    "idea_title": "中文短句",')
   [void]$sb.AppendLine('    "why_relevant": "1-2 句中文",')
   [void]$sb.AppendLine('    "fit_with_this_repo": "指明可能目录/文件",')
-  [void]$sb.AppendLine('    "estimated_effort": "S" | "M" | "L",')
-  [void]$sb.AppendLine('    "estimated_value": "low" | "med" | "high",')
+  [void]$sb.AppendLine('    "estimated_effort": "M",')
+  [void]$sb.AppendLine('    "estimated_value": "med",')
   [void]$sb.AppendLine('    "risks": "1 句中文"')
   [void]$sb.AppendLine('  }],')
   [void]$sb.AppendLine('  "web_queries_used": [],')
@@ -696,17 +714,23 @@ foreach ($batchRepos in $batches) {
   try {
     $result = Invoke-ClaudeOnPrompt -promptPath $bpPath -claudeArgs $claudeArgs -reportsDir $reportsDir -batchLabel $batchLabel
     $bInner = $result.inner
-    if ($null -ne $bInner -and $bInner.borrow_candidates) {
-      $mergedCandidates += $bInner.borrow_candidates
+    if ($null -ne $bInner -and $bInner.PSObject.Properties["borrow_candidates"]) {
+      $batchCandidates = @($bInner.borrow_candidates)
+      if ($batchCandidates.Count -gt 0) {
+        $mergedCandidates += $batchCandidates
+      }
       if ($bInner.PSObject.Properties["overview"] -and $bInner.overview) {
         $mergedOverview += "[批 $batchLabel] " + $bInner.overview
       }
       if ($bInner.PSObject.Properties["web_queries_used"] -and $bInner.web_queries_used) {
         $mergedWebQueries += $bInner.web_queries_used
       }
-      Write-Status "    OK: $($bInner.borrow_candidates.Count) candidate(s) from this batch"
+      Write-Status "    OK: $($batchCandidates.Count) candidate(s) from this batch"
+    } elseif ($null -ne $bInner) {
+      $rawPath = Save-UnstructuredClaudeOutput $reportsDir "batch-$batchIdx-missing-borrow-candidates" $result.rawText
+      Write-Warning "  Batch ${batchLabel}: structured JSON missing borrow_candidates. Raw output saved to $rawPath."
     } else {
-      Write-Warning "  Batch ${batchLabel}: no structured candidates returned."
+      Write-Warning "  Batch ${batchLabel}: no structured JSON returned."
     }
   } finally {
     if (Test-Path -LiteralPath $bpPath -PathType Leaf) {
@@ -769,8 +793,9 @@ try {
     [void]$verifySb.AppendLine()
     [void]$verifySb.AppendLine("## 输出格式")
     [void]$verifySb.AppendLine('仅输出一个 ```json 块：')
+    [void]$verifySb.AppendLine('JSON 要求：fits 只能是字符串 "true"、"false" 或 "unclear"；不要输出 undefined、裸 unclear 或联合类型写法。')
     [void]$verifySb.AppendLine('```json')
-    [void]$verifySb.AppendLine('{ "verifications": [{ "idea_title": "...", "fits": true|false|unclear, "reason": "一句中文" }] }')
+    [void]$verifySb.AppendLine('{ "verifications": [{ "idea_title": "...", "fits": "unclear", "reason": "一句中文" }] }')
     [void]$verifySb.AppendLine('```')
 
     $verifyPromptPath = Join-Path $env:TEMP "self-optimize-verify-$([guid]::NewGuid()).md"
@@ -797,8 +822,7 @@ try {
           } else {
             $verifyJsonText = $verifyText
           }
-          # Sanitize: replace JS undefined with "unclear" (PowerShell ConvertFrom-Json cannot parse undefined)
-          $verifyJsonText = $verifyJsonText -replace '\bundefined\b', '"unclear"'
+          $verifyJsonText = Repair-JsonString $verifyJsonText
           $verifyJson = $verifyJsonText | ConvertFrom-Json -ErrorAction Stop
 
           # Merge verification results into candidates
@@ -806,7 +830,9 @@ try {
             foreach ($v in $verifyJson.verifications) {
               $match = $innerJson.borrow_candidates | Where-Object { $_.idea_title -eq $v.idea_title } | Select-Object -First 1
               if ($match) {
-                $match | Add-Member -NotePropertyName "fits" -NotePropertyValue $v.fits -Force
+                $fitsValue = if ($null -eq $v.fits) { "unclear" } else { ([string]$v.fits).ToLowerInvariant() }
+                if ($fitsValue -notin @("true", "false", "unclear")) { $fitsValue = "unclear" }
+                $match | Add-Member -NotePropertyName "fits" -NotePropertyValue $fitsValue -Force
                 $match | Add-Member -NotePropertyName "verify_reason" -NotePropertyValue $v.reason -Force
               }
             }
