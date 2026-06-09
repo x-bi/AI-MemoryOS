@@ -82,6 +82,50 @@ pwsh -NoProfile -File "C:\Users\btf\AI-MemoryOS\tools\self-optimize-scan.ps1" -M
 
 ---
 
+## inject-gate-reminder.ps1
+
+Claude Code UserPromptSubmit hook 脚本。每轮用户提交输入时,向 Claude 注入一行"强制读取 gate"的提醒。
+
+### 作用
+
+- 每轮都注入一条 system-reminder,强制 Claude 将 `Read C:\Users\btf\AI-MemoryOS\adapters\claude\CLAUDE.md` 作为本轮第一个工具调用
+- 不复制 gate 规则内容,不替代 global `CLAUDE.md`,无副作用
+- 脚本本体在 Memory OS 项目中,与 gate 同源管理;脱离 Memory OS 则失效
+
+### 注册方式
+
+在 `C:\Users\btf\.claude\settings.json` 中添加(已配置,无需重复):
+
+```json
+"hooks": {
+  "UserPromptSubmit": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\btf\\AI-MemoryOS\\tools\\inject-gate-reminder.ps1\""
+        }
+      ]
+    }
+  ]
+}
+```
+
+### 验证
+
+1. 直接跑脚本看是否能输出一行中文提醒:
+   ```powershell
+   powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\btf\AI-MemoryOS\tools\inject-gate-reminder.ps1"
+   ```
+2. 打开一个**新对话**(让 hook 触发),观察 Claude 回答末尾是否出现 `OS: Lx; skills:...; ...; graph: codegraph N; write:...` trace 行。出现 → 完整链路打通(hook → Read gate → 按 gate 的 Final Trace 规则附 trace)。
+
+### 排错
+
+- 中文乱码:脚本必须以 UTF-8 BOM 保存。若改写后乱码,改用 `[System.IO.File]::WriteAllText($path, $content, (New-Object System.Text.UTF8Encoding($true)))` 重写。
+- hook 不生效:检查 `settings.json` 的 `hooks` 字段是否合法 JSON,以及脚本路径双反斜杠 `\\` 转义是否正确。
+- Claude 仍不读 gate:hook 只能注入"提醒",最终是否执行仍依赖模型遵循。如反复失效需考虑加 `Stop` hook 做后校验。
+
 ## 其他脚本（一句话索引）
 
 | 脚本                     | 用途                                                      |
