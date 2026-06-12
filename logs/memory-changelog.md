@@ -1,5 +1,12 @@
 # Memory Changelog 记忆变更日志
 
+## 2026-06-11
+
+- 接受 proposal：`2026-06-11-将-skill-同步升级为-adapter-shell-渲染与漂移检测管线`。
+- 将 managed skill 同步机制升级为 adapter template 渲染与 `-Check` 漂移检测管线。
+- 新增 `workflows/skill-maintenance.md` 和 `dashboard/skills.md` 维护命令入口，明确 shared spec、registry、adapter template 与 generated `SKILL.md` 的职责边界。
+- `tools/validate-memory-os.ps1` 改为调用 `tools/sync-skills.ps1 -Check` 聚合 generated skill 漂移问题。
+
 ## 2026-06-04
 
 - 接受 proposal：`2026-06-04-frontend-prototype-reading-must-include-visual-layout-constraints`。新增 `workflows/frontend-prototype-driven-development.md`，要求按 CoDesign / Lanhu / Figma / Axure 等原型开发前先提取字段/数据、交互/状态、API 边界和结构性视觉布局约束；同步在 `domains/frontend/README.md` 增加 workflow 引用。

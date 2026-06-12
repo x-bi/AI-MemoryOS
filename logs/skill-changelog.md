@@ -1,4 +1,17 @@
 # Skill Changelog 技能变更日志
+## 2026-06-12
+
+- 修正 `tools/sync-skills.ps1 -Check` 的状态汇总：registry、template、path safety 等 ERROR 不再被汇总为 STALE。
+- 修正 adapter template 渲染顺序，避免 `SKILL_SPEC.md` 正文中的 `{{name}}`、`{{adapter}}` 等 literal 示例被元数据替换。
+- 加强 registry description 的 YAML 双引号转义，覆盖换行、tab 和控制字符；`tools/validate-memory-os.ps1` 的 managed skill required 文件改为从 `skills/registry.json` 动态补齐。
+
+## 2026-06-11
+
+- 接受 proposal：`2026-06-11-将-skill-同步升级为-adapter-shell-渲染与漂移检测管线`。
+- 新增 Codex / Claude adapter skill template，`tools/sync-skills.ps1` 通过 shared spec、registry 和 adapter template 渲染 generated `SKILL.md`。
+- 新增 `tools/sync-skills.ps1 -Check`，以 expected render 和实际 generated output 的完整内容比较检测漂移。
+- 不改变 active skill roster，不修改 skill trigger description。
+
 ## 2026-05-26
 
 - 晋升 proposal：`修正 Vue/uni-app 改动检查未触发 vue-change-self-check`。

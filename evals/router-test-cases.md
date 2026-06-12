@@ -42,6 +42,10 @@
 | 修这个 bug，并加一个防回归测试 | 读 `router/skill-map.md`，命中 `bugfix-with-regression-test` |
 | 为什么没有触发这个 workflow，修正路由 | 命中 `routing-auditor` |
 | 把这次经验写进 pending proposal | 命中 `memory-curator`，只写 `proposals/pending/` |
+| 给 Memory OS 新增一个 managed skill | 读 `router/workflow-map.md`，命中 `workflows/skill-maintenance.md` |
+| 同步一下 skills/registry.json 和 adapter SKILL.md | 读 `router/workflow-map.md`，命中 `workflows/skill-maintenance.md` |
+| 修改 bugfix-with-regression-test 的 SKILL_SPEC 描述并重新同步 | 读 `router/workflow-map.md`，命中 `workflows/skill-maintenance.md` |
+| 落地这个 skill 同步 pending proposal | 命中 `workflows/proposal-promotion.md`；pending 审查/晋升不被 `skill-maintenance.md` 抢占 |
 | Git reset 和 revert 该用哪个 | 读 `router/skill-map.md`，命中 `git-ops-guide`；只给命令指导，不执行 git |
 | 帮我实现一个按钮颜色调整 | 不读 map，普通小实现 |
 | 解释这个接口字段是什么意思 | 不读 map，L0/L1 explain |

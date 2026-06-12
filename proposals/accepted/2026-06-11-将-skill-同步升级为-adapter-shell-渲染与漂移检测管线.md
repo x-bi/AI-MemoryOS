@@ -1,9 +1,10 @@
 ---
 title: "将 Skill 同步升级为 Adapter Shell 渲染与漂移检测管线"
-status: pending
+status: accepted
 created_at: 2026-06-11T03:31:46.881Z
 source: mcp
 source_episode: conversation:2026-06-11;report:self-optimize-2026-06-09;report:self-optimize-2026-06-10
+decision_reason: "Accepted and landed: implemented adapter template rendering, check-only drift detection, validate integration, skill-maintenance workflow, router/dashboard/eval coverage, and changelog entries."
 ---
 
 # Proposal: 将 Skill 同步升级为 Adapter Shell 渲染与漂移检测管线

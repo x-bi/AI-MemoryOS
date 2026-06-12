@@ -48,6 +48,8 @@ L0-L3 定义和 L1/L2 策略偏好由各适配器 gate 文件管理，本文件�
 - `adapters/codex/gate.md`：Codex 全局 bootstrap 读取的运行策略入口。
 - `adapters/codex/external-config.md`：Codex OS 外部配置副本，用于换机或新软件快速恢复。
 - `adapters/codex/skills/`：Codex 专用 skills 源目录。
+- `adapters/codex/templates/skill.md.tmpl`：Codex adapter skill 生成壳子。
+- `adapters/claude/templates/skill.md.tmpl`：Claude adapter skill 生成壳子。
 - `skills/registry.json`：managed shared skill specs 的名单源，用于生成 Codex / Claude adapter skill 外壳。
 - `skills/<skill>/SKILL_SPEC.md`：模型无关的 skill 核心逻辑。
 - `adapters/codex/config/recommended-config.toml`：全局 config 合并建议。

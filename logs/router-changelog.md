@@ -1,5 +1,11 @@
 # Router Changelog 路由变更日志
 
+## 2026-06-11
+
+- 新增 `workflows/skill-maintenance.md` 路由入口，用于新增、修改、同步和校验 Memory OS managed skill。
+- 补充 router eval，覆盖 managed skill 维护的正向命中，以及 skill 维护类 pending proposal 仍优先走 `proposal-promotion.md` 的反向排除。
+- 明确普通项目“技能”泛称、使用已有 skill、以及 `proposals/pending/*` 审查/晋升不触发 `skill-maintenance.md`。
+
 ## 2026-05-14
 
 - 放宽 OS 触发机制：收窄 L0 为纯解释/纯问答/无改动无决策任务，放宽 L1 为默认倾向触发轻量 workflow / skill。

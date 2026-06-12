@@ -65,35 +65,27 @@ function Test-ExcludedRepositoryScanPath {
   return $false
 }
 
+$skillRegistryPath = Join-Path $Root "skills\registry.json"
+
 $required = @(
   "_index.md",
   "STATUS.md",
   "GOVERNANCE.md",
   "skills\registry.json",
+  "adapters\codex\templates\skill.md.tmpl",
+  "adapters\claude\templates\skill.md.tmpl",
   "adapters\codex\gate.md",
   "adapters\codex\external-config.md",
-  "adapters\codex\skills\memory-curator\SKILL.md",
-  "adapters\codex\skills\routing-auditor\SKILL.md",
-  "adapters\codex\skills\bugfix-with-regression-test\SKILL.md",
-  "adapters\codex\skills\frontend-component-review\SKILL.md",
-  "adapters\codex\skills\pr-review\SKILL.md",
-  "adapters\codex\skills\vue-change-self-check\SKILL.md",
-  "adapters\codex\skills\git-ops-guide\SKILL.md",
   "adapters\claude\CLAUDE.md",
   "adapters\claude\external-config.md",
-  "skills\memory-curator\SKILL_SPEC.md",
-  "skills\routing-auditor\SKILL_SPEC.md",
-  "skills\bugfix-with-regression-test\SKILL_SPEC.md",
-  "skills\frontend-component-review\SKILL_SPEC.md",
-  "skills\pr-review\SKILL_SPEC.md",
-  "skills\vue-change-self-check\SKILL_SPEC.md",
-  "skills\git-ops-guide\SKILL_SPEC.md",
   "router\intent-map.md",
   "router\domain-map.md",
   "router\skill-map.md",
+  "workflows\skill-maintenance.md",
   "evals\router-test-cases.md",
   "evals\skill-trigger-test-cases.md",
   "dashboard\home.md",
+  "dashboard\skills.md",
   "dashboard\future-directions.md",
   "templates\proposal.md",
   "templates\router-correction-proposal.md",
@@ -104,6 +96,21 @@ $required = @(
   "adapters\mcp\server\obsidian-memory-os-mcp.mjs"
 )
 
+if (Test-Path -LiteralPath $skillRegistryPath) {
+  $skillRegistryForRequired = Get-Content -LiteralPath $skillRegistryPath -Raw -Encoding UTF8 | ConvertFrom-Json
+  foreach ($skillConfig in @($skillRegistryForRequired.skills | Where-Object { $_.managed -eq $true })) {
+    if (-not [string]::IsNullOrWhiteSpace([string]$skillConfig.source)) {
+      $required += ([string]$skillConfig.source -replace '/', '\')
+    }
+    foreach ($adapterName in @("codex", "claude")) {
+      $adapter = $skillConfig.adapters.$adapterName
+      if ($null -ne $adapter -and $adapter.enabled -eq $true -and -not [string]::IsNullOrWhiteSpace([string]$adapter.output)) {
+        $required += ([string]$adapter.output -replace '/', '\')
+      }
+    }
+  }
+}
+
 $missing = @()
 foreach ($item in $required) {
   $path = Join-Path $Root $item
@@ -112,7 +119,6 @@ foreach ($item in $required) {
 
 $bomFiles = @()
 $skillFilesToCheck = @()
-$skillRegistryPath = Join-Path $Root "skills\registry.json"
 $activeSkills = @("memory-curator", "routing-auditor", "bugfix-with-regression-test", "frontend-component-review", "pr-review", "vue-change-self-check", "git-ops-guide")
 if (Test-Path -LiteralPath $skillRegistryPath) {
   $skillRegistryForActiveList = Get-Content -LiteralPath $skillRegistryPath -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -209,42 +215,22 @@ foreach ($item in $templateChecks) {
 }
 
 $skillSyncProblems = @()
-if (Test-Path -LiteralPath $skillRegistryPath) {
-  $skillRegistry = Get-Content -LiteralPath $skillRegistryPath -Raw -Encoding UTF8 | ConvertFrom-Json
-  foreach ($skillConfig in @($skillRegistry.skills | Where-Object { $_.managed -eq $true })) {
-    try {
-      $sourcePath = Resolve-MemoryOsRelativePath -RootPath $Root -RelativePath ([string]$skillConfig.source)
-    } catch {
-      $skillSyncProblems += "$($skillConfig.name) invalid shared source path: $($skillConfig.source)"
-      continue
-    }
-    if (-not (Test-Path -LiteralPath $sourcePath)) {
-      $skillSyncProblems += "$($skillConfig.name) missing shared source: $($skillConfig.source)"
-      continue
-    }
-
-    $sourceHash = (Get-FileHash -LiteralPath $sourcePath -Algorithm SHA256).Hash.ToLowerInvariant()
-    foreach ($adapterName in @("codex", "claude")) {
-      $adapter = $skillConfig.adapters.$adapterName
-      if ($null -eq $adapter -or $adapter.enabled -ne $true) { continue }
-      try {
-        $outputPath = Resolve-MemoryOsRelativePath -RootPath $Root -RelativePath ([string]$adapter.output)
-      } catch {
-        $skillSyncProblems += "$($skillConfig.name) invalid generated $adapterName output path: $($adapter.output)"
-        continue
-      }
-      if (-not (Test-Path -LiteralPath $outputPath)) {
-        $skillSyncProblems += "$($skillConfig.name) missing generated $adapterName skill: $($adapter.output)"
-        continue
-      }
-
-      $text = Get-Content -LiteralPath $outputPath -Raw -Encoding UTF8
-      $expectedHeader = "Generated from $($skillConfig.source); source-sha256: $sourceHash; adapter: $adapterName"
-      if ($text -notlike "*$expectedHeader*") {
-        $skillSyncProblems += "$($adapter.output) is not synced with $($skillConfig.source)"
-      }
-      if ($text -notmatch "(?s)^---\s*name:\s*$([regex]::Escape($skillConfig.name))\s*description:\s*.+?\s*---") {
-        $skillSyncProblems += "$($adapter.output) missing usable skill frontmatter"
+$syncSkillsScript = Join-Path $Root "tools\sync-skills.ps1"
+if (Test-Path -LiteralPath $syncSkillsScript) {
+  $pwshCommand = Get-Command pwsh -ErrorAction SilentlyContinue
+  if ($null -eq $pwshCommand) {
+    $skillSyncProblems += "pwsh not found; cannot run tools\sync-skills.ps1 -Check"
+  } else {
+    $previousErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $skillSyncOutput = & $pwshCommand.Source -NoProfile -ExecutionPolicy Bypass -File $syncSkillsScript -Root $Root -Check 2>&1
+    $skillSyncExitCode = $LASTEXITCODE
+    $ErrorActionPreference = $previousErrorActionPreference
+    if ($skillSyncExitCode -ne 0) {
+      if ($skillSyncOutput.Count -eq 0) {
+        $skillSyncProblems += "tools\sync-skills.ps1 -Check failed with exit code $skillSyncExitCode"
+      } else {
+        $skillSyncOutput | ForEach-Object { $skillSyncProblems += [string]$_ }
       }
     }
   }
