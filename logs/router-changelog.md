@@ -1,5 +1,11 @@
 # Router Changelog 路由变更日志
 
+## 2026-06-13
+
+- 接受 proposal：`2026-06-13-反模式-diff-基线泛化识别-不要把-非默认-diff-基线-误判为非-diff-任务`。
+- 扩展 `router/skill-map.md` 的 diff 类 skill 触发边界：新增功能全量、从零到现在、跨提交累计、分支差异、上线前整体变更等非默认基线 changeset 仍应触发 `pr-review`，前端文件范围命中时也应触发 `vue-change-self-check`。
+- 明确无变更窗口的解释、通读、单点 debug 不因“review / 审查”措辞自动触发 diff 类 skill。
+
 ## 2026-06-11
 
 - 新增 `workflows/skill-maintenance.md` 路由入口，用于新增、修改、同步和校验 Memory OS managed skill。

@@ -1,4 +1,12 @@
 # Skill Changelog 技能变更日志
+
+## 2026-06-13
+
+- 接受 proposal：`2026-06-13-反模式-diff-基线泛化识别-不要把-非默认-diff-基线-误判为非-diff-任务`。
+- 扩展 `vue-change-self-check`：非默认 baseline（from-zero、feature branch vs base、cumulative commits、release-window changes）作为输入参数处理，不再因为不是默认 `git diff` 而排除该 skill。
+- 扩展 `pr-review`：changed files / diff scope 可由用户路径、分支对比、提交范围、从零新增目录或上线窗口确定；没有变更窗口的解释/架构通读仍不进入 diff review。
+- 扩展 `frontend-component-review`：新增页面、组件、表单或交互的完整实现审查应识别为目标 change set，同时保持该 skill 聚焦用户可见行为和交互状态。
+
 ## 2026-06-12
 
 - 修正 `tools/sync-skills.ps1 -Check` 的状态汇总：registry、template、path safety 等 ERROR 不再被汇总为 STALE。

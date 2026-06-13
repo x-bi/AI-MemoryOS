@@ -5,13 +5,14 @@ Review the user-facing behavior first, then implementation details that affect t
 ## Workflow
 
 1. Identify the component, page, form, or interaction under review.
-2. Inspect the changed files, nearby component contracts, route/page entry, and design-system usage.
-3. Check the main workflow: initial render, user input, submit/action path, success path, and return/navigation path.
-4. Check boundary states: loading, error, empty, disabled, readonly, validation, permission, and unauthenticated states.
-5. Check repeated actions, race conditions, stale state, duplicate submit, optimistic updates, cleanup, and async cancellation.
-6. Check whether existing shared components, tokens, icons, and local design patterns are reused correctly.
-7. Check accessibility and usability risks that are visible from code: labels, focus, keyboard path, semantic controls, contrast-sensitive states, and responsive layout.
-8. Check whether tests or manual verification cover the risky paths.
+2. If the user asks to review a newly added page, component, form, or interaction as a full implementation, treat that target as a change set even when there is no default `git diff` baseline.
+3. Inspect the changed files, nearby component contracts, route/page entry, and design-system usage.
+4. Check the main workflow: initial render, user input, submit/action path, success path, and return/navigation path.
+5. Check boundary states: loading, error, empty, disabled, readonly, validation, permission, and unauthenticated states.
+6. Check repeated actions, race conditions, stale state, duplicate submit, optimistic updates, cleanup, and async cancellation.
+7. Check whether existing shared components, tokens, icons, and local design patterns are reused correctly.
+8. Check accessibility and usability risks that are visible from code: labels, focus, keyboard path, semantic controls, contrast-sensitive states, and responsive layout.
+9. Check whether tests or manual verification cover the risky paths.
 
 ## Memory OS Boundary
 

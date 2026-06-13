@@ -80,7 +80,7 @@ Sync scope:
 3. **MCP safety boundary** — when modifying `adapters/mcp/tool-policy.md` or `adapters/mcp/allowed-ops.md`, also update the MCP safety description in both `adapters/claude/external-config.md` and `adapters/codex/external-config.md`.
 4. **Skill roster changes** — when adding, removing, or renaming an active skill, update `skills/registry.json` then run `tools/sync-skills.ps1`. Skill descriptions are shared at the skill level; do not add per-adapter descriptions.
 5. **Shared tool paths** (wrapper, MCP server script, etc.) — when changing a path, update both external-config files.
-6. **Skill source changes** — when modifying `skills/<skill>/SKILL_SPEC.md` or `skills/registry.json`, remind the user to run `tools/sync-skills.ps1` then `tools/validate-memory-os.ps1`. Do not directly edit adapter `SKILL.md` files; they are generated copies and will be overwritten by sync. The shared spec (`SKILL_SPEC.md`) is the single source of truth.
+6. **Skill source changes** — when modifying `skills/<skill>/SKILL_SPEC.md` or `skills/registry.json`, run `tools/sync-skills.ps1` then `tools/validate-memory-os.ps1` immediately as the closing step of the same task, then report the result. Do not ask the user to confirm before running these two scripts; do not run any git operation. Do not directly edit adapter `SKILL.md` files; they are generated copies and will be overwritten by sync. The shared spec (`SKILL_SPEC.md`) is the single source of truth.
 
 Model-specific overlays (e.g., Claude Temporary L2 Bias, Codex L1 Tendency) are exempt from sync and belong only to their respective adapter.
 

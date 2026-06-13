@@ -15,13 +15,14 @@ Do not read `private/accounts/` or `private/secrets/`. Do not quote private over
 ## Workflow
 
 1. Identify the repo and change set.
-2. Read `git diff --name-only`, `git diff --stat`, and targeted hunks first.
-3. Ignore generated output, dependencies, lockfiles, and pure formatting noise unless asked.
-4. Scope from changed features, not broad directory depth.
-5. Add implied linkage files: page registration, route config, navigation config, permission/menu config, tab/cache config.
-6. Inspect changed-file usage of unchanged dependencies before opening internals.
-7. Open unchanged internals only with direct evidence, no plausible alternative, or user request.
-8. Classify risks, output numbered findings, then stop unless the user asks to handle specific numbers.
+2. Identify the baseline. The change set may use a non-default baseline, such as from-zero, feature branch vs base, cumulative commits, or release-window changes. Treat the baseline as an input parameter instead of excluding the skill.
+3. Read lightweight scope first: `git diff --name-only`, `git diff --stat`, `git diff <base>...HEAD --name-only`, `git show --name-only --stat <commit>`, user-provided paths, or a file list derived from a newly added directory.
+4. Ignore generated output, dependencies, lockfiles, and pure formatting noise unless asked.
+5. Scope from changed features, not broad directory depth.
+6. Add implied linkage files: page registration, route config, navigation config, permission/menu config, tab/cache config.
+7. Inspect changed-file usage of unchanged dependencies before opening internals.
+8. Open unchanged internals only with direct evidence, no plausible alternative, or user request.
+9. Classify risks, output numbered findings, then stop unless the user asks to handle specific numbers.
 
 ## Memory OS Boundary
 
@@ -40,9 +41,16 @@ Use this order:
 
 Use stable numbers such as `#1`. When the user says `处理 #2` or `修复 #1 #3`, keep the original numbers.
 
-## References
+The exact field shape, severity words, confidence words, category words, and action words for each risk item are defined in `references/output-contract.md`. Read it before producing the risk list — do not improvise the field shape from this file alone.
+
+## Required References
+
+Read before producing output:
+
+- `references/output-contract.md`: strict risk item shape, severity, confidence, category, action, and numbering rules. This is the output contract; the `## Output` section above only fixes section order, not field shape.
+
+## Optional References
 
 Read only when needed:
 
 - `references/checklist.md`: common Vue / uni-app regression checks, verification paths, and blind spots.
-- `references/output-contract.md`: strict risk item shape, severity, confidence, category, action, and numbering rules.

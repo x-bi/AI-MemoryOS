@@ -1,5 +1,11 @@
 # Memory Changelog 记忆变更日志
 
+## 2026-06-13
+
+- 接受 proposal：`2026-06-13-反模式-diff-基线泛化识别-不要把-非默认-diff-基线-误判为非-diff-任务`。
+- 将“非默认 diff 基线仍是 changeset”的反模式落地到 `router/skill-map.md`、`skills/vue-change-self-check/SKILL_SPEC.md`、`skills/pr-review/SKILL_SPEC.md`、`skills/frontend-component-review/SKILL_SPEC.md` 和 `evals/skill-trigger-test-cases.md`。
+- 保留排除边界：没有变更窗口的模块解释、架构通读、单点 debug 不强行触发 diff 类 skill。
+
 ## 2026-06-11
 
 - 接受 proposal：`2026-06-11-将-skill-同步升级为-adapter-shell-渲染与漂移检测管线`。
