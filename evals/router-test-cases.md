@@ -49,6 +49,9 @@
 | Git reset 和 revert 该用哪个 | 读 `router/skill-map.md`，命中 `git-ops-guide`；只给命令指导，不执行 git |
 | 帮我实现一个按钮颜色调整 | 不读 map，普通小实现 |
 | 解释这个接口字段是什么意思 | 不读 map，L0/L1 explain |
+| 审查 src/views/goods/goodsPurchaseBan 这个新增文件夹的完整内容（从零到现在） | 读 `router/workflow-map.md`，命中 `workflows/diff-review-lite.md`；因前端文件范围命中，继续读 `router/skill-map.md`，命中 `vue-change-self-check`（与 pr-review/frontend-component-review 共触发），输出四段式：变更影响扫描 / 风险清单 / 建议验证路径 / 本次未覆盖盲区 |
+| 看一下当前 staged 的 .vue 改动有什么风险 | 读 `router/skill-map.md`，命中 `vue-change-self-check`（不是只走通用 review 自走流程），输出四段式 |
+| 解释这个 vue 组件里 watch 是怎么工作的 | 不触发 skill probe，按 L0/L1 自走 |
 
 ## Signal Classification Reference
 

@@ -2,6 +2,9 @@
 
 ## 2026-06-13
 
+- 接受 proposal：`2026-06-13-审查类前端任务跳过-router-map-探针的执行漂移补丁`。
+- 将审查新增前端目录 / 从零到现在这类非默认基线 changeset 落地到 `router/workflow-map.md` 的 review workflow 触发边界，并补充 `evals/router-test-cases.md` 回归样例。
+- 保持边界：不修改 Codex / Claude gate，不扩张 Final Trace，不修改 `router/skill-map.md`；前端文件范围命中时由 workflow map 显式交接到 skill map 判定四段式 self-check。
 - 接受 proposal：`2026-06-13-反模式-diff-基线泛化识别-不要把-非默认-diff-基线-误判为非-diff-任务`。
 - 将“非默认 diff 基线仍是 changeset”的反模式落地到 `router/skill-map.md`、`skills/vue-change-self-check/SKILL_SPEC.md`、`skills/pr-review/SKILL_SPEC.md`、`skills/frontend-component-review/SKILL_SPEC.md` 和 `evals/skill-trigger-test-cases.md`。
 - 保留排除边界：没有变更窗口的模块解释、架构通读、单点 debug 不强行触发 diff 类 skill。

@@ -2,6 +2,10 @@
 
 ## 2026-06-13
 
+- 接受 proposal：`2026-06-13-审查类前端任务跳过-router-map-探针的执行漂移补丁`。
+- 扩展 `router/workflow-map.md` 的 review workflow 触发边界：新增功能全量、从零到现在、跨提交累计、分支差异、上线前整体变更等非默认基线 changeset 也应命中 `workflows/diff-review-lite.md`。
+- 明确前端文件范围命中时，review workflow 后应继续读取 `router/skill-map.md` 判定 `vue-change-self-check` / `frontend-component-review`，避免通用 review 输出形态抢占前端四段式自检。
+- 补充 router eval，覆盖审查新增前端目录、staged `.vue` 风险检查、以及纯解释 `watch` 不触发 skill probe。
 - 接受 proposal：`2026-06-13-反模式-diff-基线泛化识别-不要把-非默认-diff-基线-误判为非-diff-任务`。
 - 扩展 `router/skill-map.md` 的 diff 类 skill 触发边界：新增功能全量、从零到现在、跨提交累计、分支差异、上线前整体变更等非默认基线 changeset 仍应触发 `pr-review`，前端文件范围命中时也应触发 `vue-change-self-check`。
 - 明确无变更窗口的解释、通读、单点 debug 不因“review / 审查”措辞自动触发 diff 类 skill。
