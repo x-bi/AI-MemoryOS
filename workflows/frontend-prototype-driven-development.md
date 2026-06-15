@@ -25,21 +25,24 @@ source_episode: "conversation:2026-06-04-admin-vue-product-blocking-prototype"
 
 ## Browser Surface Precedence
 
-命中本 workflow 时，原型读取的浏览器选择规则优先于通用 Browser 插件规则。读取 CoDesign / Lanhu / Figma / Axure 等原型并准备开发时，必须使用外置受控调试浏览器；不能因为普通网页抓取、Browser 插件可用、或 Codex in-app browser 更方便，就跳过 remote debugging 检查、启动和连接。
+命中本 workflow 时，原型读取的浏览器选择规则优先于通用 Browser 插件规则。读取 CoDesign / Lanhu / Figma / Axure 等原型并准备开发时，必须先确认是否存在已经打开、且可由当前 Codex 能力稳定接管的目标浏览器窗口；不要在未检查可接管窗口前重复打开新的调试浏览器或要求用户重复登录。
 
-如果没有可复用的调试窗口，必须先打开独立 browser profile 和 remote debugging port，再连接确认目标 tab。若外置调试浏览器启动失败、`http://127.0.0.1:<port>/json` 无法连接、无法确认目标 tab、或调试连接不可用，应告知用户失败原因并停止后续原型读取/开发准备流程；不要降级到 Codex in-app browser、普通网页抓取或非受控浏览器读取，因为这些入口无法可靠读取 iframe、blob iframe、滚动容器、登录态和交互状态。
+可接管窗口包括用户已经打开的 Chrome / Edge 等真实浏览器窗口、已有 remote debugging 端口暴露的目标 tab，或其他能稳定完成标题/URL 确认、DOM/截图读取、iframe/blob iframe 进入、滚动容器操作和交互状态检查的受控浏览器会话。只有确认目标窗口可控、目标 tab 匹配、且能覆盖本 workflow 的读取要求时，才能直接复用该窗口。
+
+如果没有可接管的目标窗口，或者已打开窗口无法稳定读取 iframe、blob iframe、滚动容器、登录态或交互状态，必须再打开独立 browser profile 和 remote debugging port，并连接确认目标 tab。若既无法接管已打开浏览器，也无法启动或连接独立 remote-debugging 浏览器，应告知用户具体失败点并停止后续原型读取/开发准备流程；不要降级到普通网页抓取、只读首屏、父页面文本读取或其他非受控读取方式。
 
 Codex in-app browser 仅可在用户明确要求只做只读预览、且不以开发或页面还原为目标时使用；这种情况不属于本 workflow 的原型驱动开发读取流程。
 
 ## Reading Flow
 
-1. 复用检查：读取 CoDesign / Lanhu / Figma / Axure 等原型时，先连接 `http://127.0.0.1:<port>/json` 等 remote debugging 端口，检查是否已有符合本规则的独立 browser profile 或目标 tab 可用；能连接并确认 title / url 匹配时必须复用该外置窗口，避免重复打开浏览器或重复登录。
-2. 浏览器准备：没有可复用窗口时，必须使用独立 browser profile 和 remote debugging port 打开原型，避免污染用户日常浏览器 profile；需要登录时让用户只在该独立窗口内登录。
-3. 调试连接：连接 `http://127.0.0.1:<port>/json`，确认当前 tab 的 title、url 和调试连接可用。若启动、连接、目标 tab 确认或调试协议连接失败，停止流程并向用户说明失败点；不要改走 Codex in-app browser、普通网页抓取或其他非受控读取方式。
-4. iframe 检查：先检查顶层页面是否包含 iframe；如果原型内容在 iframe 或 blob iframe 中，进入真实 iframe context 读取，不能只读父页面目录文字。
-5. 滚动范围：记录 iframe 或页面的可视尺寸和滚动范围；存在嵌套滚动容器时，滚动或截图到关键完整内容，不能只读首屏。
-6. 文本和交互：结构化记录页面标题、模块名、tab、搜索项、表格列、按钮、分页、弹窗/抽屉标题、表单 label、placeholder、选项、必填、禁用、联动、校验和确认行为。
-7. 视觉布局：按结构性意图记录单行/两列、label 对齐、控件相对宽度、分区标题、边框/圆角/内边距、表格缩进、按钮对齐、tab 激活和未激活状态。不追求像素级复刻。
+1. 已开窗口检查：读取 CoDesign / Lanhu / Figma / Axure 等原型时，先检查当前是否存在用户已打开且可由 Codex 接管的目标浏览器窗口或目标 tab；能确认 title / url 匹配、页面可见、可进入真实内容区域时必须优先复用，避免重复打开浏览器或重复登录。
+2. 可控能力确认：复用已开窗口前，必须验证该窗口能完成本 workflow 的关键读取动作，包括 DOM 或可见文本读取、截图、滚动、iframe/blob iframe 进入、弹窗/抽屉/表单交互状态检查。只能看到窗口外观、只能读父页面、不能进入 iframe、不能滚动关键容器或不能确认目标 tab 时，不视为可接管。
+3. 调试浏览器准备：没有可接管窗口时，打开独立 browser profile 和 remote debugging port 承载原型；需要登录时让用户只在该独立窗口内登录，避免污染用户日常浏览器 profile。
+4. 调试连接确认：连接 `http://127.0.0.1:<port>/json`，确认当前 tab 的 title、url 和调试连接可用。若启动、连接、目标 tab 确认或调试协议连接失败，停止流程并向用户说明失败点；不要改走 Codex in-app browser、普通网页抓取或其他非受控读取方式。
+5. iframe 检查：先检查顶层页面是否包含 iframe；如果原型内容在 iframe 或 blob iframe 中，进入真实 iframe context 读取，不能只读父页面目录文字。
+6. 滚动范围：记录 iframe 或页面的可视尺寸和滚动范围；存在嵌套滚动容器时，滚动或截图到关键完整内容，不能只读首屏。
+7. 文本和交互：结构化记录页面标题、模块名、tab、搜索项、表格列、按钮、分页、弹窗/抽屉标题、表单 label、placeholder、选项、必填、禁用、联动、校验和确认行为。
+8. 视觉布局：按结构性意图记录单行/两列、label 对齐、控件相对宽度、分区标题、边框/圆角/内边距、表格缩进、按钮对齐、tab 激活和未激活状态。不追求像素级复刻。
 
 截图或布局记录只在后续实现、审查或对照需要时保留；避免保存 token、账号、cookie、客户数据、生产日志或其他敏感内容。
 
