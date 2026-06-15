@@ -1,10 +1,11 @@
 ---
 title: "skill references 应作为 skills/<skill>/ 源文件并由 sync 脚本同步到 adapter"
-status: pending
+status: accepted
 created_at: 2026-06-13T08:51:37.037Z
-updated_at: 2026-06-13T17:30:07.812+08:00
+updated_at: 2026-06-13T17:44:25.381+08:00
 source: mcp
 source_episode: conversation:2026-06-13
+decision_reason: "Accepted and landed: promoted skill references into skills/<skill>/references source files, extended sync-skills.ps1 to sync/check adapter references, updated cross-adapter rules and changelogs, and verified sync/validation."
 ---
 
 # Proposal: skill references 应作为 skills/<skill>/ 源文件并由 sync 脚本同步到 adapter
@@ -120,17 +121,69 @@ junction 路线作为 Future Direction 留档（见末尾 "Future Considerations
 - 因此本提案不需要在 validate 中新增第二套 drift 解析；references 漂移应先由 `tools/sync-skills.ps1 -Check` 以非零退出报告，validate 继续复用现有调用链。
 - 如需更清晰的 validate 文案，只做轻量输出归类，不复制 `sync-skills.ps1` 的 references 比对逻辑。
 
-## 落地步骤（待用户批准提案后执行）
+## 落地方案（待用户批准提案后执行）
 
-1. **生成差异清单**：列出 `vue-change-self-check/references/` 两端文件的差异段，写入 Open Questions，逐项确认统一基线方向。
-2. **写入源 references**：创建 `skills/vue-change-self-check/references/`，按确认结果写入 `checklist.md`、`output-contract.md`。**不**删除 adapter 下旧文件。
-3. **修改脚本（保持源不存在=不动）**：编辑 `tools/sync-skills.ps1`，加入 references 同步阶段与 `-Check` 输出行；保证源不存在时分支不进入。
-4. **干跑校验**：运行 `tools/sync-skills.ps1 -Check`，预期对 `vue-change-self-check` 报 `STALE references`（因为 adapter 旧内容与新源不一致），其他 skill 报 `OK`（因无源 references）。
-5. **正式同步**：运行 `tools/sync-skills.ps1`（不带 `-Check`），让 adapter references 被源覆盖；用 `git diff` 核对仅预期 references 文件被改写。
-6. **回归校验**：再跑一次 `tools/sync-skills.ps1 -Check`，预期全 `OK`。
-7. **核对 validate 链路**：确认 `tools/validate-memory-os.ps1` 继续通过现有 `sync-skills.ps1 -Check` 调用捕捉 references 漂移；仅在输出需要归类时做轻量文案调整，不重复实现 drift 逻辑。
-8. **更新 Cross-Adapter Sync 文档**：同步修改 `adapters/claude/CLAUDE.md` 与 `adapters/codex/gate.md` 第 6 条措辞。
-9. **不执行任何 git 操作**；落地后由用户决定提交时机与提交粒度。
+### 已完成前置处理
+
+- `source_episode` 已补充为 `conversation:2026-06-13`，满足 proposal 晋升溯源要求。
+- Claude / Codex 两端 references 差异已写入 `Draft / Open Questions（已确定）`。
+- 初始统一基线已确定：`skills/vue-change-self-check/references/checklist.md` 与 `output-contract.md` 均采用当前 Claude adapter 版本。
+- validator 章节已修正：不新增第二套 drift 检测，继续通过现有 `tools/validate-memory-os.ps1` 调用 `tools/sync-skills.ps1 -Check` 汇总失败。
+
+### 执行阶段
+
+1. **Preflight：确认当前事实**
+   - 运行 `tools/sync-skills.ps1 -Check`，预期当前 `SKILL.md` 全部 `OK`。
+   - 确认 `skills/vue-change-self-check/references/` 尚不存在，adapter 两端 references 仍存在且 codex 与 claude 内容不一致。
+
+2. **建立源 references**
+   - 新建 `skills/vue-change-self-check/references/`。
+   - 从 `adapters/claude/skills/vue-change-self-check/references/checklist.md` 复制生成源 `checklist.md`。
+   - 从 `adapters/claude/skills/vue-change-self-check/references/output-contract.md` 复制生成源 `output-contract.md`。
+   - 不删除 adapter 下旧 references；旧文件在 sync 写入前保留为回退和 diff 对照。
+
+3. **扩展 `tools/sync-skills.ps1`**
+   - 增加 references 同步阶段，触发条件仅为 `skills/<skill>/references/` 存在。
+   - `-Check` 模式只比较源/目标清单和内容，发现缺失或内容不一致时返回 `STALE`，发现目标存在但源不存在的幽灵文件时返回 `EXTRA`，不写入。
+   - 写入模式只覆盖缺失或内容不一致的目标文件；默认不删除 `EXTRA`。
+   - 如实现 `-PurgeExtra`，必须作为显式开关，且不在本次默认同步路径使用。
+   - 写入边界限定在 `adapters/<adapter>/skills/<skill>/references/` 子树内，继续复用 `Join-MemoryOsPath` / `Test-PathInside` 做越界防护。
+   - 保持 `OK` / `STALE` / `ERROR` 语义：内容漂移是 `STALE`，路径/registry/template/脚本异常是 `ERROR`。
+
+4. **验证 stale 检出能力**
+   - 在正式写入前运行 `tools/sync-skills.ps1 -Skill vue-change-self-check -Check`。
+   - 预期 `codex` references 至少报 `STALE`；`claude` references 应与源基线一致或接近一致。
+   - 运行 `tools/sync-skills.ps1 -Skill not-a-real-skill -Check`，预期保持 `ERROR` 类失败，不被误报为 `STALE`。
+
+5. **执行同步**
+   - 运行 `tools/sync-skills.ps1`。
+   - 预期 adapter 两端 `SKILL.md` 继续由模板生成，adapter 两端 references 被源 references 同步覆盖。
+   - 用 `git diff` 核对变更范围：新增 `skills/vue-change-self-check/references/**`，修改 `tools/sync-skills.ps1`，修改 codex adapter references；claude adapter references 如已等同源则不应出现实质内容变更。
+
+6. **回归验证**
+   - 运行 `tools/sync-skills.ps1 -Check`，预期全量 `OK`。
+   - 运行 `tools/validate-memory-os.ps1`，预期通过；如 references 漂移存在，validate 应通过现有 `Managed skill sync problems` 暴露。
+   - 视实现复杂度补一个临时 root 或最小 fixture 检查，覆盖：源 references 不存在时不触碰 adapter references、源存在时可检测 stale、默认不删除 extra。
+
+7. **更新规则与记录**
+   - 同步修改 `adapters/claude/CLAUDE.md` 与 `adapters/codex/gate.md` 的 Cross-Adapter Sync 第 6 条，明确 `skills/<skill>/references/**` 也是源，adapter references 是生成输出。
+   - 更新 `logs/memory-changelog.md`：记录接受本 proposal 和同步规则边界变更。
+   - 更新 `logs/skill-changelog.md`：记录 managed skill references 纳入 source / sync / check 管线。
+   - 不需要更新 `logs/router-changelog.md`，本提案不改 router / eval。
+
+8. **晋升收口**
+   - 将本 proposal 从 `proposals/pending/` 移到 `proposals/accepted/`，保留 `source_episode`。
+   - accepted 文件中保留 Draft 的差异决策，作为统一基线选择证据。
+   - 不执行 git commit / push / branch 操作；落地后由用户决定提交时机和粒度。
+
+### 验收标准
+
+- `skills/vue-change-self-check/references/checklist.md` 和 `output-contract.md` 存在，并成为唯一人工编辑源。
+- `tools/sync-skills.ps1 -Check` 能同时检查 generated `SKILL.md` 与源 references 到 adapter references 的漂移。
+- `tools/sync-skills.ps1` 默认同步 references 但不静默删除 extra 文件。
+- `tools/validate-memory-os.ps1` 无重复 drift 实现，继续通过 `sync-skills.ps1 -Check` 汇总 managed skill sync 问题。
+- Codex / Claude gate 的 Cross-Adapter Sync 第 6 条一致。
+- `logs/memory-changelog.md` 与 `logs/skill-changelog.md` 有本次晋升记录。
 
 ## Risks
 

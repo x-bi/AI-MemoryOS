@@ -3,7 +3,8 @@ param(
   [string]$Skill = "",
   [ValidateSet("", "codex", "claude")]
   [string]$Adapter = "",
-  [switch]$Check
+  [switch]$Check,
+  [switch]$PurgeExtra
 )
 
 $ErrorActionPreference = "Stop"
@@ -139,6 +140,129 @@ function Test-BasicFrontmatter {
   return $Text -match "(?s)^---\s*name:\s*$([regex]::Escape($SkillName))\s*description:\s*.+?\s*---"
 }
 
+function Add-SyncItem {
+  param(
+    [string]$Text
+  )
+
+  $script:items += $Text
+}
+
+function Add-SyncProblem {
+  param(
+    [string]$Text
+  )
+
+  $script:items += $Text
+  $script:hadProblem = $true
+}
+
+function Get-ReferenceFileMap {
+  param(
+    [string]$DirectoryPath
+  )
+
+  $map = @{}
+  if (-not (Test-Path -LiteralPath $DirectoryPath)) {
+    return $map
+  }
+
+  $rootFull = [System.IO.Path]::GetFullPath((Resolve-Path -LiteralPath $DirectoryPath).Path).TrimEnd("\", "/")
+  Get-ChildItem -LiteralPath $DirectoryPath -File -Recurse | ForEach-Object {
+    $fileFull = [System.IO.Path]::GetFullPath($_.FullName)
+    $relative = $fileFull.Substring($rootFull.Length).TrimStart("\", "/").Replace('\', '/')
+    $map[$relative] = $fileFull
+  }
+  return $map
+}
+
+function Sync-SkillReferences {
+  param(
+    [object]$SkillConfig,
+    [string]$AdapterName,
+    [bool]$CheckOnly,
+    [bool]$DeleteExtra
+  )
+
+  $skillName = [string]$SkillConfig.name
+  $sourceRelativePath = "skills/$skillName/references"
+  $sourceDirectory = Join-MemoryOsPath -RootPath $Root -RelativePath $sourceRelativePath
+  if (-not (Test-Path -LiteralPath $sourceDirectory)) {
+    return
+  }
+  if (-not (Get-Item -LiteralPath $sourceDirectory).PSIsContainer) {
+    throw "Skill references source is not a directory: $sourceRelativePath"
+  }
+
+  $targetRelativePath = "adapters/$AdapterName/skills/$skillName/references"
+  $targetDirectory = Join-MemoryOsPath -RootPath $Root -RelativePath $targetRelativePath
+  $targetParent = Join-MemoryOsPath -RootPath $Root -RelativePath "adapters/$AdapterName/skills/$skillName"
+  $targetDirectoryFull = [System.IO.Path]::GetFullPath($targetDirectory)
+  $targetParentFull = [System.IO.Path]::GetFullPath((Resolve-Path -LiteralPath $targetParent).Path)
+  if (-not (Test-PathInside -ChildPath $targetDirectoryFull -ParentPath $targetParentFull)) {
+    throw "Generated skill references directory escapes adapter skill root: $targetRelativePath"
+  }
+
+  $sourceFiles = Get-ReferenceFileMap -DirectoryPath $sourceDirectory
+  $targetFiles = Get-ReferenceFileMap -DirectoryPath $targetDirectory
+  $synced = 0
+  $stale = 0
+  $extra = 0
+
+  foreach ($relativeFile in @($sourceFiles.Keys | Sort-Object)) {
+    $targetFile = Join-Path $targetDirectory ($relativeFile -replace '/', '\')
+    $targetFileFull = [System.IO.Path]::GetFullPath($targetFile)
+    if (-not (Test-PathInside -ChildPath $targetFileFull -ParentPath $targetDirectoryFull)) {
+      throw "Generated skill reference file escapes references directory: $targetRelativePath/$relativeFile"
+    }
+
+    $isStale = $false
+    if (-not (Test-Path -LiteralPath $targetFileFull)) {
+      $isStale = $true
+      if ($CheckOnly) {
+        Add-SyncProblem "STALE references $skillName $AdapterName missing $targetRelativePath/$relativeFile"
+      }
+    } else {
+      $sourceHash = (Get-FileHash -LiteralPath $sourceFiles[$relativeFile] -Algorithm SHA256).Hash
+      $targetHash = (Get-FileHash -LiteralPath $targetFileFull -Algorithm SHA256).Hash
+      if ($sourceHash -ne $targetHash) {
+        $isStale = $true
+        if ($CheckOnly) {
+          Add-SyncProblem "STALE references $skillName $AdapterName $targetRelativePath/$relativeFile"
+        }
+      }
+    }
+
+    if ($isStale) {
+      $stale++
+      if (-not $CheckOnly) {
+        $targetFileDirectory = Split-Path -Parent $targetFileFull
+        New-Item -ItemType Directory -Force -Path $targetFileDirectory | Out-Null
+        [System.IO.File]::Copy($sourceFiles[$relativeFile], $targetFileFull, $true)
+        $synced++
+      }
+    }
+  }
+
+  foreach ($relativeFile in @($targetFiles.Keys | Sort-Object)) {
+    if (-not $sourceFiles.ContainsKey($relativeFile)) {
+      $extra++
+      $targetFileFull = [System.IO.Path]::GetFullPath($targetFiles[$relativeFile])
+      if (-not (Test-PathInside -ChildPath $targetFileFull -ParentPath $targetDirectoryFull)) {
+        throw "Existing skill reference file escapes references directory: $targetRelativePath/$relativeFile"
+      }
+
+      if ($DeleteExtra -and -not $CheckOnly) {
+        Remove-Item -LiteralPath $targetFileFull -Force
+      } else {
+        Add-SyncProblem "EXTRA references $skillName $AdapterName $targetRelativePath/$relativeFile"
+      }
+    }
+  }
+
+  Add-SyncItem "REFERENCES $skillName $AdapterName synced=$synced stale=$stale extra=$extra"
+}
+
 $hadProblem = $false
 $items = @()
 
@@ -223,17 +347,15 @@ try {
         if (-not (Test-Path -LiteralPath $outputPath)) {
           $items += "STALE $($skillConfig.name) $adapterName missing $(Get-RelativePathText -Path $adapterConfig.output)"
           $hadProblem = $true
-          continue
+        } else {
+          $actualContent = Get-Content -LiteralPath $outputPath -Raw -Encoding UTF8
+          if ($actualContent -ne $expectedContent) {
+            $items += "STALE $($skillConfig.name) $adapterName $(Get-RelativePathText -Path $adapterConfig.output)"
+            $hadProblem = $true
+          } else {
+            $items += "OK $($skillConfig.name) $adapterName $(Get-RelativePathText -Path $adapterConfig.output)"
+          }
         }
-
-        $actualContent = Get-Content -LiteralPath $outputPath -Raw -Encoding UTF8
-        if ($actualContent -ne $expectedContent) {
-          $items += "STALE $($skillConfig.name) $adapterName $(Get-RelativePathText -Path $adapterConfig.output)"
-          $hadProblem = $true
-          continue
-        }
-
-        $items += "OK $($skillConfig.name) $adapterName $(Get-RelativePathText -Path $adapterConfig.output)"
       } else {
         $outputDir = Split-Path -Parent $outputPath
         New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
@@ -245,6 +367,8 @@ try {
         [System.IO.File]::WriteAllText($outputPath, $expectedContent, $utf8NoBom)
         $items += "SYNCED $($skillConfig.name) $adapterName $(Get-RelativePathText -Path $adapterConfig.output)"
       }
+
+      Sync-SkillReferences -SkillConfig $skillConfig -AdapterName $adapterName -CheckOnly ([bool]$Check) -DeleteExtra ([bool]$PurgeExtra)
     }
   }
 } catch {

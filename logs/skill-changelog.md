@@ -2,6 +2,9 @@
 
 ## 2026-06-13
 
+- 接受 proposal：`2026-06-13-skill-references-应作为-skills-skill-源文件并由-sync-脚本同步到-adapter`。
+- 新增 `skills/vue-change-self-check/references/` 作为 `vue-change-self-check` references 的模型无关源目录，初始基线采用原 Claude adapter references。
+- 扩展 `tools/sync-skills.ps1`：当 `skills/<skill>/references/` 存在时，同步/检查源 references 到 Codex / Claude adapter references；`-Check` 可报告 references `STALE` / `EXTRA`，默认同步不静默删除 extra 文件。
 - 接受 proposal：`2026-06-13-反模式-diff-基线泛化识别-不要把-非默认-diff-基线-误判为非-diff-任务`。
 - 扩展 `vue-change-self-check`：非默认 baseline（from-zero、feature branch vs base、cumulative commits、release-window changes）作为输入参数处理，不再因为不是默认 `git diff` 而排除该 skill。
 - 扩展 `pr-review`：changed files / diff scope 可由用户路径、分支对比、提交范围、从零新增目录或上线窗口确定；没有变更窗口的解释/架构通读仍不进入 diff review。

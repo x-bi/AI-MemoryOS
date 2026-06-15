@@ -2,6 +2,9 @@
 
 ## 2026-06-13
 
+- 接受 proposal：`2026-06-13-skill-references-应作为-skills-skill-源文件并由-sync-脚本同步到-adapter`。
+- 将 managed skill references 纳入 shared source 边界：`skills/<skill>/references/**`（如存在）作为唯一人工编辑源，adapter `references/**` 由 `tools/sync-skills.ps1` 复制同步生成。
+- 同步更新 Codex / Claude gate 的 Cross-Adapter Sync 第 6 条，禁止直接编辑 adapter `SKILL.md` 和 adapter `references/**`。
 - 接受 proposal：`2026-06-13-审查类前端任务跳过-router-map-探针的执行漂移补丁`。
 - 将审查新增前端目录 / 从零到现在这类非默认基线 changeset 落地到 `router/workflow-map.md` 的 review workflow 触发边界，并补充 `evals/router-test-cases.md` 回归样例。
 - 保持边界：不修改 Codex / Claude gate，不扩张 Final Trace，不修改 `router/skill-map.md`；前端文件范围命中时由 workflow map 显式交接到 skill map 判定四段式 self-check。
