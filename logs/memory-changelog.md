@@ -19,9 +19,18 @@
 - 新增 `workflows/skill-maintenance.md` 和 `dashboard/skills.md` 维护命令入口，明确 shared spec、registry、adapter template 与 generated `SKILL.md` 的职责边界。
 - `tools/validate-memory-os.ps1` 改为调用 `tools/sync-skills.ps1 -Check` 聚合 generated skill 漂移问题。
 
+## 2026-06-05 (回填 2026-06-16)
+
+- 接受 proposal：`2026-06-05-l1-workflow-skill-候选信号应触发-router-map-轻量探针`。
+- 补齐 gate 与 router map 之间的执行衔接：`adapters/claude/CLAUDE.md` 与 `adapters/codex/gate.md` 同步新增 `## Workflow / Skill Probe` 段；L1 描述加例外句"出现明确 workflow/skill 候选信号时按 Workflow / Skill Probe 规则读对应 map 做探针"。
+- 不修改 L0-L3 定义、不修改 router map 内容、不扩张 Final Trace；`evals/router-test-cases.md` 新增 `## Workflow / Skill Probe Cases` 子表与 `## Signal Classification Reference` 做回归判分。
+- 来源：`admin-vue` CoDesign 原型读取任务，模型按 L1 默认"不读 Memory OS 正文"自走，绕过 workflow-map 已有的原型 workflow 入口。
+
 ## 2026-06-04
 
 - 接受 proposal：`2026-06-04-frontend-prototype-reading-must-include-visual-layout-constraints`。新增 `workflows/frontend-prototype-driven-development.md`，要求按 CoDesign / Lanhu / Figma / Axure 等原型开发前先提取字段/数据、交互/状态、API 边界和结构性视觉布局约束；同步在 `domains/frontend/README.md` 增加 workflow 引用。
+- 接受 proposal：`2026-06-04-补充-workflow-map-以触发前端原型驱动开发流程`（回填 2026-06-16）。新建 `router/workflow-map.md` 作为 workflow 触发边界索引，首行登记前端原型驱动开发 workflow；`_index.md` Routing 第 4 步登记 workflow-map 入口。
+- 接受 proposal：`2026-06-04-补齐-workflow-map-的通用-workflow-触发边界`（回填 2026-06-16）。在 `router/workflow-map.md` 补齐 11 行通用 workflow 触发边界（CodeGraph / diff-review-lite / regression / memory-retrospective / pre-commit-self-check / proposal-promotion / weekly-audit / retrospective-lite / refactor-with-safety / script-automation / test-strategy），每行带反向排除；显式排除 `workflows/feature-development.md` 避免泛化默认步骤稀释路由价值。
 
 ## 2026-06-03
 
@@ -34,6 +43,7 @@
 
 ## 2026-05-26
 
+- 接受 proposal：`2026-05-26-修正-vue-uni-app-改动检查未触发-vue-change-self-check`（回填 2026-06-16）。扩展 `router/skill-map.md` 的 `vue-change-self-check` 触发边界（仓库或轻量 diff 命中 `.vue` / `pages.json` / `manifest.json` / 前端路由配置时也触发，可与 `pr-review` 并行）；同步更新 `skills/vue-change-self-check/SKILL_SPEC.md`、Codex / Claude adapter SKILL.md 和 `evals/skill-trigger-test-cases.md` 正反样例。来源：`h5-vue` 项目"检查我的改动 + 某个 commit"任务被 `pr-review` 单独吞掉。
 - 在 Codex / Claude gate 中新增 CodeGraph 使用预算：明确单文件/小范围问题直接读文件，候选 1-3 个文件时优先 direct read，`codegraph_files` 仅作为候选范围判断，跨模块调用链/影响面/架构问题再优先使用 graph；同步更新 `adapters/codex/gate.md`、`adapters/claude/CLAUDE.md` 和 `C:\Users\btf\.claude\CLAUDE.md`。
 
 - 新增 `proposals/future-directions/` 作为重大方向说明目录，用于保存长期架构意图和未来迁移背景，不作为可直接晋升的 pending proposal。

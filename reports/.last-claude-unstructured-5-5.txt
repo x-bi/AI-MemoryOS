@@ -1,0 +1,55 @@
+[batch=5/5]
+```json
+{
+  "borrow_candidates": [
+    {
+      "source_url": "https://github.com/Imbad0202/academic-research-skills",
+      "source_name": "Imbad0202/academic-research-skills",
+      "channel": "github",
+      "idea_title": "Skill 校准评测：用 gold set + FNR/FPR 阈值门控 skill 上线",
+      "why_relevant": "ARS v3.8 用 20-tuple gold set 配合 FNR<0.15 / FPR<0.10 阈值校准其 reviewer/audit skill，并把不达标的 skill 推迟启用。本仓库 skills/ 目前只有 SKILL_SPEC，没有客观评测进入 evals/，可借鉴此模式给 review/audit/router 类 skill 配最小 gold set。",
+      "fit_with_this_repo": "evals/ 下增设 gold-set + 评测说明；skills/<skill>/ 增加可选评测引用；workflows/ 增加 skill 晋升前的校准检查",
+      "estimated_effort": "M",
+      "estimated_value": "high",
+      "risks": "gold set 维护成本高，若样本偏差会误判 skill 质量"
+    },
+    {
+      "source_url": "https://github.com/Imbad0202/academic-research-skills",
+      "source_name": "Imbad0202/academic-research-skills",
+      "channel": "github",
+      "idea_title": "Trust-chain frontmatter + locator anchor 做来源溯源",
+      "why_relevant": "ARS 在引用层加 trust-chain frontmatter 和三层 citation anchor，让每条结论可追溯到具体来源；本仓库 proposals/ 与 wiki/ 也常引用代码/事故/会话，但缺乏稳定的来源锚点字段，借鉴可降低记忆腐烂风险。",
+      "fit_with_this_repo": "templates/ 中给 proposal/wiki 模板加 source/anchor frontmatter；core/memory-rules.md 写明溯源最小字段",
+      "estimated_effort": "S",
+      "estimated_value": "med",
+      "risks": "字段过细会拉高写入门槛，反而降低捕获率"
+    },
+    {
+      "source_url": "https://github.com/Imbad0202/academic-research-skills",
+      "source_name": "Imbad0202/academic-research-skills",
+      "channel": "github",
+      "idea_title": "Stage 整合门 + HIGH-WARN 类别清单作硬阻断",
+      "why_relevant": "ARS 在 Stage 2.5/4.5 设 7-mode integrity gate，并以 5 个 HIGH-WARN 类别（claim-not-supported、fabricated-reference、anchorless 等）在 formatter 处硬拒输出。可类比到 review/PR/security skill 的输出契约：未通过明确清单不允许给出"通过"结论。",
+      "fit_with_this_repo": "skills/pr-review、security-review、memory-auditor 的输出契约部分；workflows/ 中加阻断式检查清单",
+      "estimated_effort": "M",
+      "estimated_value": "high",
+      "risks": "硬阻断条件设计不当会让 skill 频繁拒答，影响日常使用"
+    },
+    {
+      "source_url": "https://github.com/Imbad0202/academic-research-skills",
+      "source_name": "Imbad0202/academic-research-skills",
+      "channel": "github",
+      "idea_title": "Failure modes 参考库（AI 研究 7 大失败模式）",
+      "why_relevant": "ARS 把"实现 bug、幻觉结果、捷径依赖、bug-as-insight、方法学伪造、frame-lock、citation 幻觉"做成 references 文档，被多个 skill 共享引用。本仓库 anti-patterns/ 与 domains/ 可借鉴此"集中失败模式 + skill 引用"的组织方式。",
+      "fit_with_this_repo": "anti-patterns/ 增设 ai-failure-modes.md；router/skill-map.md 标注哪些 skill 必读该参考",
+      "estimated_effort": "S",
+      "estimated_value": "med",
+      "risks": "若不结合本仓库实际事故，外来失败模式列表会变成摆设"
+    }
+  ],
+  "web_queries_used": [],
+  "overview": "本批 2 个候选差异极大。academic-research-skills 是大型 Claude Code skill 套件，工程化程度高，其 gold-set 校准、trust-chain frontmatter + locator anchor、integrity gate + HIGH-WARN 硬阻断、共享 failure-modes 参考库都与 AI Memory OS 的 skills/evals/anti-patterns 体系直接对应，是本批最有借鉴价值的来源。voicebox 是本地语音 I/O 工作室（TTS/STT/voice clone），与本仓库的工程记忆 / skill / proposal 流程无功能性交集，跳过。"
+}
+```
+
+OS: L1; skills: none; workflow: none; read: adapters/claude/CLAUDE.md; graph: none; write: none

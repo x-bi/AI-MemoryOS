@@ -33,14 +33,21 @@
 
 ## 审计节奏
 
-- 每周：pending proposals、重复项、明显过期项。
-- 每月或专题：future direction notes 是否仍有效、是否需要拆出具体 proposal 或迁移计划。
-- 每月：stale / duplicate / conflicting memory、skills description 重叠、router 臃肿。
+不再强制周审/月审节奏。单人维护下，强制日历节奏会变成自我负担且容易空跑。改为**按需 + 触发条件审计**，触发任一即执行一次：
 
-- 基础设施/工具集成事件审计：检查 P0/P1 集成事件是否有对应 changelog 条目；P2 日常操作不要求留痕。
+- `proposals/pending/` 堆积超过 5 条或最旧条目超过 14 天未处理。
+- 同一类路由误判在 `evals/router-correction-cases.md` 中累计 ≥ 3 条。
+- 出现冲突或过期内容（被新 proposal 推翻、与项目本地事实冲突、reference 链接失效）。
+- skill description 重叠或误触发被实际命中。
+- 跨项目重复出现的反模式 ≥ 2 次。
+- future direction notes 出现可拆解信号（已具备落地 proposal、设计文档或迁移计划的条件）。
+- 基础设施/工具集成出现 P0/P1 事件，且未在 changelog 留痕。
+- 用户主动要求一次集中审计或 self-optimize 复盘。
+
+P2 日常操作不要求留痕，也不触发审计。
 
 ## 审计记录
 
-- 每次审计生成 `logs/audits/YYYY-MM-DD.md`，优先从 `templates/weekly-audit.md` 复制。
-- 审计记录至少包含 pending 数量、晋升/拒绝候选、future direction 回顾候选、冲突或过期内容、后续动作。
+- 触发条件命中时生成 `logs/audits/YYYY-MM-DD.md`，优先从 `templates/weekly-audit.md` 复制（模板名保留，模板内容仍可复用）。
+- 审计记录至少包含：触发条件、pending 数量与处理动作、晋升/拒绝候选、future direction 回顾候选、冲突或过期内容、后续动作。
 - 修改正式 rules / router / skills / evals 时，同步在审计或变更记录中留下原因和影响范围。

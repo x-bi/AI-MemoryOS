@@ -1,4 +1,19 @@
 # Router Correction Cases
 
+> 真实路由漂移历史档案。每行对应一次"应触发但没触发 / 误命中其他路由"的已修复事件。
+> 与 `router-test-cases.md`（前置规则验收样例）不同，本表只记录已发生的误判事实。
+> 来源：`proposals/accepted/` 中带 router/skill/gate 修复的条目，以及对应的 episode 摘要。
+
 | Date | Original Input | Wrong Routing | Correct Routing | Fix |
 |---|---|---|---|---|
+| 2026-05-26 | "检查我的改动，包含未提交改动和某个 commit"（项目为 `h5-vue` Vue/uni-app） | 只触发 `pr-review`；`vue-change-self-check` 未自动触发，需用户显式点名 `$vue-change-self-check` 才走四段式输出 | `pr-review` + `vue-change-self-check` 并行触发，输出优先采用 vue-change-self-check 的稳定编号风险清单 | `router/skill-map.md` 扩展 vue-change-self-check Use When（命中 `.vue` / `pages.json` / `manifest.json` / 前端路由配置时也触发） + Notes 加并行触发与输出优先级；`skills/vue-change-self-check/SKILL_SPEC.md` 同步；`evals/skill-trigger-test-cases.md` 加正反样例。Source: `proposals/accepted/2026-05-26-修正-vue-uni-app-改动检查未触发-vue-change-self-check.md` |
+| 2026-06-04 | "读取 CoDesign 原型文档，解析黑名单标签页面，准备进行开发"（项目为 `admin-vue`） | 直接进入浏览器读取流程，未先触发 `workflows/frontend-prototype-driven-development.md`；当时 `router/workflow-map.md` 尚未建立 workflow 入口表 | 先读 `router/workflow-map.md` 命中前端原型驱动开发 workflow，再进入浏览器/代码实现 | 新建 `router/workflow-map.md`，加入"原型/设计稿/iframe + 后续开发/页面还原"行；`_index.md` Routing 第 4 步登记该 router 文件；`domains/frontend/README.md` 补充入口提示。Source: `proposals/accepted/2026-06-04-补充-workflow-map-以触发前端原型驱动开发流程.md` |
+| 2026-06-04 | （前一条衍生）多个已有 workflow（diff-review-lite / pre-commit-self-check / regression-verification / proposal-promotion 等）都没有 workflow-map 入口 | 模型可能已有 workflow 但未先读 map → 走默认实现路径 | workflow-map 覆盖到所有具备稳定 Trigger 的 workflow，泛化默认型（如 feature-development）排除在外 | `router/workflow-map.md` 补齐 11 行（codegraph / diff-review-lite / regression-verification / memory-retrospective / pre-commit-self-check / proposal-promotion / weekly-audit / retrospective-lite / refactor-with-safety / script-automation / test-strategy），每行带反向排除条件。Source: `proposals/accepted/2026-06-04-补齐-workflow-map-的通用-workflow-触发边界.md` |
+| 2026-06-05 | （路由机制层）gate 说 L1 不读 Memory OS 正文；map 已建但 L1 没有触发条件去读它 → 即便 workflow-map 命中也可能被绕过 | L1 任务即使出现明确 workflow/skill 候选信号，也按"不读 Memory OS 正文"的默认走 → 跳过 map 探针 | L1/L2 出现明确候选信号时，先轻量读 `router/workflow-map.md` / `router/skill-map.md` 做探针，命中再读对应 workflow/skill | `adapters/claude/CLAUDE.md` + `adapters/codex/gate.md` 同步新增 `## Workflow / Skill Probe` 段；L1 描述里加例外句"出现明确 workflow/skill 候选信号时按 Workflow / Skill Probe 规则读对应 map"；`evals/router-test-cases.md` 新建 `## Workflow / Skill Probe Cases` 子表 + `## Signal Classification Reference`。Source: `proposals/accepted/2026-06-05-l1-workflow-skill-候选信号应触发-router-map-轻量探针.md` |
+| 2026-06-13 | "审查 src/views/goods/goodsPurchaseBan 这个文件夹，因为这个功能为新增所以要审查全部的内容，diff 是因为之前有过分批提交，实际按从零到现在进行审查" | 把"从零到现在 / 全部内容"理解为"不是 diff 任务"，跳过 router map 探针，退化为 inline review；Final Trace 把 vue-change-self-check 标成 inline 但没真走 skill 流程 | 识别为非默认基线 changeset → 读 `router/workflow-map.md` 命中 `diff-review-lite` → 因前端文件范围命中继续读 `router/skill-map.md` → 命中 vue-change-self-check（与 pr-review、frontend-component-review 共触发）→ 输出四段式（变更影响扫描 / 风险清单 / 建议验证路径 / 本次未覆盖盲区） | `router/workflow-map.md` review 行扩展信号词为"新增功能全量 / 从零到现在 / 上线前累计变更"，并显式说明前端文件范围命中时继续读 skill-map；`router/skill-map.md` 的 pr-review / frontend-component-review / vue-change-self-check 三条 Use When 加"非默认基线 changeset" + Notes 加 diff 基线泛化判断规则；`skills/{pr-review,vue-change-self-check,frontend-component-review}/SKILL_SPEC.md` 同步非默认基线说明；`evals/router-test-cases.md` Probe Cases 末尾加 goodsPurchaseBan 样例；`evals/skill-trigger-test-cases.md` 加 5 条相关样例（新增功能全量 / 分支差异 / staged / 新增 Vue 页面 / 仅通读不触发）。Source: `proposals/accepted/2026-06-13-审查类前端任务跳过-router-map-探针的执行漂移补丁.md` + `proposals/accepted/2026-06-13-反模式-diff-基线泛化识别-不要把-非默认-diff-基线-误判为非-diff-任务.md` |
+
+## 维护说明
+
+- 新出现的路由漂移：先按现有流程走 `memory-curator` / `routing-auditor` 生成 pending proposal，accepted 后把事件回填到本表。
+- 不要在本表里补 fix 之外的复盘文字——长文复盘留在对应 accepted proposal 内。
+- 同一类误判反复出现 ≥ 3 次时，触发 `GOVERNANCE.md` 的"按需审计"条件，考虑是否升级为正式 router 规则或新 skill。

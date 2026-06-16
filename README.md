@@ -122,7 +122,7 @@ proposals/pending/                   = 默认写入入口，人工审核后才�
 1. **写入**：新经验只进 `proposals/pending/`，不直接修改正式规则。
 2. **晋升条件**：跨项目重复出现 / 减少明确重复错误 / 改善 review/debug 稳定性 / 降低路由误判。
 3. **拒绝条件**：仅适用单项目 / 无真实案例 / 过度抽象 / 含敏感信息 / 与项目事实冲突。
-4. **审计节奏**：每周清理 pending；每月清理 stale/duplicate；future direction 每月或专题回顾。
+4. **审计节奏**：不强制周审/月审。改为按需 + 触发条件审计（pending 堆积、重复路由误判、skill 误触发、冲突/过期、用户主动要求等），详见 `GOVERNANCE.md`。
 5. **记录**：每次审计生成 `logs/audits/YYYY-MM-DD.md`。
 
 ## CodeGraph 可选集成

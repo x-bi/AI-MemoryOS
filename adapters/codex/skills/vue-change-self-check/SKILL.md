@@ -2,7 +2,7 @@
 name: vue-change-self-check
 description: "Use for Vue, uni-app, or frontend pre-commit/post-change self-checks. Also use when the user asks to inspect current changes, unstaged or staged changes, a commit, or a diff, and the current repo or lightweight diff file list indicates Vue/uni-app/frontend files such as .vue, pages.json, manifest.json, frontend route/page/navigation config, or uni-app subpackage pages. Can run alongside general PR review, but prefer stable numbered risk output and wait for the user to choose what to fix."
 ---
-<!-- Generated from skills/vue-change-self-check/SKILL_SPEC.md; source-sha256: 7f2617f37f17b956e46498c6c7160187dfdfac5acf396d67c663d9ae45707419; adapter: codex. Do not edit by hand; run tools/sync-skills.ps1. -->
+<!-- Generated from skills/vue-change-self-check/SKILL_SPEC.md; source-sha256: 7cbac27e61e7c673d7cc4058c5cda8115b16238c96352209155fca23165b5c44; adapter: codex. Do not edit by hand; run tools/sync-skills.ps1. -->
 
 # Vue Change Self Check
 
@@ -11,6 +11,14 @@ Scan frontend diffs for regression risk before making more edits.
 ## Purpose And Boundary
 
 This is triage. If the user asks only for a scan, do not auto-fix. Number risks with stable IDs and wait for the user to choose which numbers to handle.
+
+### Numbered Interaction Boundary
+
+When the user says `处理 #N`:
+
+- `建议动作=直接修复` 且 `修复方向` 已给方案 A → 可直接落地方案 A，落地完成后才再问是否需要方案 B。
+- `建议动作=先确认接口/业务规则` → 仍需先确认契约或业务规则，不直接落地任何候选方向；同时**主动产出最小待确认问题清单**（每项点名待确认对象：哪个接口字段 / 哪条业务规则 / 向谁确认），不能仅回一句"还要确认"。
+- `建议动作=只需回归验证` → 仅给回归验证清单，不写代码。
 
 ## Optional Private Overlay
 
@@ -47,7 +55,7 @@ Use this order:
 
 Use stable numbers such as `#1`. When the user says `处理 #2` or `修复 #1 #3`, keep the original numbers.
 
-The exact field shape, severity words, confidence words, category words, and action words for each risk item are defined in `references/output-contract.md`. Read it before producing the risk list — do not improvise the field shape from this file alone.
+The exact field shape, severity words, confidence words, category words, and action words for each risk item are defined in `references/output-contract.md`. Read it before producing the risk list — do not improvise the field shape from this file alone. Notable contract points include the 位置 link format, 类型 enumeration, 复现步骤 / 修复方向 fields, and multi-line termination rules.
 
 ## Required References
 

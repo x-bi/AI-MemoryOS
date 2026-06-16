@@ -16,6 +16,35 @@
 - 补充 router eval，覆盖 managed skill 维护的正向命中，以及 skill 维护类 pending proposal 仍优先走 `proposal-promotion.md` 的反向排除。
 - 明确普通项目“技能”泛称、使用已有 skill、以及 `proposals/pending/*` 审查/晋升不触发 `skill-maintenance.md`。
 
+## 2026-06-05 (回填 2026-06-16)
+
+- 接受 proposal：`2026-06-05-l1-workflow-skill-候选信号应触发-router-map-轻量探针`。
+- 在 `adapters/claude/CLAUDE.md` 与 `adapters/codex/gate.md` 同步新增 `## Workflow / Skill Probe` 段，明确 L1/L2 出现明确 workflow/skill 候选信号时应先轻量读 `router/workflow-map.md` / `router/skill-map.md` 做探针。
+- 在 L1 描述里加例外句：候选信号出现时按 Workflow / Skill Probe 规则读 map，但仍不读取 Memory OS 正文。
+- 在 `evals/router-test-cases.md` 新增 `## Workflow / Skill Probe Cases` 子表与 `## Signal Classification Reference`，覆盖原型读取/纯访问、Git 命令咨询、proposal 写入等正反样例。
+- 不修改 `router/intent-map.md` / `router/workflow-map.md` / `router/skill-map.md` 内容；只在 gate 层补一条通用执行规则。
+- 影响：L1 读取边界从“不读 Memory OS 正文”扩展为“候选信号下可读 map 文件做探针”；这是 gate 与 router map 的执行衔接，不是 L0-L3 定义本身的变更。
+- 验证：手工执行 `tools/validate-memory-os.ps1`；在原型读取与 review 任务上 Probe Cases 通过。
+
+## 2026-06-04 (回填 2026-06-16)
+
+- 接受 proposal：`2026-06-04-补充-workflow-map-以触发前端原型驱动开发流程`。
+- 新建 `router/workflow-map.md` 文件作为 workflow 触发边界索引，初始包含一行：CoDesign / Lanhu / Figma / Axure / 原型 / 设计稿 / iframe + 后续开发 / 页面还原 → `workflows/frontend-prototype-driven-development.md`。
+- 在 `_index.md` Routing 第 4 步登记 `router/workflow-map.md` 作为 workflow 触发边界入口；`domains/frontend/README.md` 补充原型读取类任务先读 workflow 的提示。
+- 来源：`admin-vue` CoDesign 原型读取任务直接进入浏览器读取，未先触发前端原型驱动 workflow。
+- 接受 proposal：`2026-06-04-补齐-workflow-map-的通用-workflow-触发边界`。
+- 补齐 `router/workflow-map.md` 的通用 workflow 行：CodeGraph / diff-review-lite / frontend-regression-verification / memory-retrospective / pre-commit-self-check / proposal-promotion / weekly-audit / retrospective-lite / refactor-with-safety / script-automation / test-strategy 共 11 行，每行都带 `Use When` 与 `Do Not Use When`。
+- 显式排除：`workflows/feature-development.md` 不进入 workflow-map，避免泛化默认实现步骤稀释路由价值。
+- 影响：让已具备稳定 Trigger 的 workflow 都有上层路由入口；通过反向排除条件防止 review/refactor/script/test 等泛化触发。
+
+## 2026-05-26 (回填 2026-06-16)
+
+- 接受 proposal：`2026-05-26-修正-vue-uni-app-改动检查未触发-vue-change-self-check`。
+- 扩展 `router/skill-map.md` 的 `vue-change-self-check` 触发边界：用户要求检查改动 / 未提交改动 / staged / commit / diff，且仓库或轻量 diff 命中 `.vue` / `pages.json` / `manifest.json` / 前端路由/页面/导航配置 / uni-app 分包页面时也应触发；可与 `pr-review` 并行触发。
+- 在 `router/skill-map.md` Notes 中加“`pr-review` 与 `vue-change-self-check` 同时命中时输出优先采用 vue-change-self-check 四段式”规则。
+- 来源：`h5-vue` 项目“检查我的改动 + 某个 commit”任务，Codex 只触发了 `pr-review`，需用户显式 `$vue-change-self-check` 才走四段式。
+- 配套 skill spec / adapter / eval 改动见 `logs/skill-changelog.md` 同日条目。
+
 ## 2026-05-14
 
 - 放宽 OS 触发机制：收窄 L0 为纯解释/纯问答/无改动无决策任务，放宽 L1 为默认倾向触发轻量 workflow / skill。

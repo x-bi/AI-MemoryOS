@@ -1,9 +1,20 @@
 ---
 title: "避免在要求 LLM 输出 JSON 时使用联合类型伪 schema"
-status: pending
+status: rejected
 created_at: 2026-06-04T02:53:52.553Z
+rejected_at: 2026-06-16
 source: mcp
 ---
+
+## Rejection Note
+
+机制本身通用（LLM "示例即契约"，伪 schema 示例容易被照抄成非法 JSON），但当前触发面窄：
+
+- 自 2026-06-04 修复 `tools/self-optimize-scan.ps1` 后未再复发。
+- 现有 LLM 结构化输出主链路已切换到 MCP tool schema / Anthropic structured output / Workflow `schema:`，由 SDK 强制 JSON Schema 校验，不经过"模型自由生成字符串 → 严格 parser"这一段，伪 schema 写法不会触发故障。
+- 存量 prompt-based JSON 脚本已修为合法 JSON 示例。
+
+不进入正式规则/skill；如未来再次出现 prompt-based JSON 输出场景并复发，重新作为新 pending 捕获即可。
 
 # Proposal: 避免在要求 LLM 输出 JSON 时使用联合类型伪 schema
 
