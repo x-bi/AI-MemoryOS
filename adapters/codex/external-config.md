@@ -11,6 +11,7 @@
 | Codex config | `C:\Users\btf\.codex\config.toml` |
 | Codex skill discovery root | `C:\Users\btf\.codex\skills` |
 | Memory OS active skill source | `C:\Users\btf\AI-MemoryOS\adapters\codex\skills` |
+| Codex bootstrap source | `C:\Users\btf\AI-MemoryOS\adapters\codex\bootstrap.md` |
 | Codex gate source | `C:\Users\btf\AI-MemoryOS\adapters\codex\gate.md` |
 
 ## Global AGENTS Bootstrap
@@ -22,13 +23,17 @@
 
 每个用户输入先读取：
 
+`C:\Users\btf\AI-MemoryOS\adapters\codex\bootstrap.md`
+
+该文件是 Codex 接入 AI Memory OS 的唯一加载入口，负责判断是否需要读取完整 gate。
+
+完整 gate 位于：
+
 `C:\Users\btf\AI-MemoryOS\adapters\codex\gate.md`
 
-并按其中规则处理回答风格、Memory OS Gate、任务量级、验证策略和写入边界。
+读取完整 gate 只用于加载 Codex 运行策略，不等于读取 Memory OS 正文。
 
-读取 `gate.md` 只用于加载 Codex 运行策略，不等于读取 Memory OS 正文。
-
-如果 `gate.md` 读取失败：
+如果 `bootstrap.md` 读取失败：
 
 - 使用简洁、直接、工程化的中文回答。
 - 普通 explain / 单点 debug / small implement 直接处理。

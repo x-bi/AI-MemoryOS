@@ -6,7 +6,8 @@ Memory OS itself stays model-neutral. Claude-specific instructions, skill copies
 
 ## Files
 
-- `CLAUDE.md`: User-level or project-level Claude Code bootstrap template.
+- `bootstrap.md`: Lightweight per-input loader that decides whether to read the full gate.
+- `CLAUDE.md`: Full Claude Code Memory OS gate.
 - `skills/`: Claude Code skill source directories adapted from Memory OS workflows.
 - `external-config.md`: Public, non-secret snapshot of local Claude Code setup needed to restore this integration on another machine.
 
@@ -14,8 +15,9 @@ Memory OS itself stays model-neutral. Claude-specific instructions, skill copies
 
 Claude Code is expected to use two layers:
 
-1. `C:\Users\btf\.claude\CLAUDE.md` loads the Memory OS gate rules.
-2. `ai_memoryos` MCP gives Claude restricted Memory OS tools for reading/searching, including read-only future direction notes, and writing only pending proposals.
+1. `C:\Users\btf\.claude\CLAUDE.md` redirects each input to `adapters\claude\bootstrap.md`.
+2. `adapters\claude\bootstrap.md` decides whether to read the full gate at `adapters\claude\CLAUDE.md`.
+3. `ai_memoryos` MCP gives Claude restricted Memory OS tools for reading/searching, including read-only future direction notes, and writing only pending proposals.
 
 Active Claude skills are mapped from:
 

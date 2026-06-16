@@ -13,6 +13,8 @@ This file records local configuration outside AI Memory OS that is needed to con
 | Claude settings | `C:\Users\btf\.claude\settings.json` |
 | Claude skill discovery root | `C:\Users\btf\.claude\skills` |
 | Memory OS Claude skill source | `C:\Users\btf\AI-MemoryOS\adapters\claude\skills` |
+| Claude bootstrap source | `C:\Users\btf\AI-MemoryOS\adapters\claude\bootstrap.md` |
+| Claude full gate source | `C:\Users\btf\AI-MemoryOS\adapters\claude\CLAUDE.md` |
 | Memory OS MCP server | `C:\Users\btf\AI-MemoryOS\adapters\mcp\server\obsidian-memory-os-mcp.mjs` |
 | Node runtime used for MCP | `C:\Program Files\nodejs\node.exe` |
 
@@ -48,13 +50,13 @@ If Claude is installed elsewhere, update local commands to use the actual CLI pa
 
 ## User CLAUDE.md
 
-`C:\Users\btf\.claude\CLAUDE.md` is a bootstrap redirect that instructs Claude Code to read the full gate from:
+`C:\Users\btf\.claude\CLAUDE.md` is a bootstrap redirect that instructs Claude Code to read the lightweight Memory OS bootstrap from:
 
 ```text
-C:\Users\btf\AI-MemoryOS\adapters\claude\CLAUDE.md
+C:\Users\btf\AI-MemoryOS\adapters\claude\bootstrap.md
 ```
 
-It is not a copy of the gate file. Changing `adapters/claude/CLAUDE.md` takes effect immediately on the next Claude session without copying.
+It is not a copy of the gate file. `adapters/claude/bootstrap.md` decides whether Claude should read the full gate at `adapters/claude/CLAUDE.md`.
 
 Restore command:
 
@@ -66,14 +68,20 @@ Set-Content -LiteralPath C:\Users\btf\.claude\CLAUDE.md -Encoding UTF8 -Value @"
 每个用户输入先读取：
 
 ``````text
+C:\Users\btf\AI-MemoryOS\adapters\claude\bootstrap.md
+``````
+
+该文件是 Claude 接入 AI Memory OS 的唯一加载入口，负责判断是否需要读取完整 gate。
+
+完整 gate 位于：
+
+``````text
 C:\Users\btf\AI-MemoryOS\adapters\claude\CLAUDE.md
 ``````
 
-并按其中规则处理回答风格、Memory OS Gate、任务量级、验证策略和写入边界。
+读取完整 gate 只用于加载 Claude 运行策略，不等于读取 Memory OS 正文。
 
-读取 ``````CLAUDE.md`````` 只用于加载 Claude 运行策略，不等于读取 Memory OS 正文。
-
-如果 ``````CLAUDE.md`````` 读取失败：
+如果 ``````bootstrap.md`````` 读取失败：
 
 - 使用简洁、直接、工程化的中文回答。
 - 普通 explain / 单点 debug / small implement 直接处理。

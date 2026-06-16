@@ -1,5 +1,10 @@
 # Memory Changelog 记忆变更日志
 
+## 2026-06-16
+
+- 将 Codex / Claude adapter 读取结构拆为每轮轻量 `bootstrap.md` 与按需完整 gate：新增 `adapters/codex/bootstrap.md`、`adapters/claude/bootstrap.md`，并同步更新真实软件入口、adapter README、external-config 和 `_index.md`。
+- 在 Codex / Claude Final Trace 增加 `gate: cached|read` 字段，用于记录本轮完整 gate 是复用已加载策略还是重新读取；保留 `bootstrap.md` 作为每轮固定轻量入口。
+
 ## 2026-06-13
 
 - 接受 proposal：`2026-06-13-skill-references-应作为-skills-skill-源文件并由-sync-脚本同步到-adapter`。
@@ -119,4 +124,3 @@
 验证方式：
 风险：
 ```
-

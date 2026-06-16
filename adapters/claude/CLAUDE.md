@@ -1,6 +1,6 @@
 # AI Memory OS Gate for Claude Code
 
-This is the Claude Code bootstrap template for AI Memory OS.
+This is the Claude Code full gate for AI Memory OS. The lightweight per-input bootstrap lives at `C:\Users\btf\AI-MemoryOS\adapters\claude\bootstrap.md`.
 
 Recommended user-level location:
 
@@ -33,6 +33,33 @@ Before each task, classify the Memory OS level:
 - L3: Memory writing. Only create or update `C:\Users\btf\AI-MemoryOS\proposals\pending\` when the user explicitly asks to capture, reflect, update Memory OS, generate a proposal, or confirms a suggested capture. Long-term future direction notes may be written to `C:\Users\btf\AI-MemoryOS\proposals\future-directions\` only when the user explicitly asks to record a future direction or architecture intent; they are not directly promotable pending proposals.
 
 Multiple workflows/skills may collaborate when: the user explicitly requests it, the task naturally spans multiple check surfaces, one skill's output feeds another, or multiple skills cover different risk surfaces without redundant large reads. Heavy skill checklists and output contracts should be read on demand.
+
+## Gate Loading Policy
+
+The real Claude bootstrap reads `C:\Users\btf\AI-MemoryOS\adapters\claude\bootstrap.md` on every user input.
+
+`bootstrap.md` decides whether this full gate must be read. This file is the full operating-policy source of truth. If `bootstrap.md` and this file conflict, follow this file.
+
+Read this full gate when:
+
+- this is the first user input in a new thread;
+- the loaded full-gate state is unknown or cannot be confirmed from current context;
+- the user discusses or asks to modify gate, AGENTS, adapter policy, router, workflow, skill, or Memory OS operating rules;
+- the task is L2 or L3;
+- the task involves Memory OS maintenance, proposals, pending or accepted proposals, long-term conventions, write boundaries, safety boundaries, git operation boundaries, CodeGraph, cross-adapter sync, or adapter sync;
+- context was compacted, the thread was resumed, or five consecutive turns have passed without refreshing this file and the current turn is not pure L0.
+
+Drift-sensitive events also require reading this file on the next turn:
+
+- A previous response should have included the Final Trace but omitted it.
+- The Final Trace fields are incomplete or clearly malformed.
+- The response did not follow the default Chinese, concise, direct, engineering-oriented style.
+- The L0/L1/L2/L3 classification is clearly wrong.
+- The actual read behavior does not match the declared Memory OS level: L0 reads Memory OS content; L1 reads Memory OS content without an explicit user request or workflow/skill probe trigger; an L1 workflow/skill probe fails to read the matching router map; L2 fails to read `_index.md`; L2 reads beyond `_index.md` plus three directly relevant pages without a task reason; or L3 attempts Memory OS writing without explicit user request or confirmation.
+- The agent performs or recommends restricted git operations without explicit user request.
+- Workflow/skill probe, read/write boundaries, verification strategy, or CodeGraph count are clearly missed.
+
+Reading this full gate only loads Claude operating policy. It is not the same as reading Memory OS content.
 
 ## Workflow / Skill Probe
 
@@ -137,9 +164,11 @@ Before calling broad graph tools such as `codegraph_context`, choose the cheapes
 Except for very short confirmations, append one line at the end:
 
 ```text
-OS: Lx; skills: ...; workflow: ...; read: ...; graph: codegraph N; write: ...
+OS: Lx; gate: cached|read; skills: ...; workflow: ...; read: ...; graph: codegraph N; write: ...
 ```
 
+- `gate: cached` means only `bootstrap.md` was read and the previously loaded full gate was reused.
+- `gate: read` means the full gate was read during this turn.
 - `graph: codegraph N` records the number of CodeGraph tool calls made this turn. Use `graph: none` when no CodeGraph calls were made.
 
 ## Fallback

@@ -4,7 +4,8 @@
 
 ## Usage
 
-- 全局 `C:\Users\btf\.codex\AGENTS.md` 只作为 bootstrap，引导每个输入先读取 `C:\Users\btf\AI-MemoryOS\adapters\codex\gate.md`。
+- 全局 `C:\Users\btf\.codex\AGENTS.md` 只作为 bootstrap redirect，引导每个输入先读取 `C:\Users\btf\AI-MemoryOS\adapters\codex\bootstrap.md`。
+- `bootstrap.md` 只判断是否需要读取完整 gate。
 - `gate.md` 统一维护回答风格、Memory OS Gate、L0-L3、验证策略和读写边界。
 - 读取 `gate.md` 只用于加载运行策略，不等于读取 Memory OS 正文。
 - L0/L1 不读取 Memory OS 正文；L1 默认倾向触发轻量 workflow / skill，用于扩大真实任务样例。

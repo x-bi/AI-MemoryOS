@@ -10,7 +10,7 @@ L0-L3 定义和 L1/L2 策略偏好由各适配器 gate 文件管理，本文件�
 
 ## Routing 路由
 
-1. 各适配器先读自己的 gate 文件做 Memory OS Gate：判断任务处于 L0/L1/L2/L3。
+1. 各适配器先读自己的 `bootstrap.md`。bootstrap 只判断是否需要读取完整 gate；完整 gate 才负责 Memory OS Gate：判断任务处于 L0/L1/L2/L3。
 2. 再判断 task_type：分类边界见 `router/intent-map.md`。
 3. 再判断 domain：领域信号和入口页见 `router/domain-map.md`。
 4. 再选择 workflow / skill / markdown：workflow 触发边界见 `router/workflow-map.md`，skill 触发边界见 `router/skill-map.md`；workflow 命中时优先读取对应 workflow，再按需读取 skill 或普通 markdown。
@@ -45,7 +45,8 @@ L0-L3 定义和 L1/L2 策略偏好由各适配器 gate 文件管理，本文件�
 ## Adapter Files 适配器文件
 
 - `adapters/codex/AGENTS.md`：Codex 接入说明。
-- `adapters/codex/gate.md`：Codex 全局 bootstrap 读取的运行策略入口。
+- `adapters/codex/bootstrap.md`：Codex 每轮轻量加载入口，判断是否需要读取完整 gate。
+- `adapters/codex/gate.md`：Codex 完整运行策略入口。
 - `adapters/codex/external-config.md`：Codex OS 外部配置副本，用于换机或新软件快速恢复。
 - `adapters/codex/skills/`：Codex 专用 skills 源目录。
 - `adapters/codex/templates/skill.md.tmpl`：Codex adapter skill 生成壳子。
@@ -59,7 +60,8 @@ L0-L3 定义和 L1/L2 策略偏好由各适配器 gate 文件管理，本文件�
 
 ## Claude Adapter Current Entry
 
-- `adapters/claude/CLAUDE.md`: Claude Code Memory OS Gate template. `C:\Users\btf\.claude\CLAUDE.md` is a bootstrap redirect that instructs Claude to read this file; it is not a copy and does not need to be synced after gate changes.
+- `adapters/claude/bootstrap.md`: Claude Code lightweight per-input loader. `C:\Users\btf\.claude\CLAUDE.md` is a bootstrap redirect that instructs Claude to read this file.
+- `adapters/claude/CLAUDE.md`: Claude Code full Memory OS Gate. `bootstrap.md` decides when this full gate must be read.
 - Claude currently has a temporary Claude-only L2 Bias overlay in `adapters/claude/CLAUDE.md`: borderline L1/L2 tasks prefer L2 while Claude has more available usage budget. This does not affect Codex, shared skill specs, or L3 write boundaries.
 - `adapters/claude/external-config.md`: Claude Code external setup snapshot for migration or reinstall.
 - `adapters/claude/skills/`: Claude-specific skill sources. These are separate from Codex skills.
