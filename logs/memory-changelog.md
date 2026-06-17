@@ -2,6 +2,9 @@
 
 ## 2026-06-17
 
+- 接受 proposal：`2026-06-17-adapter-gate-bootstrap-改为源文件生成并禁止直接改生成物`。
+- 新增 `adapters/gate-source/**`、Codex / Claude gate/bootstrap templates 和 `tools/sync-adapter-gates.ps1`，将 `adapters/codex/bootstrap.md`、`adapters/codex/gate.md`、`adapters/claude/bootstrap.md`、`adapters/claude/CLAUDE.md` 转为生成目标并加 generated marker。
+- 更新 `core/change-companions.md`、`evals/router-test-cases.md`、`tools/validate-memory-os.ps1`、adapter README / external-config、`_index.md`、`README.md` 和 `STATUS.md`，要求改 gate/bootstrap 源后运行 adapter gate sync/check/validate，禁止直接手写生成目标。
 - 接受 proposal：`2026-06-17-路由纠正-正式规则文件改动应由-ai-自动按-companion-映射同步关联文件`。
 - 新增 `core/change-companions.md` 作为正式规则写入 companion 映射的单一事实源，覆盖 router、skill source、adapter gate、MCP policy、external-config、proposal 晋升、core/governance、`logs/README.md`、自身维护和 `workflows/proposal-promotion.md` 的配套同步关系。
 - 在 `adapters/codex/gate.md` 与 `adapters/claude/CLAUDE.md` 新增 `## Write Companions`，要求写入正式规则路径前先读 `core/change-companions.md`，并把 `## Cross-Adapter Sync` 收敛为高层共享边界，避免 gate 与 companion map 双轨维护。

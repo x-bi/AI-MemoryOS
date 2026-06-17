@@ -1,3 +1,4 @@
+<!-- Generated from adapters/gate-source/** and adapter templates; render-sha256: 80b32ecf906b907ab9dfa6c3b47f32a584d67aa540a7797024a865f8684eb5b5; adapter: codex; target: full-gate. Do not edit by hand; update source/templates and run tools/sync-adapter-gates.ps1. -->
 # Codex Gate
 
 Memory OS root:
@@ -47,7 +48,7 @@ Drift-sensitive events also require reading this file on the next turn:
 - The Final Trace fields are incomplete or clearly malformed.
 - The response did not follow the default Chinese, concise, direct, engineering-oriented style.
 - The L0/L1/L2/L3 classification is clearly wrong.
-- The actual read behavior does not match the declared Memory OS level: L0 reads Memory OS content; L1 reads Memory OS content without an explicit user request or workflow/skill probe trigger; an L1 workflow/skill probe fails to read the matching router map; L2 fails to read `_index.md`; L2 reads beyond `_index.md` plus three directly relevant pages without a task reason; or L3 attempts Memory OS writing without explicit user request or confirmation.
+- The actual read behavior does not match its declared Memory OS level: L0 reads Memory OS content; L1 reads Memory OS content without an explicit user request or workflow/skill probe trigger; an L1 workflow/skill probe fails to read the matching router map; L2 fails to read `_index.md`; L2 reads beyond `_index.md` plus three directly relevant pages without a task reason; or L3 attempts Memory OS writing without explicit user request or confirmation.
 - The agent performs or recommends restricted git operations without explicit user request.
 - Workflow/skill probe, read/write boundaries, verification strategy, or CodeGraph count are clearly missed.
 
@@ -97,26 +98,34 @@ Review this overlay when task coverage or model balance changes.
 
 Before writing formal Memory OS rule files, read `C:\Users\btf\AI-MemoryOS\core\change-companions.md`.
 
-Apply every matching `Trigger Path` row and complete the required companions in the same task: mirrored adapter sections, changelogs, evals, sync scripts, and workflow references. Missing companions mean the formal change is temporary or incomplete, not done.
+Apply every matching `Trigger Path` row and complete the required companions in the same task: generated adapter targets, changelogs, evals, sync scripts, and workflow references. Missing companions mean the formal change is temporary or incomplete, not done.
 
 If the user explicitly asks to "only change this file for now" or "先不同步", still read `core/change-companions.md`. Report which required companions remain undone, mark the result temporary/incomplete, and do not call it complete unless the user confirms they accept the drift risk.
 
-Trigger paths include `router/`, `skills/`, shared sections in `adapters/claude/CLAUDE.md` and `adapters/codex/gate.md`, shared sections in `adapters/claude/external-config.md` and `adapters/codex/external-config.md`, `adapters/mcp/`, `core/memory-rules.md`, `core/safety-rules.md`, `core/change-companions.md`, referenced sections in `GOVERNANCE.md`, `_index.md`, and `README.md`, semantic log-rule sections in `logs/README.md`, `workflows/proposal-promotion.md` Required Logs / companion sections, and promotion from `proposals/pending/*` to `proposals/accepted/*`.
+Trigger paths include `router/`, `skills/`, `adapters/gate-source/`, adapter gate/bootstrap templates, generated adapter gate/bootstrap targets, shared sections in `adapters/claude/external-config.md` and `adapters/codex/external-config.md`, `adapters/mcp/`, `core/memory-rules.md`, `core/safety-rules.md`, `core/change-companions.md`, referenced sections in `GOVERNANCE.md`, `_index.md`, and `README.md`, semantic log-rule sections in `logs/README.md`, `workflows/proposal-promotion.md` Required Logs / companion sections, and promotion from `proposals/pending/*` to `proposals/accepted/*`.
 
 Ordinary project code, small debug, local implementation, pending draft editing without promotion, and log/audit output files such as `logs/audits/<date>.md` do not trigger Write Companions.
 
 ## Cross-Adapter Sync
 
-The following adapter gate files share model-neutral operating policy:
+The following adapter gate/bootstrap generated targets are rendered from shared source and adapter overlays:
 
-- `adapters/claude/CLAUDE.md` (Claude Code gate)
-- `adapters/codex/gate.md` (Codex gate)
+- `adapters/codex/bootstrap.md`
+- `adapters/codex/gate.md`
+- `adapters/claude/bootstrap.md`
+- `adapters/claude/CLAUDE.md`
 
-When changing shared gate sections, synchronize the corresponding section to the other adapter in the same task. Shared sections include L0-L3 definitions, gate loading policy, Workflow / Skill Probe, read/write boundaries, verification strategy, Write Companions, Cross-Adapter Sync, CodeGraph rules, and Final Trace format.
+Do not hand-edit those generated targets. When changing shared gate or bootstrap policy, edit `adapters/gate-source/shared/*.md` or the relevant adapter overlay/template, then run:
 
-Path-driven companion details for MCP policy, external-config snapshots, skill roster/source sync, and generated adapter skill files live in `core/change-companions.md`. Do not duplicate the full companion table in this gate.
+```powershell
+tools/sync-adapter-gates.ps1
+tools/sync-adapter-gates.ps1 -Check
+tools/validate-memory-os.ps1
+```
 
-Model-specific overlays (e.g., Claude Temporary L2 Bias, Codex L1 Tendency) are exempt from sync and belong only to their respective adapter.
+Shared source covers L0-L3 definitions, gate loading policy, Workflow / Skill Probe, read/write boundaries, verification strategy, Write Companions, Cross-Adapter Sync, CodeGraph rules, and Final Trace format. Adapter-specific overlays such as Claude Temporary L2 Bias and Codex L1 Tendency belong in `adapters/gate-source/overlays/*-gate.md` and are rendered only for their adapter.
+
+Path-driven companion details for MCP policy, external-config snapshots, skill roster/source sync, and generated adapter files live in `core/change-companions.md`. Do not duplicate the full companion table in this gate.
 
 ## CodeGraph Trigger
 

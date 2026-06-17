@@ -73,11 +73,23 @@ $required = @(
   "GOVERNANCE.md",
   "skills\registry.json",
   "adapters\codex\templates\skill.md.tmpl",
+  "adapters\codex\templates\bootstrap.md.tmpl",
+  "adapters\codex\templates\gate.md.tmpl",
   "adapters\claude\templates\skill.md.tmpl",
+  "adapters\claude\templates\bootstrap.md.tmpl",
+  "adapters\claude\templates\CLAUDE.md.tmpl",
+  "adapters\codex\bootstrap.md",
   "adapters\codex\gate.md",
   "adapters\codex\external-config.md",
+  "adapters\claude\bootstrap.md",
   "adapters\claude\CLAUDE.md",
   "adapters\claude\external-config.md",
+  "adapters\gate-source\shared\bootstrap-core.md",
+  "adapters\gate-source\shared\gate-core.md",
+  "adapters\gate-source\overlays\codex-bootstrap.md",
+  "adapters\gate-source\overlays\codex-gate.md",
+  "adapters\gate-source\overlays\claude-bootstrap.md",
+  "adapters\gate-source\overlays\claude-gate.md",
   "router\intent-map.md",
   "router\domain-map.md",
   "router\skill-map.md",
@@ -91,6 +103,7 @@ $required = @(
   "templates\router-correction-proposal.md",
   "templates\weekly-audit.md",
   "tools\sync-skills.ps1",
+  "tools\sync-adapter-gates.ps1",
   "adapters\mcp\README.md",
   "adapters\mcp\tool-policy.md",
   "adapters\mcp\server\obsidian-memory-os-mcp.mjs"
@@ -236,6 +249,28 @@ if (Test-Path -LiteralPath $syncSkillsScript) {
   }
 }
 
+$adapterGateSyncProblems = @()
+$syncAdapterGatesScript = Join-Path $Root "tools\sync-adapter-gates.ps1"
+if (Test-Path -LiteralPath $syncAdapterGatesScript) {
+  $pwshCommand = Get-Command pwsh -ErrorAction SilentlyContinue
+  if ($null -eq $pwshCommand) {
+    $adapterGateSyncProblems += "pwsh not found; cannot run tools\sync-adapter-gates.ps1 -Check"
+  } else {
+    $previousErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $adapterGateSyncOutput = & $pwshCommand.Source -NoProfile -ExecutionPolicy Bypass -File $syncAdapterGatesScript -Root $Root -Check 2>&1
+    $adapterGateSyncExitCode = $LASTEXITCODE
+    $ErrorActionPreference = $previousErrorActionPreference
+    if ($adapterGateSyncExitCode -ne 0) {
+      if ($adapterGateSyncOutput.Count -eq 0) {
+        $adapterGateSyncProblems += "tools\sync-adapter-gates.ps1 -Check failed with exit code $adapterGateSyncExitCode"
+      } else {
+        $adapterGateSyncOutput | ForEach-Object { $adapterGateSyncProblems += [string]$_ }
+      }
+    }
+  }
+}
+
 $skillTriggerEvalProblems = @()
 $skillTriggerEvalPath = Join-Path $Root "evals\skill-trigger-test-cases.md"
 if (Test-Path -LiteralPath $skillTriggerEvalPath) {
@@ -331,7 +366,7 @@ foreach ($file in $allFiles | Where-Object { $_.Extension -eq ".md" }) {
   }
 }
 
-if ($missing.Count -gt 0 -or $missingCodexSkills.Count -gt 0 -or $nonJunctionCodexSkills.Count -gt 0 -or $wrongTargetCodexSkills.Count -gt 0 -or $missingClaudeSkills.Count -gt 0 -or $nonJunctionClaudeSkills.Count -gt 0 -or $wrongTargetClaudeSkills.Count -gt 0 -or $claudeGateSyncProblems.Count -gt 0 -or $badTemplates.Count -gt 0 -or $skillSyncProblems.Count -gt 0 -or $skillTriggerEvalProblems.Count -gt 0 -or $bomFiles.Count -gt 0 -or $sensitiveNameFiles.Count -gt 0 -or $proposalStatusProblems.Count -gt 0 -or $futureDirectionProblems.Count -gt 0 -or $brokenWikiLinks.Count -gt 0) {
+if ($missing.Count -gt 0 -or $missingCodexSkills.Count -gt 0 -or $nonJunctionCodexSkills.Count -gt 0 -or $wrongTargetCodexSkills.Count -gt 0 -or $missingClaudeSkills.Count -gt 0 -or $nonJunctionClaudeSkills.Count -gt 0 -or $wrongTargetClaudeSkills.Count -gt 0 -or $claudeGateSyncProblems.Count -gt 0 -or $badTemplates.Count -gt 0 -or $skillSyncProblems.Count -gt 0 -or $adapterGateSyncProblems.Count -gt 0 -or $skillTriggerEvalProblems.Count -gt 0 -or $bomFiles.Count -gt 0 -or $sensitiveNameFiles.Count -gt 0 -or $proposalStatusProblems.Count -gt 0 -or $futureDirectionProblems.Count -gt 0 -or $brokenWikiLinks.Count -gt 0) {
   Write-Host "Memory OS validation failed."
   if ($missing.Count -gt 0) { Write-Host "Missing files:"; $missing | ForEach-Object { Write-Host "- $_" } }
   if ($missingCodexSkills.Count -gt 0) { Write-Host "Missing .codex skill junctions:"; $missingCodexSkills | ForEach-Object { Write-Host "- $_" } }
@@ -343,6 +378,7 @@ if ($missing.Count -gt 0 -or $missingCodexSkills.Count -gt 0 -or $nonJunctionCod
   if ($claudeGateSyncProblems.Count -gt 0) { Write-Host "Claude gate sync problems:"; $claudeGateSyncProblems | ForEach-Object { Write-Host "- $_" } }
   if ($badTemplates.Count -gt 0) { Write-Host "Templates missing frontmatter:"; $badTemplates | ForEach-Object { Write-Host "- $_" } }
   if ($skillSyncProblems.Count -gt 0) { Write-Host "Managed skill sync problems:"; $skillSyncProblems | ForEach-Object { Write-Host "- $_" } }
+  if ($adapterGateSyncProblems.Count -gt 0) { Write-Host "Adapter gate sync problems:"; $adapterGateSyncProblems | ForEach-Object { Write-Host "- $_" } }
   if ($skillTriggerEvalProblems.Count -gt 0) { Write-Host "Skill trigger eval problems:"; $skillTriggerEvalProblems | ForEach-Object { Write-Host "- $_" } }
   if ($bomFiles.Count -gt 0) { Write-Host "SKILL.md files must be UTF-8 without BOM:"; $bomFiles | ForEach-Object { Write-Host "- $_" } }
   if ($sensitiveNameFiles.Count -gt 0) { Write-Host "Sensitive-looking files must stay out of Memory OS:"; $sensitiveNameFiles | ForEach-Object { Write-Host "- $_" } }

@@ -1,3 +1,4 @@
+<!-- Generated from adapters/gate-source/** and adapter templates; render-sha256: 65531d7632b6e13c12fe830ab3102f70b3a6745d8ce34f69aea215880b456795; adapter: claude; target: bootstrap. Do not edit by hand; update source/templates and run tools/sync-adapter-gates.ps1. -->
 # Claude MemoryOS Bootstrap
 
 Full gate:

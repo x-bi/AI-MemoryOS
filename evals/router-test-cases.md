@@ -60,7 +60,9 @@
 | 在 router/skill-map.md 加一条触发条件 | 写入前读 `core/change-companions.md`；同次补 `logs/router-changelog.md` 和相关 router/skill eval 正反样例 |
 | 改一下 vue-change-self-check 的 SKILL_SPEC.md，加一条触发条件 | 写入前读 `core/change-companions.md`；同次运行 `tools/sync-skills.ps1` 和 `tools/validate-memory-os.ps1`，写 `logs/skill-changelog.md`，不手写 adapter 生成文件 |
 | 调整 adapters/mcp/tool-policy.md 的 allowed operation | 写入前读 `core/change-companions.md`；同次同步两端 `external-config.md` 的 MCP safety 描述，并写 `logs/memory-changelog.md` |
-| 同步两端 gate 加一段安全规则 | 写入前读 `core/change-companions.md`；同次同步 `adapters/claude/CLAUDE.md` 和 `adapters/codex/gate.md`，并写对应 changelog |
+| 同步两端 gate 加一段安全规则 | 写入前读 `core/change-companions.md`；修改 `adapters/gate-source/**` 或对应 template；运行 `tools/sync-adapter-gates.ps1`、`tools/sync-adapter-gates.ps1 -Check`、`tools/validate-memory-os.ps1`；写 `logs/memory-changelog.md` |
+| 直接改 adapters/codex/gate.md 里的共享规则 | 判定为生成目标边界风险；不能手改后声明完成，必须回到 `adapters/gate-source/**` 或 adapter template 后重新 sync/check/validate |
+| 只改 adapters/claude/bootstrap.md 这一处，先不同步 | 仍读 `core/change-companions.md`；列出 generated target 不应手改和未完成的 sync/check/validate，标记临时/未完成 |
 | 修改 logs/README.md 里的 memory-changelog 落点说明 | 写入前读 `core/change-companions.md`；判断是否为日志语义变化；如是则同步 core/governance/workflow/map 引用并写 `logs/memory-changelog.md` |
 | 修一下 src/views/foo 的按钮颜色 | 不触发 Write Companions，按普通项目代码任务处理 |
 | 只整理 pending proposal 草稿文字，不晋升 | 不触发正式规则 companion；仍遵守 pending proposal 写入边界 |

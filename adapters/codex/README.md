@@ -3,8 +3,8 @@
 ## 已接入
 
 - 全局 `C:\Users\btf\.codex\AGENTS.md` 只保留 bootstrap redirect，引导每个输入读取 `C:\Users\btf\AI-MemoryOS\adapters\codex\bootstrap.md`。
-- `C:\Users\btf\AI-MemoryOS\adapters\codex\bootstrap.md` 是轻量加载入口，只判断是否需要读取完整 gate。
-- `C:\Users\btf\AI-MemoryOS\adapters\codex\gate.md` 是 Codex 回答风格、Memory OS Gate、验证策略和读写边界的完整策略入口。
+- `C:\Users\btf\AI-MemoryOS\adapters\codex\bootstrap.md` 是轻量加载入口，只判断是否需要读取完整 gate；该文件由 `tools/sync-adapter-gates.ps1` 生成。
+- `C:\Users\btf\AI-MemoryOS\adapters\codex\gate.md` 是 Codex 回答风格、Memory OS Gate、验证策略和读写边界的完整策略入口；该文件由 `tools/sync-adapter-gates.ps1` 生成。
 - `C:\Users\btf\.codex\config.toml` 已 trust `c:\users\btf\ai-memoryos`。
 - `C:\Users\btf\AI-MemoryOS\adapters\codex\skills` 是 active skills 源目录。
 - `C:\Users\btf\.codex\skills` 是 Codex Desktop 实际发现目录，active skills 通过 junction 映射到这里。
@@ -18,6 +18,7 @@
 - L0 直接执行；L1 可触发轻量 workflow / skill；L2 才读取 `_index.md` + 最多 3 个相关页面。
 - 记忆复盘只写 `proposals/pending/`。
 - 外置仓库里的 AGENTS.md 不会自动生效；生效入口是全局 AGENTS 和当前项目 AGENTS。
+- 不直接手写 `bootstrap.md` 或 `gate.md`；修改 `adapters/gate-source/**` 或 `adapters/codex/templates/` 后运行 `tools/sync-adapter-gates.ps1`。
 
 ## Skill 暴露策略
 

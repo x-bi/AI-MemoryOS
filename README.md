@@ -27,6 +27,7 @@ L2 读取预算默认不超过 2k tokens；维护/审计任务可临时放宽到
 ```
 AI-MemoryOS/
 ├── adapters/            # 多模型适配器
+│   ├── gate-source/     #   Codex / Claude gate/bootstrap 共享源与 overlay
 │   ├── codex/           #   Codex Desktop 适配（gate.md + skills + external-config.md）
 │   ├── claude/          #   Claude Code 适配（CLAUDE.md + skills + external-config.md）
 │   ├── mcp/             #   受限 MCP server，只允许读库 + 写 pending proposal
@@ -68,6 +69,7 @@ AI-MemoryOS/
 | 脚本 | 用途 |
 |------|------|
 | `sync-skills.ps1` | 按 `skills/registry.json` 同步 SKILL_SPEC 到各 adapter 外壳 |
+| `sync-adapter-gates.ps1` | 按 `adapters/gate-source/**` 和 adapter templates 同步 Codex / Claude gate/bootstrap |
 | `validate-memory-os.ps1` | 仓库完整性校验 |
 | `validate-obsidian.ps1` | Obsidian 配置校验 |
 | `new-proposal.ps1` | 新建 proposal 模板 |
@@ -79,7 +81,9 @@ AI-MemoryOS/
 ```text
 AI-MemoryOS Markdown + Git           = 唯一事实源
 adapters/{codex,claude,mcp,...}      = 多模型接入层
+adapters/gate-source/**              = Codex / Claude gate/bootstrap 维护源
 skills/<skill>/SKILL_SPEC.md         = 模型无关 skill 核心逻辑
+adapters/{codex,claude}/{bootstrap,gate} = 由 sync-adapter-gates.ps1 生成的运行入口
 adapters/<model>/skills/*/SKILL.md   = 由 sync-skills.ps1 生成的 adapter 外壳
 Obsidian + dashboard/                = 人工审核、浏览、dashboard 前台
 proposals/pending/                   = 默认写入入口，人工审核后才晋升
@@ -89,21 +93,23 @@ proposals/pending/                   = 默认写入入口，人工审核后才�
 
 ### Codex Desktop
 
-- 全局 `C:\Users\btf\.codex\AGENTS.md` 仅保留 bootstrap，引导读取 `adapters/codex/gate.md`。
-- `adapters/codex/gate.md` 维护回答风格、OS Gate、验证策略和读写边界。
+- 全局 `C:\Users\btf\.codex\AGENTS.md` 仅保留 bootstrap，引导读取 `adapters/codex/bootstrap.md`。
+- `adapters/codex/bootstrap.md` 和 `adapters/codex/gate.md` 是生成目标；维护源在 `adapters/gate-source/**` 和 `adapters/codex/templates/`。
 - Skill 源目录 `adapters/codex/skills`，通过 junction 映射到 `C:\Users\btf\.codex\skills`。
 - 可选 MCP：`adapters/mcp/server/`。
 - 换机/重装步骤见 `adapters/codex/external-config.md`。
 
 ### Claude Code
 
-- 用户级 `C:\Users\btf\.claude\CLAUDE.md` 引导读取 `adapters/claude/CLAUDE.md`。
+- 用户级 `C:\Users\btf\.claude\CLAUDE.md` 引导读取 `adapters/claude/bootstrap.md`。
+- `adapters/claude/bootstrap.md` 和 `adapters/claude/CLAUDE.md` 是生成目标；维护源在 `adapters/gate-source/**` 和 `adapters/claude/templates/`。
 - Claude Gate 含临时 L2 Bias（仅 Claude 适用，不同步到 Codex）。
 - Skill 源目录 `adapters/claude/skills`，通过 junction 映射到 `C:\Users\btf\.claude\skills`。
 - `ai_memoryos` MCP：受限读取/搜索 Memory OS，只写 `proposals/pending/`。
 - 换机/重装步骤见 `adapters/claude/external-config.md`。
 
 > Claude 和 Codex 的 skill 源文件分开维护，共享 `skills/<skill>/SKILL_SPEC.md` 作为模型无关核心逻辑，通过 `tools/sync-skills.ps1` 生成各 adapter 外壳。
+> Claude 和 Codex 的 gate/bootstrap 共享 `adapters/gate-source/**`，通过 `tools/sync-adapter-gates.ps1` 生成各 adapter 运行入口；不要手写生成目标。
 
 ## Active Skills
 

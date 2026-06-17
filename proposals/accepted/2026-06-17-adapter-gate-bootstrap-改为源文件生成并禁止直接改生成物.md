@@ -1,12 +1,14 @@
 ---
 title: "adapter gate/bootstrap 改为源文件生成并禁止直接改生成物"
 type: proposal
-status: pending
+status: accepted
 source: codex
 source_episode: "conversation:2026-06-17-adapter-gate-bootstrap-sync"
 created_at: "2026-06-17"
+accepted_at: "2026-06-17"
+decision_reason: "Codex / Claude adapter gate/bootstrap 已存在跨文件手工同步漂移风险；本次落地为共享源、adapter overlay、template 和 sync/check/validator 管线，保留真实入口路径并禁止直接改生成目标。"
 scope: "adapter gate/bootstrap sync"
-destination: "adapters/gate-source, adapter templates, tools/sync-adapter-gates.ps1, tools/validate-memory-os.ps1, adapter gate Cross-Adapter Sync"
+destination: "adapters/gate-source, adapter templates, tools/sync-adapter-gates.ps1, tools/validate-memory-os.ps1, core/change-companions.md, evals/router-test-cases.md, adapter gate Cross-Adapter Sync"
 tags:
   - memory/pending
   - adapter/gate
@@ -47,6 +49,7 @@ tags:
 - rules:
   - `adapters/codex/gate.md` 与 `adapters/claude/CLAUDE.md` 的 `Cross-Adapter Sync` / gate source 边界
   - `adapters/codex/bootstrap.md`、`adapters/codex/gate.md`、`adapters/claude/bootstrap.md`、`adapters/claude/CLAUDE.md` 顶部 generated marker
+  - `core/change-companions.md` 中 adapter gate/bootstrap source、template、generated target 的 companion 边界
 - workflow:
   - 可选新增或更新 adapter maintenance 文档，说明 source -> template -> generated target 的流程
 - domain:
@@ -59,6 +62,7 @@ tags:
   - 无
 - eval:
   - `tools/validate-memory-os.ps1` 接入 `tools/sync-adapter-gates.ps1 -Check`
+  - `evals/router-test-cases.md` 的 Write Companions 样例覆盖 gate source/template 修改与禁止直接改 adapter gate 生成目标
 
 ## Rationale 保留理由
 
@@ -245,7 +249,30 @@ adapters/claude/templates/CLAUDE.md.tmpl
 
 如果 `tools/sync-adapter-gates.ps1 -Check` 不存在、执行失败、输出 `STALE` 或输出 `ERROR`，`tools/validate-memory-os.ps1` 必须失败并报告原始问题摘要。
 
-### 7. 更新文档和日志
+### 7. 更新 Write Companions 和 eval
+
+落地时必须先更新：
+
+```text
+core/change-companions.md
+evals/router-test-cases.md
+```
+
+`core/change-companions.md` 应新增或调整 adapter gate/bootstrap 相关 companion 边界：
+
+- `adapters/gate-source/**`、`adapters/codex/templates/bootstrap.md.tmpl`、`adapters/codex/templates/gate.md.tmpl`、`adapters/claude/templates/bootstrap.md.tmpl`、`adapters/claude/templates/CLAUDE.md.tmpl` 是人工维护源。
+- 修改这些源文件或模板后，必须运行 `tools/sync-adapter-gates.ps1`、`tools/sync-adapter-gates.ps1 -Check`、`tools/validate-memory-os.ps1`，并写 `logs/memory-changelog.md`。
+- `adapters/codex/bootstrap.md`、`adapters/codex/gate.md`、`adapters/claude/bootstrap.md`、`adapters/claude/CLAUDE.md` 是生成目标，不得手工直接编辑后声明完成。
+- 现有 shared gate row 不应继续要求手工同步两个 adapter gate；应改为要求修改 gate source/template 后通过 sync 脚本生成。
+
+因为修改 `core/change-companions.md` 本身会触发它的自维护 companion，落地时还必须：
+
+- 在 `logs/memory-changelog.md` 记录 companion map 变更来源和影响。
+- 在 `evals/router-test-cases.md` 的 Write Companions cases 中增加正反样例：
+  - 正向：修改 shared gate 规则时，应修改 `adapters/gate-source/**` 或对应 template，并运行 adapter gate sync/check/validate。
+  - 反向：直接修改 adapter gate/bootstrap 生成目标时，不得声明正式完成；需要回到 source/template 或标记为临时未完成。
+
+### 8. 更新文档和日志
 
 落地时同步更新：
 
@@ -258,7 +285,7 @@ adapters/claude/templates/CLAUDE.md.tmpl
 - `adapters/claude/external-config.md`
 - `logs/memory-changelog.md`
 
-### 8. 保留真实软件读取兼容性
+### 9. 保留真实软件读取兼容性
 
 落地后必须同步更新 `adapters/codex/gate.md` 与 `adapters/claude/CLAUDE.md` 的 `Cross-Adapter Sync` 段落：共享规则不再要求手动分别修改两个 gate，而是要求修改 `adapters/gate-source/**` 或对应 template 后运行 `tools/sync-adapter-gates.ps1`、`tools/sync-adapter-gates.ps1 -Check`、`tools/validate-memory-os.ps1`。
 

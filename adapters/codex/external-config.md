@@ -11,8 +11,9 @@
 | Codex config | `C:\Users\btf\.codex\config.toml` |
 | Codex skill discovery root | `C:\Users\btf\.codex\skills` |
 | Memory OS active skill source | `C:\Users\btf\AI-MemoryOS\adapters\codex\skills` |
-| Codex bootstrap source | `C:\Users\btf\AI-MemoryOS\adapters\codex\bootstrap.md` |
-| Codex gate source | `C:\Users\btf\AI-MemoryOS\adapters\codex\gate.md` |
+| Codex bootstrap generated target | `C:\Users\btf\AI-MemoryOS\adapters\codex\bootstrap.md` |
+| Codex gate generated target | `C:\Users\btf\AI-MemoryOS\adapters\codex\gate.md` |
+| Adapter gate source | `C:\Users\btf\AI-MemoryOS\adapters\gate-source` |
 
 ## Global AGENTS Bootstrap
 
@@ -44,6 +45,8 @@
 ```
 
 Keep this file UTF-8 no BOM.
+
+`adapters/codex/bootstrap.md` and `adapters/codex/gate.md` are generated targets. Do not edit them by hand. Update `adapters/gate-source/**` or `adapters/codex/templates/`, then run `tools/sync-adapter-gates.ps1` and `tools/validate-memory-os.ps1`.
 
 ## Codex Config Snippet
 
@@ -235,6 +238,7 @@ Run after setup:
 
 ```powershell
 & C:\Users\btf\AI-MemoryOS\tools\validate-memory-os.ps1
+& C:\Users\btf\AI-MemoryOS\tools\sync-adapter-gates.ps1 -Check
 ```
 
 Manual checks:
@@ -247,6 +251,7 @@ Get-ChildItem C:\Users\btf\.codex\skills | Select-Object Name,LinkType,Target
 Expected result:
 
 - `AGENTS.md` is the bootstrap above.
+- `adapters/codex/bootstrap.md` and `adapters/codex/gate.md` contain generated markers and match `tools/sync-adapter-gates.ps1 -Check`.
 - Seven active skills appear under `.codex\skills`.
 - Active skills are junctions or symbolic links to `AI-MemoryOS\adapters\codex\skills`.
 - `SKILL.md` files are UTF-8 no BOM.

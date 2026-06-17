@@ -1,20 +1,3 @@
-<!-- Generated from adapters/gate-source/** and adapter templates; render-sha256: e009ddc1a66def85cf0eae13c1c4cdd4df225a203b8b44c28d1bb31747e5a0a1; adapter: claude; target: full-gate. Do not edit by hand; update source/templates and run tools/sync-adapter-gates.ps1. -->
-# AI Memory OS Gate for Claude Code
-
-This is the Claude Code full gate for AI Memory OS. The lightweight per-input bootstrap lives at `C:\Users\btf\AI-MemoryOS\adapters\claude\bootstrap.md`.
-
-Recommended user-level location:
-
-```text
-C:\Users\btf\.claude\CLAUDE.md
-```
-
-Memory OS root:
-
-```text
-C:\Users\btf\AI-MemoryOS
-```
-
 ## Default Language And Style
 
 - Reply in Chinese by default.
@@ -37,7 +20,7 @@ Multiple workflows/skills may collaborate when: the user explicitly requests it,
 
 ## Gate Loading Policy
 
-The real Claude bootstrap reads `C:\Users\btf\AI-MemoryOS\adapters\claude\bootstrap.md` on every user input.
+The real {{agent_name}} bootstrap reads `{{bootstrap_path}}` on every user input.
 
 `bootstrap.md` decides whether this full gate must be read. This file is the full operating-policy source of truth. If `bootstrap.md` and this file conflict, follow this file.
 
@@ -60,37 +43,13 @@ Drift-sensitive events also require reading this file on the next turn:
 - The agent performs or recommends restricted git operations without explicit user request.
 - Workflow/skill probe, read/write boundaries, verification strategy, or CodeGraph count are clearly missed.
 
-Reading this full gate only loads Claude operating policy. It is not the same as reading Memory OS content.
+Reading this full gate only loads {{agent_name}} operating policy. It is not the same as reading Memory OS content.
 
 ## Workflow / Skill Probe
 
 L1/L2 任务中，如果用户输入出现明确 workflow 或 skill 候选信号，执行前先读取最小 router map：workflow 候选读 `router/workflow-map.md`，skill 候选读 `router/skill-map.md`。明确候选信号不是单个关键词，而是用户目标、任务对象、期望输出形态或安全/写入边界的稳定组合，且未被反向条件排除。例如："读取原型准备开发"（目标+对象）应触发 map 探针，而"打开链接看看能不能访问"（无开发目标）不需要。map 命中后只读取命中的 workflow/skill；map 未命中时按本地/项目上下文处理，并仅在真实误判出现时建议 router correction。
 
-## Temporary Claude L2 Bias
-
-This is a Claude-only temporary adapter overlay because Claude currently has more available usage budget. It changes only L1/L2 classification bias, not shared skill logic, Codex behavior, safety rules, or write permissions.
-
-When a task is borderline between L1 and L2, prefer L2 if Memory OS context may prevent repeated mistakes or improve review/debug reliability.
-
-Prefer L2 for borderline tasks involving:
-
-- cross-file or cross-module impact,
-- review/debug with regression risk,
-- security, permission, route, config, build, release, dependency, platform, or CI/CD concerns,
-- Memory OS, adapter, skill, router, workflow, proposal, or audit maintenance,
-- long-term convention, reusable lesson, architecture decision, or standardization,
-- user wording such as "more robust", "anything missing", "long-term", "prevent recurrence", "should this be captured", or "how should we standardize this",
-- uncertainty where Memory OS context may avoid a repeated mistake.
-
-This overlay does not change:
-
-- L0 tasks still do not read Memory OS content.
-- L2 still reads only `_index.md` plus directly relevant pages within the normal page budget.
-- L3 writing still requires explicit user request or confirmation.
-- Shared skill specs remain model-neutral.
-- Codex gate remains unchanged.
-
-Review this temporary overlay when Claude/Codex usage balance changes.
+{{overlay_body}}
 
 ## Read And Write Boundaries
 

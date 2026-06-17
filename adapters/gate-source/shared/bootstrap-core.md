@@ -1,10 +1,7 @@
-<!-- Generated from adapters/gate-source/** and adapter templates; render-sha256: 41fb1c14e3d37e91b39960cb6b5c1bc47f44d4618db7edf147a235f182626b0a; adapter: codex; target: bootstrap. Do not edit by hand; update source/templates and run tools/sync-adapter-gates.ps1. -->
-# Codex MemoryOS Bootstrap
-
 Full gate:
 
 ```text
-C:\Users\btf\AI-MemoryOS\adapters\codex\gate.md
+{{full_gate_path}}
 ```
 
 Every user input should read this bootstrap first. This file only decides whether the full gate must be read; it is not the full operating policy.
@@ -19,6 +16,6 @@ Read the full gate when:
 - the previous turn's actual read behavior clearly did not match its declared Memory OS level;
 - context was compacted, the thread was resumed, or five consecutive turns have passed without refreshing the full gate and the current turn is not clearly pure L0.
 
-Reading the full gate only loads Codex operating policy. It is not the same as reading Memory OS content.
+Reading the full gate only loads {{agent_name}} operating policy. It is not the same as reading Memory OS content.
 
 The full gate is the source of truth for all operating rules. If this bootstrap and the full gate conflict, follow the full gate.

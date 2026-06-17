@@ -13,8 +13,9 @@ This file records local configuration outside AI Memory OS that is needed to con
 | Claude settings | `C:\Users\btf\.claude\settings.json` |
 | Claude skill discovery root | `C:\Users\btf\.claude\skills` |
 | Memory OS Claude skill source | `C:\Users\btf\AI-MemoryOS\adapters\claude\skills` |
-| Claude bootstrap source | `C:\Users\btf\AI-MemoryOS\adapters\claude\bootstrap.md` |
-| Claude full gate source | `C:\Users\btf\AI-MemoryOS\adapters\claude\CLAUDE.md` |
+| Claude bootstrap generated target | `C:\Users\btf\AI-MemoryOS\adapters\claude\bootstrap.md` |
+| Claude full gate generated target | `C:\Users\btf\AI-MemoryOS\adapters\claude\CLAUDE.md` |
+| Adapter gate source | `C:\Users\btf\AI-MemoryOS\adapters\gate-source` |
 | Memory OS MCP server | `C:\Users\btf\AI-MemoryOS\adapters\mcp\server\obsidian-memory-os-mcp.mjs` |
 | Node runtime used for MCP | `C:\Program Files\nodejs\node.exe` |
 
@@ -57,6 +58,8 @@ C:\Users\btf\AI-MemoryOS\adapters\claude\bootstrap.md
 ```
 
 It is not a copy of the gate file. `adapters/claude/bootstrap.md` decides whether Claude should read the full gate at `adapters/claude/CLAUDE.md`.
+
+`adapters/claude/bootstrap.md` and `adapters/claude/CLAUDE.md` are generated targets. Do not edit them by hand. Update `adapters/gate-source/**` or `adapters/claude/templates/`, then run `tools/sync-adapter-gates.ps1` and `tools/validate-memory-os.ps1`.
 
 Restore command:
 
@@ -266,6 +269,7 @@ Run after setup:
 
 ```powershell
 Get-Content C:\Users\btf\.claude\CLAUDE.md -Encoding utf8
+& C:\Users\btf\AI-MemoryOS\tools\sync-adapter-gates.ps1 -Check
 & C:\Users\btf\.local\bin\claude.exe mcp get ai_memoryos
 Get-ChildItem C:\Users\btf\.claude\skills | Select-Object Name,LinkType,Target
 rg -n "^---$|^name:|^description:" C:\Users\btf\AI-MemoryOS\adapters\claude\skills -g SKILL.md
@@ -274,7 +278,7 @@ rg -n "^---$|^name:|^description:" C:\Users\btf\AI-MemoryOS\adapters\claude\skil
 Expected result:
 
 - User `CLAUDE.md` is the bootstrap redirect (not a full gate copy).
-- `adapters/claude/CLAUDE.md` is the source of truth for the full gate.
+- `adapters/claude/bootstrap.md` and `adapters/claude/CLAUDE.md` contain generated markers and match `tools/sync-adapter-gates.ps1 -Check`.
 - `ai_memoryos` is connected.
 - `ai_memoryos` uses the current repository MCP server, so `memory_search` can read `proposals/future-directions/` while writes remain limited to `proposals/pending/`.
 - Seven active skills appear under `.claude\skills`.

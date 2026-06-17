@@ -18,6 +18,7 @@
 - Remote：`main` 已跟踪 `origin/main`，远程为 `https://github.com/x-bi/AI-MemoryOS.git`。
 - Active skill：`pr-review` 已由 shared skill spec 生成 Codex / Claude 可发现的 adapter skill。
 - Shared skill spec：7 个 active skills 已由 `skills/<skill>/SKILL_SPEC.md` + `skills/registry.json` 管理，并通过 `tools/sync-skills.ps1` 生成 Codex / Claude adapter 外壳。
+- Adapter gate/bootstrap：Codex / Claude 的 `bootstrap.md` 与完整 gate 已由 `adapters/gate-source/**` + adapter templates 管理，并通过 `tools/sync-adapter-gates.ps1` 生成。
 - 轻量入口：已新增 `diff-review-lite`、`pre-commit-self-check`、`retrospective-lite` workflow。
 - 路由策略：已从简单/复杂两档调整为 L0-L3 分层；当前阶段收窄 L0、放宽 L1，让轻量 workflow / skill 默认倾向触发，但 L2 读取和 L3 写入仍保持保守。
 - Codex Gate：已新增 `adapters/codex/gate.md`，统一维护回答风格、Memory OS Gate、验证策略和读写边界。
@@ -33,7 +34,7 @@
 
 ## 当前策略
 
-先通过真实任务扩大样例输入，再分批扩展。每个输入先读取轻量 `gate.md`；L1 默认倾向触发轻量 workflow / skill，L2/L3 才按预算读取或写入。
+先通过真实任务扩大样例输入，再分批扩展。每个输入先读取轻量 `bootstrap.md`；必要时读取完整 gate。L1 默认倾向触发轻量 workflow / skill，L2/L3 才按预算读取或写入。
 
 ## CodeGraph Integration Status
 
