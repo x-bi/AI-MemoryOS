@@ -46,6 +46,6 @@
 
 ## Required Logs
 
-- `logs/memory-changelog.md`
-- `logs/router-changelog.md`，如果涉及 router/evals。
-- `logs/skill-changelog.md`，如果涉及 skill。
+Before promoting `proposals/pending/*.md` to `proposals/accepted/`, read `core/change-companions.md` and apply the proposal-promotion row.
+
+At minimum, promotion must preserve `source_episode`, land the target files, and write the required changelog entries. If the proposal fixes routing drift or changes router/eval behavior, update the relevant router correction or trigger eval in the same task.

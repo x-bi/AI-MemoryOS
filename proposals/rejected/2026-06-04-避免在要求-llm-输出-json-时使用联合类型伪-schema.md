@@ -4,6 +4,7 @@ status: rejected
 created_at: 2026-06-04T02:53:52.553Z
 rejected_at: 2026-06-16
 source: mcp
+decision_reason: "触发面已收窄且自 2026-06-04 修复后未复发；现有结构化输出主链路已切换到受 schema 约束的机制，不再需要晋升为正式规则。"
 ---
 
 ## Rejection Note

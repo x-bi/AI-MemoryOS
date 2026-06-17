@@ -1,5 +1,11 @@
 # Router Changelog 路由变更日志
 
+## 2026-06-17
+
+- 接受 proposal：`2026-06-17-路由纠正-正式规则文件改动应由-ai-自动按-companion-映射同步关联文件`。
+- 新增 Write Companions 路由/写入回归样例：覆盖 router map 改动、skill source 改动、MCP policy 改动、两端 gate 同步、`logs/README.md` 日志规则说明、普通业务代码不触发、pending 草稿不晋升不触发、用户要求暂不同步时仍需列出未完成 companion。
+- 影响：正式规则写入路径新增执行前读取 `core/change-companions.md` 的判定样例，防止 router/eval/changelog 配套关系再次只依赖用户追问。
+
 ## 2026-06-13
 
 - 接受 proposal：`2026-06-13-审查类前端任务跳过-router-map-探针的执行漂移补丁`。

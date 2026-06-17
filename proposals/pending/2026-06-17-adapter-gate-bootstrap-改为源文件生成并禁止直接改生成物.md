@@ -103,6 +103,20 @@ adapters/claude/templates/CLAUDE.md.tmpl
 - `overlays/claude-*.md`：Claude 特有路径、文件名、Temporary Claude L2 Bias、Claude Code 入口说明等。
 - `templates/*.tmpl`：保留不同 adapter 的最终文件格式和识别入口，不强行统一 Codex / Claude 文件名。
 
+renderer 应定义最小 token 集，避免把可参数化的 adapter 名称、路径和文件名复制进两个 overlay，造成新的隐形漂移。建议至少支持：
+
+```text
+{{adapter_name}}
+{{agent_name}}
+{{bootstrap_path}}
+{{full_gate_path}}
+{{user_entry_path}}
+{{full_gate_filename}}
+{{shared_bootstrap_core}}
+{{shared_gate_core}}
+{{overlay_body}}
+```
+
 ### 2. 新增同步脚本
 
 新增：
@@ -120,6 +134,8 @@ tools/sync-adapter-gates.ps1 -Adapter codex
 tools/sync-adapter-gates.ps1 -Adapter claude
 tools/sync-adapter-gates.ps1 -OutDir private/tmp/gate-render
 ```
+
+`-OutDir` 只能接受 Memory OS root 内的相对路径，推荐写入 `private/` 下的临时目录；必须拒绝绝对路径、`..` path traversal、以及任何会逃逸 Memory OS root 的路径。`-OutDir` 不得覆盖正式 adapter 目标；与 `-Check` 同时使用时只允许渲染和比较，不写回正式目标。
 
 `-Check` 输出语义应与 `tools/sync-skills.ps1 -Check` 保持一致：
 
@@ -144,6 +160,8 @@ tools/sync-adapter-gates.ps1 -Check
 
 必须显示 `OK adapter-gates`。如果出现 `STALE`，先修 source/template，不直接覆盖当前 adapter 文件。
 
+renderer 输出必须稳定：UTF-8 without BOM，去除多余尾随换行后补一个单独结尾换行。`-Check` 应按最终文本或字节的严格一致性比较，不做宽松 normalize，避免掩盖真实漂移。
+
 首次落地也可以先输出到临时目录做对比：
 
 ```powershell
@@ -151,6 +169,8 @@ tools/sync-adapter-gates.ps1 -OutDir private/tmp/gate-render
 ```
 
 确认渲染结果与当前四个 adapter 目标一致后，再允许写回正式目标。
+
+首次落地允许的目标文件内容差异应仅限 generated marker 及其必要的单结尾换行稳定化；除 marker 和换行稳定化外，不应重写 gate/bootstrap 正文语义。
 
 ### 4. 禁止直接修改 adapter bootstrap / gate 生成目标
 
@@ -188,13 +208,10 @@ tools/validate-memory-os.ps1
 在四个生成目标顶部加入 generated marker：
 
 ```md
-<!-- Generated from adapters/gate-source/**; source-sha256: <hash>; adapter: <adapter>; target: <bootstrap|full-gate>. Do not edit by hand; update source/templates and run tools/sync-adapter-gates.ps1. -->
+<!-- Generated from adapters/gate-source/** and adapter templates; render-sha256: <hash>; adapter: <adapter>; target: <bootstrap|full-gate>. Do not edit by hand; update source/templates and run tools/sync-adapter-gates.ps1. -->
 ```
 
-如果首次加入 marker 会制造过大 diff，可分两步落地：
-
-1. 先建立 source/template/script，并保证 `-Check` 对当前文件 OK；
-2. 再单独增加 generated marker，作为明确的生成物边界变更。
+`render-sha256` 应覆盖完整渲染输入，至少包括 shared source、adapter overlay、目标 template；如 renderer 行为会影响输出，也应纳入 hash 或通过脚本版本变更保证可追踪。render input hash 必须按固定 manifest 顺序计算，包含每个输入的相对路径、分隔符和 UTF-8 文本内容，不能依赖文件系统枚举顺序。
 
 ### 6. 接入 validator
 
@@ -205,6 +222,28 @@ tools/sync-adapter-gates.ps1 -Check
 ```
 
 并将 stale 结果纳入验证报告。validator 只检查漂移，不自动覆盖生成目标。
+
+validator 必须把以下文件纳入 required 清单，缺失时直接失败，而不是跳过 adapter gate sync 检查：
+
+```text
+tools/sync-adapter-gates.ps1
+adapters/codex/bootstrap.md
+adapters/codex/gate.md
+adapters/claude/bootstrap.md
+adapters/claude/CLAUDE.md
+adapters/gate-source/shared/bootstrap-core.md
+adapters/gate-source/shared/gate-core.md
+adapters/gate-source/overlays/codex-bootstrap.md
+adapters/gate-source/overlays/codex-gate.md
+adapters/gate-source/overlays/claude-bootstrap.md
+adapters/gate-source/overlays/claude-gate.md
+adapters/codex/templates/bootstrap.md.tmpl
+adapters/codex/templates/gate.md.tmpl
+adapters/claude/templates/bootstrap.md.tmpl
+adapters/claude/templates/CLAUDE.md.tmpl
+```
+
+如果 `tools/sync-adapter-gates.ps1 -Check` 不存在、执行失败、输出 `STALE` 或输出 `ERROR`，`tools/validate-memory-os.ps1` 必须失败并报告原始问题摘要。
 
 ### 7. 更新文档和日志
 
@@ -220,6 +259,8 @@ tools/sync-adapter-gates.ps1 -Check
 - `logs/memory-changelog.md`
 
 ### 8. 保留真实软件读取兼容性
+
+落地后必须同步更新 `adapters/codex/gate.md` 与 `adapters/claude/CLAUDE.md` 的 `Cross-Adapter Sync` 段落：共享规则不再要求手动分别修改两个 gate，而是要求修改 `adapters/gate-source/**` 或对应 template 后运行 `tools/sync-adapter-gates.ps1`、`tools/sync-adapter-gates.ps1 -Check`、`tools/validate-memory-os.ps1`。
 
 不得改变真实读取入口：
 

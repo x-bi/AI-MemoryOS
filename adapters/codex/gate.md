@@ -93,21 +93,28 @@ Review this overlay when task coverage or model balance changes.
 - Coverage, test reports, screenshots, video, cache, and build directories are non-delivery artifacts; confirm paths before scoped cleanup. Do not auto-clean source, lockfiles, snapshots, generated files, or API type files.
 - Before cleaning build/test/cache artifacts, constrain the path. Do not broaden cleanup to the whole repository.
 
+## Write Companions
+
+Before writing formal Memory OS rule files, read `C:\Users\btf\AI-MemoryOS\core\change-companions.md`.
+
+Apply every matching `Trigger Path` row and complete the required companions in the same task: mirrored adapter sections, changelogs, evals, sync scripts, and workflow references. Missing companions mean the formal change is temporary or incomplete, not done.
+
+If the user explicitly asks to "only change this file for now" or "先不同步", still read `core/change-companions.md`. Report which required companions remain undone, mark the result temporary/incomplete, and do not call it complete unless the user confirms they accept the drift risk.
+
+Trigger paths include `router/`, `skills/`, shared sections in `adapters/claude/CLAUDE.md` and `adapters/codex/gate.md`, shared sections in `adapters/claude/external-config.md` and `adapters/codex/external-config.md`, `adapters/mcp/`, `core/memory-rules.md`, `core/safety-rules.md`, `core/change-companions.md`, referenced sections in `GOVERNANCE.md`, `_index.md`, and `README.md`, semantic log-rule sections in `logs/README.md`, `workflows/proposal-promotion.md` Required Logs / companion sections, and promotion from `proposals/pending/*` to `proposals/accepted/*`.
+
+Ordinary project code, small debug, local implementation, pending draft editing without promotion, and log/audit output files such as `logs/audits/<date>.md` do not trigger Write Companions.
+
 ## Cross-Adapter Sync
 
-The following shared sections exist in BOTH adapter gate files. When modifying any of these sections, you MUST synchronize the change to the other adapter:
+The following adapter gate files share model-neutral operating policy:
 
 - `adapters/claude/CLAUDE.md` (Claude Code gate)
 - `adapters/codex/gate.md` (Codex gate)
 
-Sync scope:
+When changing shared gate sections, synchronize the corresponding section to the other adapter in the same task. Shared sections include L0-L3 definitions, gate loading policy, Workflow / Skill Probe, read/write boundaries, verification strategy, Write Companions, Cross-Adapter Sync, CodeGraph rules, and Final Trace format.
 
-1. **Gate rules** (L0-L3 definitions, verification strategy, trace format, read/write boundaries) — any change must be applied to both files.
-2. **CodeGraph rules** (trigger, usage budget) — same.
-3. **MCP safety boundary** — when modifying `adapters/mcp/tool-policy.md` or `adapters/mcp/allowed-ops.md`, also update the MCP safety description in both `adapters/claude/external-config.md` and `adapters/codex/external-config.md`.
-4. **Skill roster changes** — when adding, removing, or renaming an active skill, update `skills/registry.json` then run `tools/sync-skills.ps1`. Skill descriptions are shared at the skill level; do not add per-adapter descriptions.
-5. **Shared tool paths** (wrapper, MCP server script, etc.) — when changing a path, update both external-config files.
-6. **Skill source changes** — skill sources are `skills/<skill>/SKILL_SPEC.md` and `skills/<skill>/references/**` when present. When modifying skill sources or `skills/registry.json`, run `tools/sync-skills.ps1` then `tools/validate-memory-os.ps1` immediately as the closing step of the same task, then report the result. Do not ask the user to confirm before running these two scripts; do not run any git operation. Do not directly edit adapter `SKILL.md` files or adapter `references/**`; they are generated copies and will be overwritten by sync.
+Path-driven companion details for MCP policy, external-config snapshots, skill roster/source sync, and generated adapter skill files live in `core/change-companions.md`. Do not duplicate the full companion table in this gate.
 
 Model-specific overlays (e.g., Claude Temporary L2 Bias, Codex L1 Tendency) are exempt from sync and belong only to their respective adapter.
 

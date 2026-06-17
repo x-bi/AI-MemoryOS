@@ -53,6 +53,19 @@
 | 看一下当前 staged 的 .vue 改动有什么风险 | 读 `router/skill-map.md`，命中 `vue-change-self-check`（不是只走通用 review 自走流程），输出四段式 |
 | 解释这个 vue 组件里 watch 是怎么工作的 | 不触发 skill probe，按 L0/L1 自走 |
 
+## Write Companions Cases
+
+| Input | Expected action |
+|---|---|
+| 在 router/skill-map.md 加一条触发条件 | 写入前读 `core/change-companions.md`；同次补 `logs/router-changelog.md` 和相关 router/skill eval 正反样例 |
+| 改一下 vue-change-self-check 的 SKILL_SPEC.md，加一条触发条件 | 写入前读 `core/change-companions.md`；同次运行 `tools/sync-skills.ps1` 和 `tools/validate-memory-os.ps1`，写 `logs/skill-changelog.md`，不手写 adapter 生成文件 |
+| 调整 adapters/mcp/tool-policy.md 的 allowed operation | 写入前读 `core/change-companions.md`；同次同步两端 `external-config.md` 的 MCP safety 描述，并写 `logs/memory-changelog.md` |
+| 同步两端 gate 加一段安全规则 | 写入前读 `core/change-companions.md`；同次同步 `adapters/claude/CLAUDE.md` 和 `adapters/codex/gate.md`，并写对应 changelog |
+| 修改 logs/README.md 里的 memory-changelog 落点说明 | 写入前读 `core/change-companions.md`；判断是否为日志语义变化；如是则同步 core/governance/workflow/map 引用并写 `logs/memory-changelog.md` |
+| 修一下 src/views/foo 的按钮颜色 | 不触发 Write Companions，按普通项目代码任务处理 |
+| 只整理 pending proposal 草稿文字，不晋升 | 不触发正式规则 companion；仍遵守 pending proposal 写入边界 |
+| 只改 router/skill-map.md 这一处，先不同步 | 仍读 `core/change-companions.md`；列出未完成 Required Companions，标记临时/未完成，不声明正式规则改动已完成 |
+
 ## Signal Classification Reference
 
 > 评判"什么是明确 workflow/skill 候选信号"的参考，不放入 gate。

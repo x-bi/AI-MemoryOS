@@ -1,5 +1,13 @@
 # Memory Changelog 记忆变更日志
 
+## 2026-06-17
+
+- 接受 proposal：`2026-06-17-路由纠正-正式规则文件改动应由-ai-自动按-companion-映射同步关联文件`。
+- 新增 `core/change-companions.md` 作为正式规则写入 companion 映射的单一事实源，覆盖 router、skill source、adapter gate、MCP policy、external-config、proposal 晋升、core/governance、`logs/README.md`、自身维护和 `workflows/proposal-promotion.md` 的配套同步关系。
+- 在 `adapters/codex/gate.md` 与 `adapters/claude/CLAUDE.md` 新增 `## Write Companions`，要求写入正式规则路径前先读 `core/change-companions.md`，并把 `## Cross-Adapter Sync` 收敛为高层共享边界，避免 gate 与 companion map 双轨维护。
+- 修改 `workflows/proposal-promotion.md` 的 `Required Logs`，改为晋升前读取 `core/change-companions.md` 的 proposal-promotion 行，避免 Required Logs 静态列表与 companion map 漂移。
+- 风险与验证：首版不落地 companion lint；通过 `evals/router-test-cases.md` 的 Write Companions cases 固化回归样例，并运行 `tools/validate-memory-os.ps1` 做结构验证。
+
 ## 2026-06-16
 
 - 将 Codex / Claude adapter 读取结构拆为每轮轻量 `bootstrap.md` 与按需完整 gate：新增 `adapters/codex/bootstrap.md`、`adapters/claude/bootstrap.md`，并同步更新真实软件入口、adapter README、external-config 和 `_index.md`。
