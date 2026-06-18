@@ -2,6 +2,12 @@
 
 ## 2026-06-17
 
+- 接受 proposal：`2026-06-17-收紧-l1-l2-capture-建议的高置信与静默边界`。
+- 收紧 L1/L2 capture suggestion 规则：从“类型命中即可建议”收紧为高置信、有本次任务证据、当前上下文未覆盖/未拒绝、能减少未来错误才建议；明确 L1/L2 不为查重额外读取 Memory OS，用户确认 capture 进入 L3 后才执行查重；不确定时保持静默。
+- 修改 `adapters/gate-source/shared/gate-core.md` → `Read And Write Boundaries` 的 L1/L2 capture trigger bullet，并通过 `tools/sync-adapter-gates.ps1` 同步生成 `adapters/claude/CLAUDE.md` 与 `adapters/codex/gate.md`。
+- 不变更：L3 写入权限、pending-first 原则、五类 typed capture trigger、用户确认后写 pending、拒绝后不追问。
+- Eval 处理：当前 eval 目录没有 gate behavior 专用用例入口，本次不新增 eval；以 adapter gate sync/check、`tools/validate-memory-os.ps1` 和本 changelog 作为必需 companion。
+
 - 接受 proposal：`2026-06-17-adapter-gate-bootstrap-改为源文件生成并禁止直接改生成物`。
 - 新增 `adapters/gate-source/**`、Codex / Claude gate/bootstrap templates 和 `tools/sync-adapter-gates.ps1`，将 `adapters/codex/bootstrap.md`、`adapters/codex/gate.md`、`adapters/claude/bootstrap.md`、`adapters/claude/CLAUDE.md` 转为生成目标并加 generated marker。
 - 更新 `core/change-companions.md`、`evals/router-test-cases.md`、`tools/validate-memory-os.ps1`、adapter README / external-config、`_index.md`、`README.md` 和 `STATUS.md`，要求改 gate/bootstrap 源后运行 adapter gate sync/check/validate，禁止直接手写生成目标。

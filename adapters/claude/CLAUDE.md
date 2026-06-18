@@ -1,4 +1,4 @@
-<!-- Generated from adapters/gate-source/** and adapter templates; render-sha256: e009ddc1a66def85cf0eae13c1c4cdd4df225a203b8b44c28d1bb31747e5a0a1; adapter: claude; target: full-gate. Do not edit by hand; update source/templates and run tools/sync-adapter-gates.ps1. -->
+<!-- Generated from adapters/gate-source/** and adapter templates; render-sha256: f8481825fd5fa01ea79acee60896a985f5ce1bd7daa815c22f3d8ea98d62141c; adapter: claude; target: full-gate. Do not edit by hand; update source/templates and run tools/sync-adapter-gates.ps1. -->
 # AI Memory OS Gate for Claude Code
 
 This is the Claude Code full gate for AI Memory OS. The lightweight per-input bootstrap lives at `C:\Users\btf\AI-MemoryOS\adapters\claude\bootstrap.md`.
@@ -96,7 +96,7 @@ Review this temporary overlay when Claude/Codex usage balance changes.
 
 - Project-local `CLAUDE.md`, `AGENTS.md`, README, and code facts override Memory OS general rules.
 - Reading Memory OS does not mean writing memory.
-- L1/L2 capture triggers: suggest capture only for typed reusable findings: `反模式：` reusable bug-prevention lesson, `路由纠正：` corrected gate/router/skill classification, `可复用模式：` cross-project pattern, `重复失败模式：` repeated same-category failure, or `边界险触：` near miss on safety/read/write boundary. State the finding in one sentence, ask whether to capture it as a pending proposal, do not auto-write, and do not re-prompt if declined.
+- L1/L2 capture triggers are high-confidence only. Suggest capture only for typed reusable findings: `反模式：` reusable bug-prevention lesson, `路由纠正：` corrected gate/router/skill classification, `可复用模式：` cross-project pattern, `重复失败模式：` repeated same-category failure, or `边界险触：` near miss on safety/read/write boundary. The finding must be evidence-backed by the current task, not already covered, rejected, or judged out-of-scope in the current context, and likely to reduce future repeated mistakes, routing/skill misfires, or boundary risk. Do not expand Memory OS reads only to look for capture duplicates during L1/L2; perform duplicate checks only after the user confirms capture and the task enters L3. State the finding in one sentence, ask whether to capture it as a pending proposal, do not auto-write, do not re-prompt if declined, and stay silent when uncertain.
 - New lessons must first go to `proposals/pending/`; do not directly modify formal rules, router, skills, or evals unless the user explicitly enters maintenance/promotion mode.
 - `proposals/future-directions/` contains long-term direction notes. Read it only for relevant architecture, governance, Memory OS maintenance, or future-direction tasks; write there only on explicit future-direction/architecture-intent requests; do not treat it as a pending proposal or directly promotable rule.
 - Do not store tokens, passwords, secrets, cookies, PII, private production logs, customer private code, or unredacted sensitive data in Memory OS.
