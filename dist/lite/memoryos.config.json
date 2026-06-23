@@ -1,0 +1,32 @@
+{
+  "memoryos": {
+    "root": ".",
+    "language": "zh-CN"
+  },
+  "codex": {
+    "enabled": true,
+    "user_agents": "",
+    "skills_dir": "",
+    "mode": "append"
+  },
+  "claude": {
+    "enabled": false,
+    "user_claude": "",
+    "settings_json": "",
+    "skills_dir": "",
+    "install_hook": false,
+    "mode": "append"
+  },
+  "skills": {
+    "active": [
+      "pr-review",
+      "bugfix-with-regression-test",
+      "frontend-component-review",
+      "vue-change-self-check",
+      "git-ops-guide"
+    ]
+  },
+  "local": {
+    "private_dir": "private"
+  }
+}

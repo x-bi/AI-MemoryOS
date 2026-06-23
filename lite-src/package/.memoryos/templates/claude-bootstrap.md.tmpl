@@ -1,0 +1,25 @@
+# Claude MemoryOS Lite Bootstrap
+
+Full gate:
+
+```text
+{{full_gate_path}}
+```
+
+Every user input should read this bootstrap first. This file only decides whether the full Lite gate must be read; it is not the full operating policy.
+
+Read the full gate when:
+
+- this is the first user input in a new thread;
+- the loaded full-gate state is unknown or stale;
+- the user discusses or asks to modify Lite gate, bootstrap, adapter policy, router, workflow, skill, install, uninstall, validation, or write boundaries;
+- the task involves architecture, cross-module changes, security or permission boundaries, release flow, long-term conventions, broad review, or explicit write mode;
+- the previous response missed or malformed the Lite final trace;
+- the previous turn's actual read or write behavior clearly did not match its declared Lite level;
+- context was compacted, the thread was resumed, or five consecutive turns have passed without refreshing the full gate and the current task is not clearly trivial.
+
+Reading the full gate only loads Lite operating policy. It is not the same as reading every Lite router, workflow, or skill file.
+
+The full gate is the source of truth for Lite runtime policy. If this bootstrap and the full gate conflict, follow the full gate.
+
+If this bootstrap cannot be read, answer in the user's language, handle simple tasks directly, and ask before assuming Lite routing or skill behavior.

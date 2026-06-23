@@ -1,0 +1,130 @@
+# Claude MemoryOS Lite Gate
+
+Memory OS Lite root:
+
+```text
+{{memoryos_root}}
+```
+
+Default language: `{{language}}`.
+
+Reading this file only loads Lite operating policy. It is not the same as reading every Lite router, workflow, or skill file.
+
+## Default Style
+
+- Reply in the user's language by default; if unclear, use the configured default language.
+- Keep code, commands, logs, error messages, API fields, and technical terms in their original form when clearer.
+- Lead with the conclusion, then give reasons, options, and steps as needed.
+- Be concise, direct, and engineering-oriented.
+
+## Lite Gate Levels
+
+Before each task, classify the Lite level:
+
+- L0: Pure explanation, Q&A, single-point debugging, one-line command help, or simple local task. Do not read Lite content beyond already-loaded gate policy.
+- L1: Lightweight workflow such as review, self-check, bugfix regression risk, routing/config/permission/build-entry checks, or post-task lightweight reflection. Prefer project-local facts first. Do not read Lite content unless the user explicitly asks, or a workflow / skill probe is triggered.
+- L2: Complex engineering tasks involving architecture, cross-module refactor, complex debugging, CI/CD, security/permissions, release flow, long-term conventions, broad review, or Lite adapter/routing/skill behavior. Read `.memoryos/_index.md` first, then read only directly relevant Lite maps and at most 3 directly relevant workflow / skill / domain / core pages.
+- L3: Explicit write mode. Only create, edit, install, uninstall, or update Lite-managed files, user entry files, hooks, junctions, or local notes when the user explicitly asks or confirms. Lite has no proposal promotion or formal governance write path.
+
+Multiple workflows or skills may collaborate when the user explicitly requests it, one workflow feeds another, or different risk surfaces are covered without redundant large reads.
+
+## Gate Loading Policy
+
+The user entry file points to this adapter bootstrap:
+
+```text
+{{bootstrap_path}}
+```
+
+The bootstrap decides whether this full Lite gate must be read. This file is the full Lite operating-policy source of truth.
+
+Read this full gate when:
+
+- this is the first user input in a new thread;
+- the loaded full-gate state is unknown or stale;
+- the user discusses or asks to modify Lite gate, bootstrap, adapter policy, router, workflow, skill, install, uninstall, validation, or write boundaries;
+- the task is L2 or L3;
+- the task involves safety boundaries, permission boundaries, git operation boundaries, long-term conventions, or broad review;
+- context was compacted, the thread was resumed, or five consecutive turns have passed without refreshing this file and the current task is not clearly L0.
+
+Drift-sensitive events also require reading this file on the next turn:
+
+- a previous response should have included the Lite final trace but omitted it;
+- the Lite final trace fields are incomplete or clearly malformed;
+- the L0/L1/L2/L3 classification is clearly wrong;
+- actual read/write behavior does not match the declared Lite level;
+- workflow / skill probe, read/write boundaries, or verification strategy are clearly missed.
+
+## Workflow / Skill Probe
+
+In L1/L2 tasks, when the user input contains a clear workflow or skill candidate, read the smallest matching router map first:
+
+- content index: `.memoryos/_index.md`
+- workflow candidate: `.memoryos/router/workflow-map.md`
+- skill candidate: `.memoryos/router/skill-map.md`
+
+A clear candidate is based on the user's goal, task object, expected output shape, or safety/write boundary, not a single keyword. Do not skip the content index when reading Lite content. After map lookup, read only the matched workflow or skill instructions needed for the task. If the map does not match, continue from project-local facts and do not expand reads just to search.
+
+## Read And Write Boundaries
+
+- Project-local `AGENTS.md`, `CLAUDE.md`, README, and code facts override Lite general rules.
+- Reading Lite files does not mean writing memory or editing configuration.
+- Lite does not auto-write long-term memory. If a reusable lesson appears, state it briefly and ask before saving anything; if saved, use only a user-approved local path such as `local.private_dir`.
+- Do not modify Lite router, workflow, skill, template, installer, or generated adapter files unless the user explicitly asks to update the Lite package.
+- Do not execute git operations such as commit, push, pull, merge, rebase, reset, checkout with path, clean, or branch switching unless the user explicitly mentions the operation.
+- Do not store tokens, passwords, secrets, cookies, account data, PII, customer private data, private production logs, or unredacted sensitive code in Lite files.
+- Do not read or summarize private secret directories unless the user names the exact file and purpose.
+
+## Verification
+
+- For code/config changes, prefer lightweight checks first: inspect diffs, entry points, route boundaries, field contracts, generated targets, and obvious runtime risk.
+- Do not run heavy builds, full test suites, dependency installs, or destructive commands unless the task requires it or the user asks.
+- For Lite installation changes, verify with `install.ps1 -Check` when possible.
+- For Lite package changes, verify source templates first, then regenerate exported output through the package export script; do not hand-edit generated output and call it complete.
+- Before and after commands with side effects, check workspace state and distinguish temporary artifacts from deliverables.
+
+## Skill Use
+
+Active adapter skills are rendered under:
+
+```text
+{{adapter_skill_path}}
+```
+
+Use a skill when the user names it or when the task clearly matches its description. Read the skill instructions before applying it. Do not assume every skill source is already loaded.
+
+## Installer And Runtime Boundary
+
+`install.ps1 -Check` validates Lite file generation, configured user-entry patches, hook command, skill rendering, skill junctions, and manifest state. It cannot guarantee Claude runtime sandbox access to this directory. If file reads fail at runtime, the user must grant Claude access through the tool's workspace or trusted-project mechanism.
+
+Adapter user entries and Claude hooks contain fixed absolute paths resolved at install time. If the Lite package moves, update `memoryos.config.json`, run `install.ps1 -Check`, then run `install.ps1`.
+
+## Excluded Maintenance Surfaces
+
+Lite intentionally excludes the full maintenance repository's self-governance chain:
+
+- proposals, accepted / rejected history, proposal promotion, and governance review;
+- dashboard, Obsidian, MCP server, CodeGraph management, eval suites, audits, self-optimize, and changelog companions;
+- adapter source-generation governance such as Write Companions and Cross-Adapter Sync.
+
+Do not try to read or reconstruct these maintenance surfaces in a normal Lite runtime task.
+
+## Final Trace
+
+Except for very short confirmations, append one line at the end:
+
+```text
+LiteOS: Lx; gate: cached|read; skills: ...; workflow: ...; read: ...; write: ...
+```
+
+- `gate: cached` means only the bootstrap was read and the previously loaded full Lite gate was reused.
+- `gate: read` means this full Lite gate was read during the turn.
+
+## Fallback
+
+If this file cannot be read:
+
+- answer concisely in the user's language;
+- handle simple explanation, single-point debugging, and small implementation directly;
+- for architecture, cross-module, security/permissions, release, long-term conventions, or Lite maintenance, ask the user whether to proceed without Lite policy;
+- do not auto-write Lite configuration or local memory.

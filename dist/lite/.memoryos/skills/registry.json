@@ -1,0 +1,39 @@
+{
+  "skills": [
+    {
+      "name": "pr-review",
+      "status": "active",
+      "source": "skills/pr-review/SKILL_SPEC.md",
+      "managed": true,
+      "description": "Review pull requests, commits, diffs, staged changes, or current code changes for bugs, regressions, risky behavior, contract breaks, and missing tests. Use when the user asks for a code review, PR review, diff review, staged review, commit review, or asks whether recent changes are safe. Do not use for implementation-only requests or simple explanations."
+    },
+    {
+      "name": "bugfix-with-regression-test",
+      "status": "active",
+      "source": "skills/bugfix-with-regression-test/SKILL_SPEC.md",
+      "managed": true,
+      "description": "Fix bugs with root-cause analysis and regression protection. Use when the user asks for a robust fix, asks to prevent recurrence, mentions regression tests, asks why a bug happened, or wants a bug fixed safely rather than patched superficially. Do not use for quick explanations only."
+    },
+    {
+      "name": "frontend-component-review",
+      "status": "active",
+      "source": "skills/frontend-component-review/SKILL_SPEC.md",
+      "managed": true,
+      "description": "Review frontend components, UI interactions, form flows, and user-facing frontend behavior. Use when the user asks to review a component, page interaction, form workflow, loading/error/empty state, accessibility, visual behavior, or frontend UX risk. Do not use for general backend review or implementation-only requests."
+    },
+    {
+      "name": "vue-change-self-check",
+      "status": "active",
+      "source": "skills/vue-change-self-check/SKILL_SPEC.md",
+      "managed": true,
+      "description": "Use for Vue, uni-app, or frontend pre-commit/post-change self-checks. Also use when the user asks to inspect current changes, unstaged or staged changes, a commit, or a diff, and the current repo or lightweight diff file list indicates Vue/uni-app/frontend files such as .vue, pages.json, manifest.json, frontend route/page/navigation config, or uni-app subpackage pages. Can run alongside general PR review, but prefer stable numbered risk output and wait for the user to choose what to fix."
+    },
+    {
+      "name": "git-ops-guide",
+      "status": "active",
+      "source": "skills/git-ops-guide/SKILL_SPEC.md",
+      "managed": true,
+      "description": "Provide Git command guidance without executing Git commands. Use when the user asks what Git command or command order to run, wants a Git command explained, describes a desired Git outcome but is unsure of steps, or asks for safe guidance around reset, revert, rebase, restore, branch, commit, pull, push, merge, stash, or clean. Do not use when the user asks Claude to run Git commands directly."
+    }
+  ]
+}
