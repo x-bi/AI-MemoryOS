@@ -1,5 +1,13 @@
 # Memory Changelog 记忆变更日志
 
+## 2026-07-01
+
+- 接受 proposal：`2026-07-01-新增文件删除安全守则-默认回收站-禁用绕过命令`。
+- 在 `adapters/gate-source/shared/gate-core.md` 新增 `## File Deletion Safety`，Windows 环境下删除项目源码、配置或用户文件/目录时默认走系统回收站，禁止用 `rm` / `del` / `Remove-Item` / `rd` / `rmdir` 等绕过回收站的命令删除上述文件。
+- 明确例外：构建/测试/缓存等非交付产物的路径受限清理仍按 `Verification` 段处理；`git clean`、`git rm`、`git checkout -- <path>`、`git reset --hard` 等 git 删除仍按 git 操作边界处理并需用户明确提及。
+- 同步生成 `adapters/codex/gate.md` 与 `adapters/claude/CLAUDE.md`，并在 `evals/router-test-cases.md` 增加 `File Deletion Safety Cases` 行为回归样例。
+- 验证：运行 `tools/sync-adapter-gates.ps1`、`tools/sync-adapter-gates.ps1 -Check`、`tools/validate-memory-os.ps1`。
+
 ## 2026-06-17
 
 - 接受 proposal：`2026-06-17-收紧-l1-l2-capture-建议的高置信与静默边界`。

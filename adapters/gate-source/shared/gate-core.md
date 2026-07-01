@@ -62,6 +62,13 @@ L1/L2 任务中，如果用户输入出现明确 workflow 或 skill 候选信号
 - Do not scan `raw/`, `proposals/accepted/`, or `proposals/rejected/` unless the user explicitly asks or the task clearly requires it.
 - Do not execute git operations (commit, push, pull, merge, rebase, reset, checkout with path, clean, etc.) unless the user explicitly mentions the operation. This repository is shared; implicit git mutations affect all adapters and all users.
 
+## File Deletion Safety
+
+- This rule currently applies only on Windows: when deleting project source files, configuration files, or user files/directories, default to the system Recycle Bin and do not permanently delete them. Non-Windows environments are not covered by this rule yet.
+- Do not use `rm`, `del`, `Remove-Item`, `rd`, or `rmdir` to delete the files above because they bypass the Recycle Bin. Git Bash `rm` on Windows also permanently deletes files and must not be used for project files.
+- Prefer a Recycle Bin capable path: load `Add-Type -AssemblyName Microsoft.VisualBasic`, then call PowerShell `[Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile(..., 'OnlyErrorDialogs', 'SendToRecycleBin')` or `[Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory(..., 'OnlyErrorDialogs', 'SendToRecycleBin')`. If you cannot confirm whether a deletion command sends files to the Recycle Bin, ask the user before running it.
+- Exceptions: path-constrained cleanup of non-delivery build/test/cache artifacts follows the `Verification` section and is not governed by this rule; `git clean`, `git rm`, `git checkout -- <path>`, `git reset --hard`, and other git deletion operations follow the git-operation boundary and still require explicit user request.
+
 ## Verification
 
 - For code/config changes, prefer lightweight checks first: inspect diff, call chains, routes/entry points, field contracts, boundary states, and obvious runtime risk.
