@@ -2,6 +2,8 @@
 
 ## 2026-09-04
 
+- 根据后续使用反馈停用低保真原型到 Figma 的默认流程：workflow 文件标记为 disabled，默认路由和 eval 已同步撤销；历史文件与 Figma 恢复说明保留。
+- Codex 与 Claude `external-config.md` 同步标记 Figma 为 dormant optional capability，仅在用户显式要求 Figma 时使用，不再承担默认审美设计中间层。
 - 接受 proposal：`2026-09-04-低保真原型通过官方-figma-skills-进入视觉设计流程`。
 - 新增 `workflows/frontend-prototype-to-figma-design.md`，把低保真功能原型到高保真 Figma 设计、人工确认、design-to-code 的阶段边界固化为可复用流程。
 - 明确 Memory OS 只编排 `figma-create-new-file`、`figma-use`、`figma-generate-design`、`figma-generate-library`、`figma-design-to-code` 等官方 Skills，不复制官方正文、不登记到 managed skill registry、不依赖版本化插件缓存路径。

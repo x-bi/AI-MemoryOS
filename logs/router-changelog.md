@@ -2,6 +2,8 @@
 
 ## 2026-09-04
 
+- 随后停用 `frontend-prototype-to-figma-design.md`：从 `router/workflow-map.md` 移除低保真原型到 Figma 的默认路由，保留 workflow 文件仅供历史追溯和显式恢复。
+- 更新路由 eval：低保真原型要求提升审美时不再自动调用 Figma；用户显式指定 Figma 也不自动恢复默认 workflow。
 - 接受 proposal：`2026-09-04-低保真原型通过官方-figma-skills-进入视觉设计流程`。
 - 新增 `frontend-prototype-to-figma-design.md` 路由入口：低保真/功能原型且没有正式 UI、用户要求先提升审美或生成高保真 Figma 时，先编排官方 Figma Skills 完成设计和人工确认，再进入开发。
 - 收窄 `frontend-prototype-driven-development.md` 的路由边界：已有正式设计稿、具有视觉约束或用户明确直接开发时继续命中；低保真先设计场景不再被通用原型开发行抢占。

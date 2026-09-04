@@ -38,8 +38,8 @@
 | Input | Expected action |
 |---|---|
 | 读取 CoDesign 原型，准备开发这个页面 | 读 `router/workflow-map.md`，命中 `frontend-prototype-driven-development.md` |
-| 这里只有 Axure 功能原型，没有正式 UI；先提升视觉设计，在 Figma 出高保真稿，确认后再开发 | 读 `router/workflow-map.md`，命中 `frontend-prototype-to-figma-design.md`；把原型作为功能/交互依据，编排官方 Figma Skills，不直接开发 |
-| 这个低保真线框图只表示功能，请重新设计得更专业，但不要复制官方 Figma Skills 到 Memory OS | 命中 `frontend-prototype-to-figma-design.md`；官方 Skills 保持外部托管，Memory OS 只负责编排 |
+| 这里只有 Axure 功能原型，没有正式 UI；先提升视觉设计，在 Figma 出高保真稿，确认后再开发 | 不命中已停用的 `frontend-prototype-to-figma-design.md`；用户显式指定 Figma 时只能作为当前任务的外部能力处理，不恢复默认路由 |
+| 这个低保真线框图只表示功能，请重新设计得更专业 | 不自动调用 Figma；当前应先做审美设计 Skill 探针，未登记成熟 Skill 前不伪造命中 |
 | 按这个已经定稿的 Figma 设计实现页面 | 命中 `frontend-prototype-driven-development.md`，不进入低保真视觉设计 workflow |
 | 原型样式不用调整，直接按现状开发 | 命中 `frontend-prototype-driven-development.md`，不强制创建新的 Figma 设计 |
 | 打开这个 CoDesign 链接看看能不能访问 | 不读 map；没有开发/还原目标时不强制命中原型开发 workflow |

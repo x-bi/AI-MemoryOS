@@ -1,8 +1,12 @@
 ---
 source_episode: conversation:2026-09-04
+status: disabled
+disabled_reason: "Figma 不再作为低保真原型提升审美的默认中间层；保留本文仅供历史追溯和显式恢复。"
 ---
 
 # Frontend Prototype To Figma Design
+
+> **Disabled（2026-09-04）**：本 workflow 已从默认路由移除，不应自动触发或编排 Figma MCP / Skills。只有用户以后明确要求恢复该流程并完成相应维护时，才能重新启用。
 
 将只有功能、信息架构或交互含义的低保真原型，先转换为可评审的高保真 Figma 设计，再进入前端实现。Memory OS 负责路由、阶段边界和验收；画布操作、设计系统构建与 design-to-code 由当前客户端安装的 Figma 官方 MCP Skills 负责。
 
@@ -117,4 +121,3 @@ source_episode: conversation:2026-09-04
 - Figma 文件/节点链接与截图验证结果。
 - 用户确认状态。
 - 若进入实现：确认后的设计节点、项目实现范围和验证结果。
-

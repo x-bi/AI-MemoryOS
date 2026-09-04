@@ -120,9 +120,9 @@ MCP safety boundary:
 - Do not use MCP to directly modify formal rules, router, skills, evals, future direction notes, accepted proposals, or rejected proposals.
 - Do not store tokens, passwords, secrets, cookies, account data, private logs, or PII in MCP config.
 
-## Optional Figma MCP And Official Skills
+## Dormant Optional Figma MCP And Official Skills
 
-Figma is an optional external design capability used by `workflows/frontend-prototype-to-figma-design.md`. Memory OS stores only restoration and verification guidance; OAuth state, account data, private Figma file content, and plugin cache contents remain outside this repository.
+The former default `workflows/frontend-prototype-to-figma-design.md` route is disabled. Figma remains an optional external capability only when the user explicitly requests it; this section is retained for restoration and verification. OAuth state, account data, private Figma file content, and plugin cache contents remain outside this repository.
 
 Preferred Codex App setup:
 
@@ -142,7 +142,7 @@ Validation:
 
 - Restart Codex after installation or connection changes.
 - Confirm the `figma` MCP server is connected and OAuth succeeds.
-- Confirm the workflow's official Skill names are discoverable before attempting a canvas write.
+- For an explicit Figma task, confirm the required official Skill names are discoverable before attempting a canvas write.
 - Do not record versioned plugin-cache paths such as `...\figma\<version>\skills`; plugin updates may replace them.
 
 ## Active Skill Junctions

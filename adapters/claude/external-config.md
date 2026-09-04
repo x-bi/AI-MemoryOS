@@ -135,9 +135,9 @@ MCP safety boundary:
 - Do not use MCP to directly modify formal rules, router, skills, evals, future direction notes, accepted proposals, or rejected proposals.
 - Do not store tokens, passwords, secrets, cookies, account data, private logs, or PII in MCP config.
 
-## Optional Figma MCP And Official Skills
+## Dormant Optional Figma MCP And Official Skills
 
-Figma is an optional external design capability used by `workflows/frontend-prototype-to-figma-design.md`. Memory OS stores only restoration and verification guidance; OAuth state, account data, private Figma file content, and plugin cache contents remain outside this repository.
+The former default `workflows/frontend-prototype-to-figma-design.md` route is disabled. Figma remains an optional external capability only when the user explicitly requests it; this section is retained for restoration and verification. OAuth state, account data, private Figma file content, and plugin cache contents remain outside this repository.
 
 Preferred Claude Code setup:
 
@@ -145,7 +145,7 @@ Preferred Claude Code setup:
 claude plugin install figma@claude-plugins-official
 ```
 
-The official plugin supplies the Figma MCP configuration and official Skills. Complete OAuth interactively, then confirm the workflow can discover `figma-create-new-file`, `figma-use`, `figma-generate-design`, `figma-generate-library`, and `figma-design-to-code` or their current official equivalents.
+The official plugin supplies the Figma MCP configuration and official Skills. For an explicit Figma task, complete OAuth interactively, then confirm the client can discover `figma-create-new-file`, `figma-use`, `figma-generate-design`, `figma-generate-library`, and `figma-design-to-code` or their current official equivalents.
 
 Manual remote MCP fallback:
 
