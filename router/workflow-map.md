@@ -2,7 +2,8 @@
 
 | Signal | Workflow | Use When | Do Not Use When |
 |---|---|---|---|
-| CoDesign / Lanhu / Figma / Axure / 原型 / 设计稿 / iframe + 后续开发 / 页面还原 | `workflows/frontend-prototype-driven-development.md` | 用户要求读取原型、设计稿或浏览器内嵌 iframe，并以后续开发、页面实现、页面还原、弹窗/表单/表格开发为目标 | 只解释字段含义、纯接口联调、纯代码 bugfix，且用户没有要求按原型还原页面 |
+| 功能原型 / 低保真 / 线框图 / 粗糙 UI + 没有正式 UI / 提升审美 / 重新设计 / 先设计后开发 / 生成高保真 Figma | `workflows/frontend-prototype-to-figma-design.md` | 用户明确原型只作为功能、信息架构或交互依据，希望调用官方 Figma MCP Skills 先形成并确认高保真设计，再进入开发 | 已有正式设计稿并要求按稿还原；用户明确保留原型样式或直接开发；只有功能讨论而没有视觉设计目标 |
+| CoDesign / Lanhu / Figma / Axure / 原型 / 设计稿 / iframe + 后续开发 / 页面还原 | `workflows/frontend-prototype-driven-development.md` | 用户要求读取具有正式或结构性视觉约束的原型/设计稿，并以后续开发、页面实现、页面还原、弹窗/表单/表格开发为目标 | 只有低保真功能原型且用户要求先提升审美或生成高保真设计；只解释字段含义、纯接口联调、纯代码 bugfix，且用户没有要求按原型还原页面 |
 | CodeGraph / 项目图 / graph / 调用链 / 影响面 / 架构定位 + CodeGraph enabled | `workflows/codegraph-assisted-project-analysis.md` | 用户要求使用或准备 CodeGraph，或任务需要大型项目结构、调用链、caller/callee、影响面、架构定位，且 CodeGraph 对当前项目启用 | 用户明确跳过 CodeGraph；当前项目未启用或准备失败；单文件/小范围问题可直接读源码 |
 | review diff / PR / commit / staged changes / current changes / 新增功能全量 / 从零到现在 / 上线前累计变更 | `workflows/diff-review-lite.md` | 用户要求审查 diff、PR、commit、staged changes、当前代码改动，或审查新增功能、从零到现在、跨提交累计、分支差异、上线前整体变更等非默认基线 changeset，且不是广泛架构审查 | 用户要求直接实现功能；用户要求提交前自检时优先考虑 `pre-commit-self-check.md` 或相关 skill；前端文件范围命中时应继续读取 `router/skill-map.md` 判定 `vue-change-self-check` / `frontend-component-review`；diff 涉及跨模块契约、安全、权限、发布流、共享基础设施或长期规则时升级 L2 |
 | 前端改动 + 回归验证 / 构建触发 / 验证副作用 / 平台验证 | `workflows/frontend-regression-verification-strategy.md` | 前端代码修改后需要选择最小验证路径、判断是否构建/测试、控制验证副作用 | 非前端任务；纯解释；用户已经明确指定具体验证命令且无需策略判断 |

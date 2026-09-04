@@ -120,6 +120,31 @@ MCP safety boundary:
 - Do not use MCP to directly modify formal rules, router, skills, evals, future direction notes, accepted proposals, or rejected proposals.
 - Do not store tokens, passwords, secrets, cookies, account data, private logs, or PII in MCP config.
 
+## Optional Figma MCP And Official Skills
+
+Figma is an optional external design capability used by `workflows/frontend-prototype-to-figma-design.md`. Memory OS stores only restoration and verification guidance; OAuth state, account data, private Figma file content, and plugin cache contents remain outside this repository.
+
+Preferred Codex App setup:
+
+- Install the official Figma integration through Codex Plugins.
+- Complete Figma OAuth interactively.
+- Confirm the integration exposes the official Skills required by the workflow: `figma-create-new-file`, `figma-use`, `figma-generate-design`, `figma-generate-library`, and `figma-design-to-code`.
+
+Manual remote MCP fallback:
+
+```powershell
+codex mcp add figma --url https://mcp.figma.com/mcp
+```
+
+When using the manual MCP path, install the official Figma Skills separately through Figma's supported distribution. Do not copy their bodies into `AI-MemoryOS\skills`, add them to `skills/registry.json`, or create Memory OS junctions for plugin-managed Skills.
+
+Validation:
+
+- Restart Codex after installation or connection changes.
+- Confirm the `figma` MCP server is connected and OAuth succeeds.
+- Confirm the workflow's official Skill names are discoverable before attempting a canvas write.
+- Do not record versioned plugin-cache paths such as `...\figma\<version>\skills`; plugin updates may replace them.
+
 ## Active Skill Junctions
 
 Codex Desktop discovers skills from `C:\Users\btf\.codex\skills`. Each active skill should be a junction to the Memory OS source directory.

@@ -135,6 +135,33 @@ MCP safety boundary:
 - Do not use MCP to directly modify formal rules, router, skills, evals, future direction notes, accepted proposals, or rejected proposals.
 - Do not store tokens, passwords, secrets, cookies, account data, private logs, or PII in MCP config.
 
+## Optional Figma MCP And Official Skills
+
+Figma is an optional external design capability used by `workflows/frontend-prototype-to-figma-design.md`. Memory OS stores only restoration and verification guidance; OAuth state, account data, private Figma file content, and plugin cache contents remain outside this repository.
+
+Preferred Claude Code setup:
+
+```powershell
+claude plugin install figma@claude-plugins-official
+```
+
+The official plugin supplies the Figma MCP configuration and official Skills. Complete OAuth interactively, then confirm the workflow can discover `figma-create-new-file`, `figma-use`, `figma-generate-design`, `figma-generate-library`, and `figma-design-to-code` or their current official equivalents.
+
+Manual remote MCP fallback:
+
+```powershell
+claude mcp add --scope user --transport http figma https://mcp.figma.com/mcp
+```
+
+When using the manual MCP path, install the official Figma Skills separately through Figma's supported distribution. Do not copy their bodies into `AI-MemoryOS\skills`, add them to `skills/registry.json`, or create Memory OS junctions for plugin-managed Skills.
+
+Validation:
+
+- Restart Claude Code after installation or connection changes.
+- Run `claude mcp list` and confirm `figma` is connected.
+- Confirm OAuth succeeds and the official Skills are discoverable before attempting a canvas write.
+- Do not store OAuth/token data or versioned plugin-cache paths in Memory OS.
+
 ## Optional CodeGraph MCP Server
 
 Claude Code may also have a user-scope stdio MCP server named `codegraph` when CodeGraph is enabled:

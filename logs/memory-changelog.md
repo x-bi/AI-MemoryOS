@@ -1,5 +1,13 @@
 # Memory Changelog 记忆变更日志
 
+## 2026-09-04
+
+- 接受 proposal：`2026-09-04-低保真原型通过官方-figma-skills-进入视觉设计流程`。
+- 新增 `workflows/frontend-prototype-to-figma-design.md`，把低保真功能原型到高保真 Figma 设计、人工确认、design-to-code 的阶段边界固化为可复用流程。
+- 明确 Memory OS 只编排 `figma-create-new-file`、`figma-use`、`figma-generate-design`、`figma-generate-library`、`figma-design-to-code` 等官方 Skills，不复制官方正文、不登记到 managed skill registry、不依赖版本化插件缓存路径。
+- 同步更新 Codex 与 Claude `external-config.md`：分别记录官方集成首选安装方式、Remote MCP 手动回退、OAuth/Skill 可用性验证和敏感信息边界。
+- 路由变化及回归样例记录见 `logs/router-changelog.md` 与 `evals/router-test-cases.md`。
+
 ## 2026-07-01
 
 - 接受 proposal：`2026-07-01-新增文件删除安全守则-默认回收站-禁用绕过命令`。
